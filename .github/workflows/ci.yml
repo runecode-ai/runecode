@@ -81,7 +81,10 @@ jobs:
 
       - name: Install baseline CLI tools
         shell: pwsh
-        run: choco install -y ripgrep --version=14.1.1 fd --version=10.2.0 jq --version=1.7.1
+        run: |
+          choco install -y ripgrep --version=14.1.0 --allow-downgrade
+          choco install -y fd --version=10.3.0 --allow-downgrade
+          choco install -y jq --version=1.8.1 --allow-downgrade
 
       - name: Run portability checks
         run: just ci
