@@ -66,12 +66,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: "22"
+          node-version: "22.22.0"
 
       - name: Install just
         uses: taiki-e/install-action@a37010ded18ff788be4440302bd6830b1ae50d8b # v2
         with:
-          tool: just
+          tool: just@1.38.0
 
       - name: Install gopls
         shell: pwsh
@@ -81,7 +81,7 @@ jobs:
 
       - name: Install baseline CLI tools
         shell: pwsh
-        run: choco install -y ripgrep fd jq
+        run: choco install -y ripgrep --version=14.1.1 fd --version=10.2.0 jq --version=1.7.1
 
       - name: Run portability checks
         run: just ci
