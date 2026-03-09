@@ -10,7 +10,7 @@ This is the canonical view of what is planned next (as specs) and what has shipp
 
 - [x] Dev Environment + CI Bootstrap (Nix Flakes) (`agent-os/specs/2026-03-08-1128-dev-env-ci-nix-flakes/`)
   - Standard dev shell via Nix + direnv + just; CI runs equivalent checks across OSes.
-- [ ] Monorepo Scaffold + Package Boundaries (`agent-os/specs/2026-03-08-1039-scaffold-ci-matrix/`)
+- [x] Monorepo Scaffold + Package Boundaries (`agent-os/specs/2026-03-08-1039-scaffold-ci-matrix/`)
   - Clear Go/TS package boundaries with a consistent local build/test/lint loop.
 - [ ] Protocol & Schema Bundle v0 (`agent-os/specs/2026-03-08-1039-protocol-schemas-v0/`)
   - Cross-boundary messages/manifests are schema-validated and hash-addressable.
