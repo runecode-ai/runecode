@@ -8,7 +8,7 @@ This is the canonical view of what is planned next (as specs) and what has shipp
 
 ### v0.1.0-alpha.1
 
-- [ ] Dev Environment + CI Bootstrap (Nix Flakes) (`agent-os/specs/2026-03-08-1128-dev-env-ci-nix-flakes/`)
+- [x] Dev Environment + CI Bootstrap (Nix Flakes) (`agent-os/specs/2026-03-08-1128-dev-env-ci-nix-flakes/`)
   - Standard dev shell via Nix + direnv + just; CI runs equivalent checks across OSes.
 - [ ] Monorepo Scaffold + Package Boundaries (`agent-os/specs/2026-03-08-1039-scaffold-ci-matrix/`)
   - Clear Go/TS package boundaries with a consistent local build/test/lint loop.
