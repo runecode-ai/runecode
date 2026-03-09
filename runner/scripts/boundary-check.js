@@ -141,6 +141,7 @@ function checkSpecifier(filePath, specifier, config, violations) {
   if (normalized.length === 0) {
     return;
   }
+  const relativeFile = normalizeSpecifier(path.relative(config.runnerRoot, filePath));
 
   const hasRelativePrefix = normalized.startsWith(".");
   const hasAbsolutePrefix = isAbsolutePathSpecifier(trimmed, normalized);
@@ -160,7 +161,7 @@ function checkSpecifier(filePath, specifier, config, violations) {
     normalized.startsWith("cmd/") ||
     normalized.startsWith("internal/")
   ) {
-    violations.push(`${path.relative(config.runnerRoot, filePath)} references trusted path '${specifier}'`);
+    violations.push(`${relativeFile} references trusted path '${specifier}'`);
     return;
   }
 
@@ -176,7 +177,7 @@ function checkSpecifier(filePath, specifier, config, violations) {
   }
 
   if (config.trustedRoots.some((root) => isInside(resolvedPath, root))) {
-    violations.push(`${path.relative(config.runnerRoot, filePath)} escapes into trusted path '${specifier}'`);
+    violations.push(`${relativeFile} escapes into trusted path '${specifier}'`);
     return;
   }
 
@@ -189,7 +190,7 @@ function checkSpecifier(filePath, specifier, config, violations) {
   }
 
   violations.push(
-    `${path.relative(config.runnerRoot, filePath)} escapes runner boundary with '${specifier}' (only protocol/schemas and protocol/fixtures are allowed)`,
+    `${relativeFile} escapes runner boundary with '${specifier}' (only protocol/schemas and protocol/fixtures are allowed)`,
   );
 }
 
