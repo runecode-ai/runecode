@@ -101,6 +101,7 @@ Deliverables:
     - absolute path references (including Unix absolute paths and Windows drive-letter/UNC paths) escape `runner/` except for allowed protocol reads.
     - no runner source files are found (fail closed).
     - NOTE: the guardrail should avoid false positives on unrelated package names that merely contain path segments like `/internal/`.
+    - Violation output should use runner-relative paths with forward slashes so test expectations are stable across Linux/macOS/Windows.
     Implementation guidance (MVP): keep it dependency-free and cross-platform (Node stdlib only).
   - Add baseline tests for the boundary-check guardrail and run them from `npm test`.
 
@@ -128,6 +129,7 @@ Deliverables:
     - `lint`: `cd runner && npm run lint` (typecheck is acceptable for MVP).
     - `test`: `cd runner && npm test`
     - `ci`: `cd runner && npm ci` + `npm run lint` + `npm test` + `npm run boundary-check`
+    - For MVP, `npm test` may include `npm run lint`; keeping an explicit lint step in `just ci` is acceptable for clear sequencing.
 
   - Bootstrap vs check-only contract:
   - Lockfile generation/updates (`go mod tidy`, `npm install`) are explicit developer actions; the resulting lockfile changes are committed.
