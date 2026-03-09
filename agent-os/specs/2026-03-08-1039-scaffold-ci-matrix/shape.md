@@ -26,7 +26,9 @@ This spec assumes the dev shell + CI plumbing already exists (Nix flake, `just`,
 - `just ci` is check-only and must not modify committed files; lockfile generation is an explicit developer action.
 - For MVP command clarity, keeping an explicit `cd runner && npm run lint` in `just ci` is acceptable even if `npm test` also invokes lint.
 - CI cleanliness verification checks both tracked diffs and untracked files after running `just ci`.
+- When CI also enforces lockfile immutability, run lockfile-specific checks before repository-wide cleanliness checks so failures stay actionable.
 - Repository line endings are normalized with `.gitattributes` to keep portability checks stable across Linux/macOS/Windows.
+- Prefer a minimal `.gitattributes` baseline (`* text=auto eol=lf`) and add language-specific rules only for exceptions.
 - Dependency vulnerability scanning is desirable but non-gating for MVP parity (expose as an optional command/CI job later).
 - Developer tooling and CI conventions (Nix flake + `direnv` + `just` + GitHub Actions) are implemented first by `agent-os/specs/2026-03-08-1128-dev-env-ci-nix-flakes/` and should not be re-invented here.
 

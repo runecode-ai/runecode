@@ -48,6 +48,9 @@ jobs:
       - name: Run CI command in dev shell
         run: nix develop --no-write-lock-file -c just ci
 
+      - name: Verify flake.lock unchanged
+        run: git diff --exit-code -- flake.lock
+
       - name: Verify repository unchanged after CI command
         run: |
           git diff --exit-code
@@ -57,9 +60,6 @@ jobs:
             echo "$untracked"
             exit 1
           fi
-
-      - name: Verify flake.lock unchanged
-        run: git diff --exit-code -- flake.lock
 
   windows:
     name: Windows portability (Node ${{ matrix.node-version }})
