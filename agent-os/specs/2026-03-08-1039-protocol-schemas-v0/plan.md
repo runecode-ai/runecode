@@ -14,11 +14,11 @@ Create `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/` with:
 ## Task 2: Define Core Object Model
 
 Define the minimal canonical objects needed for MVP:
-- Role manifests and run/stage capability manifests (including explicit opt-ins).
+- Role manifests and run/stage capability manifests (including explicit opt-ins and an approval profile).
 - Artifact references (hash, size, content type, data class, origin).
 - Audit events (hash-chained, signed, typed).
-- Approval requests/decisions.
-- Policy decisions (allow/deny/require_approval) with reason codes.
+- Approval requests/decisions (typed, structured payloads for TUI display and deterministic enforcement).
+- Policy decisions (allow/deny/require_human_approval) with reason codes.
 
 ## Task 3: Choose Schema + Validation Strategy
 
@@ -67,10 +67,19 @@ Define the minimal canonical objects needed for MVP:
   - older schema versions remain verifiable (verifier keeps old schemas)
 - If the verifier encounters an unsupported schema version, verification fails closed with a clear reason code.
 
+Approval profile versioning note:
+- MVP supports a single approval profile value (`moderate`). Adding new profiles (e.g., `strict`, `permissive`) is a schema version bump and is post-MVP.
+
+Approval profile semantics note:
+- Approval profiles must never convert `deny -> allow`.
+- Approval profiles only affect whether an otherwise-allowed action returns `allow` vs `require_human_approval`.
+- Unknown profile values fail closed.
+
 ## Task 5: Reference Fixtures
 
 - Add small, checked-in example manifests and events that validate against schemas.
 - Include both a “microVM stage” and a “container stage (explicit opt-in)” fixture.
+- Include an MVP approval profile fixture (`moderate`) embedded in the run/stage manifest.
 - Add canonicalization + hashing fixtures:
   - canonical JSON bytes (golden)
   - expected hash outputs

@@ -40,7 +40,9 @@ Create `agent-os/specs/2026-03-08-1039-secretsd-model-gateway-v0/` with:
 ## Task 4: Data-Class Policy for Model Egress
 
 - Default deny for third-party model usage.
-- When explicitly opted in, allow only specific data classes (e.g., `spec_text`, optionally `diffs`/`approved_file_excerpts` per manifest).
+- When explicitly opted in, allow only specific data classes (MVP baseline: `spec_text` only).
+- Expanding allowed egress classes beyond `spec_text` (e.g., `diffs`, `approved_file_excerpts`) requires an explicit signed manifest opt-in and must be surfaced as a high-risk approval in the `moderate` profile.
+- Unapproved excerpts (`unapproved_file_excerpts`) are never eligible for model egress.
 - Enforce redaction at the boundary structurally:
   - use schema field classification metadata (`secret` fields are rejected/stripped)
   - prefer allowlists of permitted fields/classes over heuristic redaction
@@ -53,6 +55,7 @@ Create `agent-os/specs/2026-03-08-1039-secretsd-model-gateway-v0/` with:
 ## Acceptance Criteria
 
 - No other role can directly reach the public internet for model traffic.
+- In MVP, no role other than `model-gateway` has any network egress.
 - Secrets are never persisted in the launcher/broker/scheduler; only leases are used.
 - Model-gateway blocks SSRF/DNS rebinding classes of attacks (private IPs, unsafe redirects) by default.
 - Opt-in model egress is explicit, enforceable, and auditable.

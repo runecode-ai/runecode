@@ -10,6 +10,8 @@ Build the end-to-end workflow engine and offline workspace execution roles, with
 - Workspace roles are offline; model egress (if enabled) is only via model-gateway.
 - Pause/resume is implemented via a persisted run state machine (durable state), not in-memory orchestration.
 - Gate failure semantics are explicit (fail/abort, retry, and any override requires recorded approval).
+- MVP uses a "moderate" approval profile: approvals are checkpoint-style (stage sign-off and explicit posture changes), not per-action.
+- The workflow produces verifiable evidence artifacts (including `audit_verification_report`), not just human-readable logs.
 
 ## Context
 

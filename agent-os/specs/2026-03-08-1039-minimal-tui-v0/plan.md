@@ -22,6 +22,7 @@ Create `agent-os/specs/2026-03-08-1039-minimal-tui-v0/` with:
 - Approvals inbox (manifest signing, container opt-in, other gated actions).
 - Artifacts browser (diffs, logs, gate results) with metadata.
 - Audit timeline (paged view + verify status).
+- Approval context: show the active approval profile (`moderate` in MVP) and why each approval is required (reason codes + structured details).
 
 ## Task 4: Local API Integration
 
@@ -32,6 +33,8 @@ Create `agent-os/specs/2026-03-08-1039-minimal-tui-v0/` with:
 
 - Make the active isolation backend and assurance level unmissable.
 - Make container mode clearly labeled as reduced assurance.
+- Make the active approval profile unmissable and keep the default posture obvious ("moderate" in MVP).
+- For each approval request, show a concise, structured "what changes if approved" view.
 
 ## Acceptance Criteria
 

@@ -18,6 +18,7 @@ Define a small set of initial specs for RuneCode, split into MVP vs post-MVP, an
 - MVP starts with JSON messages validated by JSON Schema, while keeping the logical object model encoding-agnostic to allow post-MVP protobuf over local IPC for on-wire RPC (gRPC optional and local-only).
 - MVP uses vsock-first for isolate <-> host transport on Linux with a virtio-serial fallback; a message-level authenticated+encrypted session is always required.
 - MVP UX is CLI + minimal TUI.
+- MVP approval posture is "moderate" (checkpoint-style approvals); strict/permissive profiles are post-MVP.
 - Spec docs must not mention the source discovery doc filename/path; they should stand on their own.
 
 ## Context

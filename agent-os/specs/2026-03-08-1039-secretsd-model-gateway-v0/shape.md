@@ -8,8 +8,10 @@ Implement secrets storage/lease issuance and a dedicated model-gateway that cent
 
 - Third-party model usage is explicit opt-in; deny by default.
 - Model traffic goes only through model-gateway; workspace roles remain offline.
+- Only `secretsd` stores long-lived secrets; other daemons/components must not persist secret values (leases only).
 - Secrets storage fails closed by default if secure key storage is unavailable (no silent plaintext-on-disk fallback).
 - Model gateway egress is hardened against SSRF/DNS rebinding and enforces TLS-only provider connections.
+- MVP default for model egress is `spec_text` only; allowing `diffs` or `approved_file_excerpts` is an explicit, auditable opt-in.
 
 ## Context
 

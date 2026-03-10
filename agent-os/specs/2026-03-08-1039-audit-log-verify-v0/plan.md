@@ -42,7 +42,8 @@ Create `agent-os/specs/2026-03-08-1039-audit-log-verify-v0/` with:
   - hash chain integrity
   - signature validity
   - required event ordering invariants
-- Produce a machine-readable verification artifact.
+- Produce a machine-readable verification artifact (data class: `audit_verification_report`).
+- Store the verification output as an artifact in the CAS and attach it to the run metadata so the TUI can show a clear "verified / not verified" status.
 
 ## Task 6: Segmentation + Retention (Minimal)
 
@@ -56,3 +57,4 @@ Create `agent-os/specs/2026-03-08-1039-audit-log-verify-v0/` with:
 - A run produces an auditable sequence of events covering: proposals, validations, authorizations, executions, gate results, and approvals.
 - Verification can be run locally and fails closed with clear errors.
 - Audit logs can be segmented/archived without breaking verification.
+- Verification output is storable/retained as a first-class artifact for later review.

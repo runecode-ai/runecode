@@ -10,6 +10,8 @@ Implement the microVM isolation backend needed for MVP (Linux-first), while keep
 - MVP uses vsock-first on Linux with a virtio-serial fallback, with mandatory message-level authentication+encryption (do not rely on transport properties).
 - MicroVM failure must not auto-enable container mode.
 - QEMU hardening/sandboxing is part of the MVP security boundary (not a later polish item).
+- Performance work (boot latency, warm pools, caching) must not relax isolation semantics or bypass audit/policy.
+- Warm pools/caches must not introduce cross-run state bleed; reuse requires reset-to-clean (or destroy) semantics and verifiable, manifest-pinned artifacts.
 
 ## Context
 

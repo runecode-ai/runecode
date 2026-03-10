@@ -28,7 +28,35 @@ Create `agent-os/specs/2026-03-08-1039-policy-engine-v0/` with:
 - Enforce MVP invariants:
   - no escalation-in-place
   - deny-by-default for network/filesystem/shell/secrets
-  - no single role combines workspace RW + public egress + long-lived secrets
+  - network egress is a hard boundary:
+    - workspace roles have zero direct network egress
+    - third-party model egress is only possible via the dedicated `model-gateway` role
+    - any non-gateway network egress attempt is denied and is not approvable
+  - no single role combines workspace RW + third-party egress + long-lived secrets
+
+## Task 3b: Approval Policy (MVP: Moderate)
+
+- Define an approval policy model that controls when an otherwise-allowed action requires explicit human approval.
+- Approval policy/profile is a signed input (part of the run/stage capability manifest).
+- Approval profiles affect only *when* explicit human approval is required for actions already allowed by invariants + the signed manifest:
+  - profiles must never convert `deny -> allow`
+  - profiles may add additional `require_human_approval` decisions and/or additional denies, but cannot expand capabilities
+- MVP implements a single approval profile: `moderate`:
+  - approvals are checkpoint-style, not per-micro-action:
+    - stage capability manifest sign-off (always; includes a structured summary of requested high-risk capability categories)
+    - reduced-assurance opt-ins (e.g., container backend)
+    - gate overrides
+    - enabling third-party model egress via `model-gateway` and/or expanding allowed model egress data classes beyond the baseline (`spec_text` only)
+  - moderate trigger categories (must be explicit in the stage manifest and surfaced at sign-off):
+    - file writes outside the workspace volume/root (outside the declared workspace path allowlist)
+    - secret access (issuing leases from `secretsd`)
+    - dependency/package installation
+    - system-modifying command execution (beyond ordinary workspace edit/test executors)
+    - third-party model egress scope changes (enable gateway use; expand allowed egress data classes)
+  - actions wholly inside the workspace sandbox and within the signed manifest execute without intermediate approvals
+- Post-MVP:
+  - add `strict` and `permissive` approval profiles in a dedicated spec (without changing MVP invariants)
+  - review adding a distinct approval trigger category for `git-remote-ops` (push/tag/PR creation) once the git-gateway exists
 
 ## Task 4: Backend Selection Rules
 
@@ -50,3 +78,4 @@ Create `agent-os/specs/2026-03-08-1039-policy-engine-v0/` with:
 - Policy evaluation does not execute arbitrary code and is deterministic for identical inputs.
 - Container usage is blocked unless explicitly opted in and recorded.
 - Violations are auditable and do not partially execute.
+- With the `moderate` approval profile, a typical offline edit+gate step can execute without intermediate approvals once the stage manifest is signed.

@@ -16,6 +16,7 @@ Create `agent-os/specs/2026-03-08-1039-workflow-workspace-roles-gates-v0/` with:
 - Implement a TS/Node workflow runner using LangGraph.
 - Ensure the runner has no direct secrets and no direct workspace access.
 - All actions are requested through the broker/local API and independently validated by the launcher/policy engine.
+- MVP approval posture: the runner is built to pause/resume on typed approvals, with the run/stage manifest carrying an approval profile (`moderate` for MVP).
 - Persist run state durably so pause/resume and crash recovery are real (MVP: SQLite):
   - run state machine (proposed/validated/authorized/executing/awaiting_approval/failed/succeeded)
   - step attempts, artifact references, and approval records
@@ -39,6 +40,7 @@ Create `agent-os/specs/2026-03-08-1039-workflow-workspace-roles-gates-v0/` with:
 - Authorize deterministically via policy engine.
 - Execute inside the correct role isolate.
 - Attest by producing signed artifacts (diffs, logs, gate results) and audit events.
+- Prefer checkpoint-style approvals (stage sign-off and explicit posture changes) over per-action approvals in the MVP workflow design.
 
 ## Task 5: Deterministic Gates (MVP)
 
@@ -60,6 +62,7 @@ Create `agent-os/specs/2026-03-08-1039-workflow-workspace-roles-gates-v0/` with:
   - runs gates
   - produces audit + artifacts
   - requires at least one explicit approval (e.g., manifest sign-off)
+  - produces a verifier artifact (run audit verification; data class: `audit_verification_report`) that can be shown in the TUI
 
 ## Acceptance Criteria
 

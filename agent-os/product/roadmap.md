@@ -55,6 +55,8 @@ This is the canonical view of what is planned next (as specs) and what has shipp
 
 - [ ] Git Gateway (Commit/Push/PR) (`agent-os/specs/2026-03-08-1039-git-gateway/`)
   - Git operations are isolated behind a gateway with outbound patch verification.
+- [ ] Approval Profiles (Strict/Permissive) (`agent-os/specs/2026-03-10-1530-approval-profiles-v0/`)
+  - Add selectable human-in-the-loop profiles beyond MVP moderate.
 - [ ] Web Research Role (`agent-os/specs/2026-03-08-1039-web-research-role/`)
   - Controlled web research runs with strict egress allowlists and citation artifacts.
 - [ ] Deps Fetch + Offline Cache (`agent-os/specs/2026-03-08-1039-deps-fetch-cache/`)

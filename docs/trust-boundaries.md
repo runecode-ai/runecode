@@ -6,7 +6,7 @@ Runecode has two trust domains separated by a hard boundary:
 
 | Domain | Components | Trust Level |
 |--------|------------|-------------|
-| **Trusted** | Go control plane + TUI | Full access to host secrets, policy, audit |
+| **Trusted** | Go control plane daemons + TUI client | Privileged local components with least-privilege separation (only `secretsd` stores long-lived secrets; the TUI must not receive secret values; other daemons run without secrets and with restricted OS permissions) |
 | **Untrusted** | TS/Node workflow runner | Zero direct access to secrets or host state |
 
 ```

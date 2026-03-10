@@ -57,6 +57,15 @@ Create `agent-os/specs/2026-03-08-1039-launcher-microvm-backend-v0/` with:
 
 - Define MVP resource controls (vCPU/memory/disk/timeouts) and a watchdog that terminates misbehaving isolates.
 - Ensure isolate termination between steps is the default.
+- Performance (without weakening the boundary):
+  - keep guest images minimal and role-specific to reduce boot latency
+  - allow (optional) launcher-managed warm pools or boot caching as an implementation detail, while preserving the same capability model and audit semantics
+  - prevent cross-run state bleed:
+    - pooled VMs must be reset to a known-clean state (or destroyed) before reuse
+    - no reuse of guest disk/memory state across distinct runs/stages unless explicitly designed and audited
+  - caches must be verifiable:
+    - cached images/boot artifacts must remain pinned by digest/signature as specified by the signed manifest
+    - cache hits/misses and the resulting image digests are recorded in audit metadata
 
 ## Task 7: Failure Handling
 

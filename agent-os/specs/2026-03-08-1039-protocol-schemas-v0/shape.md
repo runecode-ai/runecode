@@ -11,6 +11,7 @@ Define the schema foundation for manifests, artifacts, audit events, approvals, 
 - Schemas carry field-level data classification metadata (`public | sensitive | secret`) to make redaction/boundary enforcement structural.
 - MVP favors a single schema source of truth that can be validated in both Go and TS.
 - MVP starts with JSON on-wire; the logical object model stays encoding-agnostic so on-wire RPC can migrate post-MVP to protobuf over local IPC (gRPC is optional and must remain local-only).
+- Approvals are first-class, typed objects in the protocol (not ad-hoc prompts), enabling a future range of human-in-the-loop profiles.
 
 ## Context
 
