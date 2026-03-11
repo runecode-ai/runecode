@@ -14,6 +14,10 @@ Create `agent-os/specs/2026-03-08-1039-workflow-workspace-roles-gates-v0/` with:
 ## Task 2: Workflow Runner Contract (Untrusted Scheduler)
 
 - Implement a TS/Node workflow runner using LangGraph.
+- Distribution: ship the runner as a Node SEA (single executable) built from a bundled CommonJS script.
+  - SEA config must ignore `NODE_OPTIONS` (set `execArgvExtension: "none"`).
+  - The runner must not rely on runtime `node_modules` resolution (bundle dependencies into the injected script).
+  - Local development may still run the runner under `node`/`npm`; SEA is the release/runtime artifact.
 - Ensure the runner has no direct secrets and no direct workspace access.
 - All actions are requested through the broker/local API and independently validated by the launcher/policy engine.
 - MVP approval posture: the runner is built to pause/resume on typed approvals, with the run/stage manifest carrying an approval profile (`moderate` for MVP).

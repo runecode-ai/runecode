@@ -95,3 +95,12 @@ Rules:
 - Go and Node version expectations must be explicit in package metadata where possible:
   - Go module path is stable and does not change after initial scaffold.
   - Node runner declares supported Node versions via `package.json` `engines` and remains compatible with the CI matrix.
+
+## Runner Distribution (Node SEA)
+
+- Distribute the untrusted runner as a Node SEA (single executable) built from a bundled CommonJS script (no runtime dependency on `node_modules`).
+- SEA is packaging, not a sandbox; the runner remains untrusted at runtime.
+- SEA config must ignore `NODE_OPTIONS` (set `execArgvExtension: "none"`) so environment variables cannot silently extend Node runtime flags.
+- Build-time posture:
+  - Pin the Node version used to generate the SEA prep blob and inject it (versions must match).
+  - Prefer building on each target platform; if cross-building, disable `useCodeCache`/`useSnapshot` to avoid platform-incompatible artifacts.

@@ -13,6 +13,9 @@ This spec assumes the dev shell + CI plumbing already exists (Nix flake, `just`,
 - Go module path is explicit and stable: `github.com/runecode-ai/runecode`.
 - Node workflow runner lives in `runner/` as a standalone npm package; dependency pinning uses `package-lock.json` for MVP.
 - Runner supports Node 22 and 24 (CI matrix); declare `engines.node` as `>=22.22.1 <25`.
+- Runner distribution (release artifacts) uses Node SEA (single executable) built from a bundled CommonJS script.
+  - SEA is packaging (not a sandbox) and does not change the runner's trust level.
+  - SEA config must ignore `NODE_OPTIONS` (set `execArgvExtension: "none"`) to prevent environment-driven runtime option injection.
 - Go TUI uses Bubble Tea (`github.com/charmbracelet/bubbletea`) as the UI framework.
 - The trust boundary is documented explicitly in `docs/trust-boundaries.md`; cross-boundary artifacts are schemas/fixtures in `protocol/` (details are owned by the Protocol & Schema Bundle v0 spec).
 - This spec creates the `protocol/` directory skeleton; the protocol/schema spec owns population/versioning.

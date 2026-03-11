@@ -7,6 +7,9 @@ Build the end-to-end workflow engine and offline workspace execution roles, with
 ## Decisions
 
 - The scheduler is treated as untrusted; the launcher/policy is the enforcement point.
+- The workflow runner is distributed as a Node SEA (single executable) built from a bundled CommonJS script.
+  - SEA is packaging (not a sandbox) and does not change the runner's trust level.
+  - SEA config ignores `NODE_OPTIONS` (set `execArgvExtension: "none"`) to prevent environment-driven runtime option injection.
 - Workspace roles are offline; model egress (if enabled) is only via model-gateway.
 - Pause/resume is implemented via a persisted run state machine (durable state), not in-memory orchestration.
 - Gate failure semantics are explicit (fail/abort, retry, and any override requires recorded approval).

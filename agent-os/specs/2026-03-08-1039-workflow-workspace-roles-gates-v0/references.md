@@ -15,3 +15,9 @@
 ## Similar Implementations
 
 None yet.
+
+## Runner Packaging
+
+- Node single executable applications (SEA):
+  - https://nodejs.org/docs/latest-v22.x/api/single-executable-applications.html
+  - https://nodejs.org/docs/latest-v24.x/api/single-executable-applications.html

@@ -27,6 +27,10 @@
 - `govulncheck` (optional dependency vulnerability scanning): https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck
 - Node `package.json` `engines` field: https://docs.npmjs.com/cli/v10/configuring-npm/package-json#engines
 - TypeScript `tsconfig.json` reference (for `rootDir`, `noEmit`, etc.): https://www.typescriptlang.org/tsconfig
+- Node single executable applications (SEA):
+  - https://nodejs.org/docs/latest-v22.x/api/single-executable-applications.html
+  - https://nodejs.org/docs/latest-v24.x/api/single-executable-applications.html
+- SEA blob injection tool (`postject`): https://github.com/nodejs/postject
 - Git attributes (`.gitattributes`) reference: https://git-scm.com/docs/gitattributes
 
 ## Similar Implementations

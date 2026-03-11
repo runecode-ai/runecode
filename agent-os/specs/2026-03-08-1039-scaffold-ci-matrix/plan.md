@@ -95,6 +95,9 @@ Deliverables:
     - `npm run lint` (may start as `tsc --noEmit` until eslint is introduced)
     - `npm test` (must fail on type errors; can initially be equivalent to typecheck)
 
+  - Packaging decision (release artifact): distribute the runner as a Node SEA (single executable) built from a bundled CommonJS script.
+    - This scaffold spec keeps `runner/` as an npm package for dev/CI; SEA packaging is implemented by the workflow-runner owning spec.
+
   - Boundary guardrail (required): add `npm run boundary-check` that scans runner JS/TS source files across `runner/` (not only `runner/src/`; excluding dependency/build directories and boundary-check tooling/test files) and fails if:
     - import from `../../internal/*` or `../../cmd/*` (or any other path that escapes `runner/`),
     - read or reference trusted code paths except for allowed reads of `protocol/` schemas/fixtures.
