@@ -29,7 +29,7 @@ Create `agent-os/specs/2026-03-10-1530-approval-profiles-v0/` with:
   - workspace writes
   - command execution (even via allowlisted executors)
   - artifact publication beyond the current step
-  - all egress-related opt-ins (model, git, web)
+  - all egress-related opt-ins (model, auth, git, web)
 - Define batching rules to prevent UX deadlocks (e.g., "approve N related writes" in one approval request).
 
 ## Task 4: Permissive Profile Semantics

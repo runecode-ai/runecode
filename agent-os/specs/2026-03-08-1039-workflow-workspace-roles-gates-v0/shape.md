@@ -7,10 +7,18 @@ Build the end-to-end workflow engine and offline workspace execution roles, with
 ## Decisions
 
 - The scheduler is treated as untrusted; the launcher/policy is the enforcement point.
+- LangGraph is an internal implementation detail of the untrusted runner.
+  - Stable interfaces are RuneCode schemas + broker/local API, not LangGraph internals.
+  - This keeps the door open to replace LangGraph later without changing boundaries.
+- Avoid LangChain "agents" / Deep Agents as the core runtime.
+  - Keep orchestration typed and step-based so capability boundaries remain deterministic and auditable.
 - The workflow runner is distributed as a Node SEA (single executable) built from a bundled CommonJS script.
   - SEA is packaging (not a sandbox) and does not change the runner's trust level.
   - SEA config ignores `NODE_OPTIONS` (set `execArgvExtension: "none"`) to prevent environment-driven runtime option injection.
-- Workspace roles are offline; model egress (if enabled) is only via model-gateway.
+- The runner has no public network egress (it is not a gateway role).
+- Workspace roles are offline; any public egress is only via dedicated gateway roles (model inference via model-gateway).
+- Runner persistence stores control-plane state only (IDs/hashes/approvals); it must never store raw workspace/code or secrets.
+- "Shared memory" (if any) is a rebuildable, ephemeral accelerator keyed by `(repo, commitSHA)`; raw content remains in the CAS.
 - Pause/resume is implemented via a persisted run state machine (durable state), not in-memory orchestration.
 - Gate failure semantics are explicit (fail/abort, retry, and any override requires recorded approval).
 - MVP uses a "moderate" approval profile: approvals are checkpoint-style (stage sign-off and explicit posture changes), not per-action.

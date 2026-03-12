@@ -10,7 +10,7 @@ Implement the core policy evaluator that enforces manifests, role invariants, an
 - No automatic fallback to containers; container mode is explicit opt-in.
 - MVP policy language is declarative and schema-validated (no general-purpose code execution during evaluation).
 - Core security invariants are non-negotiable; any "approval policy" or UX setting may only tighten policy, never loosen it.
-- Network egress is a hard boundary: workspace roles are offline; third-party model egress is only via `model-gateway`; non-gateway network egress is not approvable.
+- Network egress is a hard boundary: workspace roles are offline; public egress is only via explicit gateway roles (model inference via `model-gateway`), and non-gateway network egress is not approvable.
 - MVP uses checkpoint-style approvals (stage sign-off and explicit posture changes) instead of per-action nags.
 - MVP supports a single approval profile (`moderate`); strict/permissive profiles are post-MVP.
 

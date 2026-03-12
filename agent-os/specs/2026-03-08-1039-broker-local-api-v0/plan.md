@@ -50,6 +50,8 @@ Create `agent-os/specs/2026-03-08-1039-broker-local-api-v0/` with:
 
 - Implement broker-mediated artifact routing using the artifact store.
 - Enforce the data-class flow matrix.
+- Ensure gateway roles (e.g., `model-gateway`) can fetch artifact bytes by hash only via the broker/artifact API (never via workspace mounts).
+- Enforce role+manifest-based allowlists when serving artifact bytes (fail closed on disallowed data classes).
 
 ## Acceptance Criteria
 

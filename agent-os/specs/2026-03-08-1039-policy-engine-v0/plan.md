@@ -19,6 +19,10 @@ Create `agent-os/specs/2026-03-08-1039-policy-engine-v0/` with:
   - declarative, schema-validated policy documents (no embedded scripting)
   - explicit precedence rules (e.g., explicit deny > require_human_approval > allow)
   - stable reason codes and structured decision details
+- Define gateway-role concepts in the policy model (even if MVP ships only `model-gateway`):
+  - gateway role kinds (model, auth, git, web, deps)
+  - per-gateway destination allowlists as signed inputs (no URL-based ad-hoc decisions)
+  - required hardening invariants for any egress-enabled gateway (SSRF/DNS rebinding protections, redirect rules, TLS requirements)
 - Define policy loading/tamper resistance:
   - policy inputs are content-addressed and bound to signed manifests
   - policy evaluation rejects inputs that do not validate against the schema version
@@ -30,9 +34,11 @@ Create `agent-os/specs/2026-03-08-1039-policy-engine-v0/` with:
   - deny-by-default for network/filesystem/shell/secrets
   - network egress is a hard boundary:
     - workspace roles have zero direct network egress
-    - third-party model egress is only possible via the dedicated `model-gateway` role
+    - public network egress is only allowed for explicit gateway roles (declared in signed manifests and enforced by policy)
+      - model inference egress is only possible via the dedicated `model-gateway` role
+      - other egress categories (git remote ops, web research, dependency fetch, provider auth) must be isolated behind dedicated gateway roles with strict allowlists and no workspace access
     - any non-gateway network egress attempt is denied and is not approvable
-  - no single role combines workspace RW + third-party egress + long-lived secrets
+  - no single role combines workspace RW + public egress + long-lived secrets
 
 ## Task 3b: Approval Policy (MVP: Moderate)
 
@@ -46,14 +52,14 @@ Create `agent-os/specs/2026-03-08-1039-policy-engine-v0/` with:
     - stage capability manifest sign-off (always; includes a structured summary of requested high-risk capability categories)
     - reduced-assurance opt-ins (e.g., container backend)
     - gate overrides
-    - enabling third-party model egress via `model-gateway` and/or expanding allowed model egress data classes beyond the baseline (`spec_text` only)
+    - enabling gateway egress and/or expanding egress scope (MVP focus: enabling third-party model egress via `model-gateway` and expanding allowed model egress data classes beyond the baseline `spec_text` only)
   - moderate trigger categories (must be explicit in the stage manifest and surfaced at sign-off):
     - file writes outside the workspace volume/root (outside the declared workspace path allowlist)
     - secret access (issuing leases from `secretsd`)
     - dependency/package installation
     - system-modifying command execution (beyond ordinary workspace edit/test executors)
-    - third-party model egress scope changes (enable gateway use; expand allowed egress data classes)
-  - actions wholly inside the workspace sandbox and within the signed manifest execute without intermediate approvals
+    - gateway egress scope changes (enable a gateway role; change allowlists; expand allowed egress data classes)
+    - actions wholly inside the workspace sandbox and within the signed manifest execute without intermediate approvals
 - Post-MVP:
   - add `strict` and `permissive` approval profiles in a dedicated spec (without changing MVP invariants)
   - review adding a distinct approval trigger category for `git-remote-ops` (push/tag/PR creation) once the git-gateway exists

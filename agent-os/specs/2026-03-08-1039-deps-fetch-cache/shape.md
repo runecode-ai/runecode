@@ -2,7 +2,7 @@
 
 ## Scope
 
-Add a deps-fetch role that enables offline workspace execution by producing cache artifacts.
+Add a deps-fetch gateway role that enables offline workspace execution by producing cache artifacts.
 
 ## Decisions
 

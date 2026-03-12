@@ -1,6 +1,6 @@
 # Deps Fetch + Offline Cache — Post-MVP
 
-User-visible outcome: workspace roles remain offline while dependencies can still be fetched via a dedicated role that produces a read-only cache artifact.
+User-visible outcome: workspace roles remain offline while dependencies can still be fetched via a dedicated gateway role that produces a read-only cache artifact.
 
 ## Task 1: Save Spec Documentation
 

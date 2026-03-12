@@ -19,6 +19,41 @@ Define the minimal canonical objects needed for MVP:
 - Audit events (hash-chained, signed, typed).
 - Approval requests/decisions (typed, structured payloads for TUI display and deterministic enforcement).
 - Policy decisions (allow/deny/require_human_approval) with reason codes.
+- Model gateway protocol objects:
+  - `LLMRequest` and `LLMResponse` (including streaming event shapes where applicable)
+  - provider/model selection fields that do not allow arbitrary capability escalation
+  - inputs must reference artifacts by hash (no raw prompt blobs crossing boundaries)
+  - outputs are untrusted proposals and must be representable as typed artifacts
+- Model output features (MVP):
+  - streaming: supported; define incremental event types and completion semantics
+  - tool calling: supported only as typed proposal objects (never direct execution)
+    - `LLMRequest` carries an explicit tool allowlist per request.
+    - Tool-call args are schema-validated; unknown/extra fields are rejected.
+    - Add conservative limits (e.g., cap tool calls per response and cap total tool-call bytes).
+  - structured JSON outputs: required for any machine-consumed output that can drive actions
+- Audit events must be gateway-role aware:
+  - include role identity and role kind (workspace vs gateway)
+  - include egress category metadata for outbound network activity (model, auth, git, web, deps)
+  - include allowlist identifiers and stable destination descriptors (without logging secret values)
+- Reserved (post-MVP): `ProcessDefinition` (JSON/YAML) as the user-configurable process surface:
+  - a schema-validated step graph model (sequential + branching + optional parallel blocks)
+  - allowlisted RuneCode step types only (cannot introduce new capabilities)
+    - Define the initial allowlist (illustrative):
+      - `llm_request`
+      - `workspace_read`
+      - `workspace_edit`
+      - `workspace_test`
+      - `gate_run`
+      - `approval_checkpoint`
+      - `git_gateway_pr_create` (post-MVP; requires git-gateway)
+      - `web_research` (post-MVP; requires web-research gateway)
+  - per-step provider/model selection and step-level limits
+- Reserved (post-MVP) protocol surface for `bridge` providers (local runtimes behind model-gateway):
+  - a typed request/response envelope, runtime identity/version fields, and stable error taxonomy
+  - Define an explicit "LLM-only" capability mode for bridge runtimes.
+    - bridge requests to execute commands, read/write workspace files, or apply patches are denied and treated as policy violations
+  - explicit streaming support and backpressure/queueing signals
+  - contract-test fixtures for request/response envelopes and error mapping
 
 ## Task 3: Choose Schema + Validation Strategy
 
@@ -80,6 +115,13 @@ Approval profile semantics note:
 - Add small, checked-in example manifests and events that validate against schemas.
 - Include both a “microVM stage” and a “container stage (explicit opt-in)” fixture.
 - Include an MVP approval profile fixture (`moderate`) embedded in the run/stage manifest.
+- Include a minimal `LLMRequest`/`LLMResponse` fixture that uses only `spec_text` inputs.
+- Include fixtures for:
+  - streaming event sequences (including interruption/cancellation)
+  - tool-call proposal outputs (schema-valid)
+  - structured JSON output validation (schema pass/fail cases)
+  - bridge provider envelope + error taxonomy examples (post-MVP)
+  - ProcessDefinition example (post-MVP; validates but cannot expand capabilities)
 - Add canonicalization + hashing fixtures:
   - canonical JSON bytes (golden)
   - expected hash outputs

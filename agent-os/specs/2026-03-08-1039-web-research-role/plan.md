@@ -1,6 +1,6 @@
 # Web Research Role — Post-MVP
 
-User-visible outcome: RuneCode can perform controlled web research in a dedicated role with deny-by-default egress and explicit allowlist patterns, producing citation artifacts.
+User-visible outcome: RuneCode can perform controlled web research in a dedicated gateway role with deny-by-default egress and explicit allowlist patterns, producing citation artifacts.
 
 ## Task 1: Save Spec Documentation
 

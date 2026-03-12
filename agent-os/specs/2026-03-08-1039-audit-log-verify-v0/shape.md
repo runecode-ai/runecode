@@ -10,6 +10,7 @@ Create a tamper-evident audit log with signed, hash-chained events and a verifie
 - Isolate-attributed events must be signed by isolate keys; writers must verify signatures.
 - Audit log storage is encrypted at rest by default (no silent plaintext mode).
 - Audit logs are segmented for retention/archival without breaking verifiability.
+- Audit events are gateway-role aware (role identity + egress category metadata for outbound network activity), without logging secret values.
 - Verification produces a machine-readable artifact (`audit_verification_report`) that can be stored and reviewed later (not just printed).
 
 ## Context

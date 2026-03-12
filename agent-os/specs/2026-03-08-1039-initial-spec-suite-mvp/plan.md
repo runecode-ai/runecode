@@ -43,6 +43,8 @@ MVP (v0.1):
 Post-MVP (v0.2+):
 - Git gateway (commit/push/PR): `agent-os/specs/2026-03-08-1039-git-gateway/`
 - Web research role: `agent-os/specs/2026-03-08-1039-web-research-role/`
+- OpenAI ChatGPT subscription provider (OAuth + bridge runtime): `agent-os/specs/2026-03-11-1920-openai-chatgpt-subscription-provider-v0/`
+- GitHub Copilot subscription provider (official local runtime bridge): `agent-os/specs/2026-03-11-1921-github-copilot-subscription-provider-v0/`
 - Deps fetch + offline cache: `agent-os/specs/2026-03-08-1039-deps-fetch-cache/`
 - Audit anchoring: `agent-os/specs/2026-03-08-1039-audit-anchoring/`
 - Image/toolchain signing pipeline: `agent-os/specs/2026-03-08-1039-image-toolchain-signing/`
@@ -62,6 +64,7 @@ To keep MVP essential and focused, the following are explicitly post-MVP unless 
 - GitHub PR/push automation via a dedicated git gateway.
 - Web research crawling + domain bundles/domain-expansion workflows.
 - Dependency fetching role and offline dependency caches.
+- Subscription-backed model provider access (e.g., ChatGPT subscription OAuth, Copilot subscription bridging).
 - External audit anchoring (TPM PCR / RFC3161 / witness services) beyond local verification.
 
 ## Notes / Open Questions (To Resolve Inside Individual Specs)

@@ -20,6 +20,11 @@ Create `agent-os/specs/2026-03-08-1039-audit-log-verify-v0/` with:
   - manifest hash binding
   - timestamps and monotonic sequence
 - Include explicit schema identifiers so verification can be performed across schema versions.
+- Make audit events gateway-role aware (role identity + egress category), so network activity is attributable and enforceable:
+  - model egress events (model-gateway): allowlist id, destination descriptor, bytes, timing, outcome
+  - auth egress events (future auth-gateway): login/refresh lifecycle events (no secrets in logs)
+  - git/web/deps egress events (post-MVP gateways): allowlist id, destination descriptor, bytes, timing, outcome
+- Record secrets lease lifecycle events as first-class audit events (issuance/renewal/revocation), without logging secret values.
 
 ## Task 3: Append-Only Audit Writer
 
