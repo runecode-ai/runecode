@@ -6,6 +6,7 @@ Guidance for agentic coding agents working in this repository.
 - DO NOT edit `agent-os/doc-dump/project-idea.md` (historical-only document).
 - Preserve trust boundaries: `runner/` is untrusted; `cmd/` and `internal/` are trusted.
 - Never add runner imports/references into trusted paths (`cmd/`, `internal/`).
+- Runner must not import/reference repo-root `tools/` or other cross-boundary roots outside `protocol/`.
 - Runner cross-boundary file access is only allowed to `protocol/schemas/` and `protocol/fixtures/`.
 - Do not add ad-hoc cross-boundary message formats outside `protocol/schemas/`.
 - Keep checks deterministic and CI/local parity centered on `just ci`.
@@ -117,7 +118,7 @@ JS/TS naming/import conventions:
 
 ## Trust-boundary change checklist
 When touching `runner/`, `protocol/`, or boundary docs/scripts:
-- Confirm no new trusted-path references to `cmd/` or `internal/`.
+- Confirm no new runner references to `cmd/`, `internal/`, `tools/`, or other repo-root paths outside allowed `protocol/` roots.
 - Confirm only `protocol/schemas/` and `protocol/fixtures/` remain allowed cross-boundary roots.
 - Preserve fail-closed behavior in boundary checks:
   - no source files found => fail
@@ -150,8 +151,7 @@ Additional scoped instruction files:
 - `/.github/instructions/agent-os-docs.instructions.md`
 
 Cursor rules status in this repo:
-- No `.cursorrules` file found.
-- No `.cursor/rules/` directory rules found.
+- No Cursor rules are currently present in `.cursorrules` or `.cursor/rules/`.
 
 ## Docs and roadmap edits
 - Follow `agent-os/standards/product/roadmap-conventions.md` for roadmap changes.

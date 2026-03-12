@@ -16,7 +16,7 @@ This repository contains scaffolding, specs, and early guardrails; most runtime 
 
 ## Why RuneCode
 
-- **Isolation is the boundary:** risky work runs in tightly scoped isolates; the scheduler/runner is treated as untrusted.
+- **Isolation is the boundary:** risky work runs in tightly scoped isolates; the workflow runner is treated as untrusted.
 - **Deny-by-default posture:** capabilities (egress, secrets, workspace writes) are explicit and intended to be policy-controlled.
 - **Signed, auditable evidence:** the goal is a tamper-evident trail for actions, decisions, and artifacts (diffs/logs/results).
 - **Explicit data movement:** handoffs are intended to happen via hash-addressed artifacts, not implicit shared state.
@@ -26,7 +26,7 @@ This repository contains scaffolding, specs, and early guardrails; most runtime 
 RuneCode is built around a pessimistic assumption: any single AI/agent component (including the workflow runner) can be compromised or behave maliciously.
 The architecture aims to reduce blast radius and preserve forensics by:
 
-- Separating trusted control-plane components from an untrusted scheduler/runner.
+- Separating trusted control-plane components from an untrusted workflow runner.
 - Preventing any one component from having broad combined powers (network + workspace + long-lived secrets).
 - Making cross-boundary interfaces schema-driven and auditable.
 
@@ -37,7 +37,7 @@ Design inspiration includes compartmentalization models (e.g., QubesOS), applied
 RuneCode is designed around two local trust domains:
 
 - **Trusted domain:** Go control plane daemons + Go TUI client
-- **Untrusted domain:** TS/Node workflow runner (scheduler)
+- **Untrusted domain:** TS/Node workflow runner
 
 Key invariants (design targets; enforcement is implemented incrementally):
 
@@ -53,6 +53,8 @@ Details (diagram, allowed interfaces, prohibited bypasses, and CI guardrail): `d
 - `internal/` — trusted Go libraries
 - `runner/` — untrusted TS/Node workflow runner package
 - `protocol/` — cross-boundary schema + fixture roots (source of truth)
+- `tools/` — repo-local helper tools for deterministic checks and fixes
+- `docs/` — trust-boundary contract and supporting design docs
 - `agent-os/` — product/spec/standards documents (git-native system of record)
 
 ## Development
@@ -78,7 +80,7 @@ Optional: enable automatic dev-shell entry with `direnv` + `nix-direnv`:
 direnv allow
 ```
 
-Non-Nix fallback (e.g., Windows): install Go 1.25.x, Node `>=22.22.1 <25`, and `just`, then run:
+Non-Nix fallback (e.g., Windows): install Go 1.25.x, Node `>=22.22.1 <25` with npm, and `just`, then run:
 
 ```sh
 just ci
@@ -102,6 +104,7 @@ go run ./cmd/runecode-auditd --help
 - Mission: `agent-os/product/mission.md`
 - Roadmap: `agent-os/product/roadmap.md`
 - Trust boundaries: `docs/trust-boundaries.md`
+- Agent and AI contributor guidance: `AGENTS.md`
 
 ## Contributing
 
@@ -109,7 +112,7 @@ See `CONTRIBUTING.md`. DCO sign-off is required (`git commit -s`).
 
 ## Security
 
-Please do not open public issues for security vulnerabilities. See `SECURITY.md`.
+Please do not open public issues for security vulnerabilities. See [SECURITY.md](SECURITY.md).
 
 ## License
 
