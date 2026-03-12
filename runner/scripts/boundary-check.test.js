@@ -61,6 +61,38 @@ test("allows repo-root protocol schema/fixture specifiers", (t) => {
   assert.equal(result.violations.length, 0);
 });
 
+test("allows bare protocol string literals", (t) => {
+  const repoRoot = createTempRepo({
+    "runner/src/index.ts": "const label = 'protocol';\nexport default label;\n",
+  });
+
+  t.after(() => {
+    fs.rmSync(repoRoot, { recursive: true, force: true });
+  });
+
+  const result = runCheckForRepo(repoRoot);
+
+  assert.equal(result.ok, true);
+  assert.equal(result.error, null);
+  assert.equal(result.violations.length, 0);
+});
+
+test("allows bare tools string literals", (t) => {
+  const repoRoot = createTempRepo({
+    "runner/src/index.ts": "const label = 'tools';\nexport default label;\n",
+  });
+
+  t.after(() => {
+    fs.rmSync(repoRoot, { recursive: true, force: true });
+  });
+
+  const result = runCheckForRepo(repoRoot);
+
+  assert.equal(result.ok, true);
+  assert.equal(result.error, null);
+  assert.equal(result.violations.length, 0);
+});
+
 test("rejects trusted path escapes from files outside src", (t) => {
   const repoRoot = createTempRepo({
     "runner/src/index.ts": "export const ok = true;\n",
@@ -76,6 +108,38 @@ test("rejects trusted path escapes from files outside src", (t) => {
   assert.equal(result.ok, false);
   assert.equal(result.error, null);
   assert.ok(result.violations.some((item) => item.includes("scripts/job.js")));
+});
+
+test("rejects repo-root tools path references", (t) => {
+  const repoRoot = createTempRepo({
+    "runner/src/index.ts": "const helper = 'tools/gofmtcheck/main.go';\n",
+  });
+
+  t.after(() => {
+    fs.rmSync(repoRoot, { recursive: true, force: true });
+  });
+
+  const result = runCheckForRepo(repoRoot);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.error, null);
+  assert.ok(result.violations.some((item) => item.includes("src/index.ts") && item.includes("restricted repo-root path 'tools/gofmtcheck/main.go'")));
+});
+
+test("rejects relative path escapes to tools", (t) => {
+  const repoRoot = createTempRepo({
+    "runner/scripts/job.js": "const helper = '../../tools/gofmtcheck/main.go';\n",
+  });
+
+  t.after(() => {
+    fs.rmSync(repoRoot, { recursive: true, force: true });
+  });
+
+  const result = runCheckForRepo(repoRoot);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.error, null);
+  assert.ok(result.violations.some((item) => item.includes("scripts/job.js") && item.includes("trusted path '../../tools/gofmtcheck/main.go'")));
 });
 
 test("fails closed when no source files are present", (t) => {

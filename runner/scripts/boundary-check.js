@@ -69,6 +69,7 @@ function createConfig(options = {}) {
     trustedRoots: [
       path.join(repoRoot, "cmd"),
       path.join(repoRoot, "internal"),
+      path.join(repoRoot, "tools"),
     ],
     allowedProtocolRoots: [
       path.join(repoRoot, "protocol", "schemas"),
@@ -121,7 +122,7 @@ function extractSpecifiers(content) {
     /\b(?:import|export)\s+(?:[^;]*?\s+from\s+)?["'`]([^"'`]+)["'`]/g,
     /\brequire\(\s*["'`]([^"'`]+)["'`]\s*\)/g,
     /\bimport\(\s*["'`]([^"'`]+)["'`]\s*\)/g,
-    /["'`]((?:\.\.?(?:\/|\\)[^"'`]+)|(?:\/(?!\/)[^"'`]+)|(?:[A-Za-z]:[\\/][^"'`]+)|(?:\\\\[^"'`]+)|(?:cmd|internal|protocol)(?:\/|\\)[^"'`]*)["'`]/g,
+    /["'`]((?:\.\.?(?:\/|\\)[^"'`]+)|(?:\/(?!\/)[^"'`]+)|(?:[A-Za-z]:[\\/][^"'`]+)|(?:\\\\[^"'`]+)|(?:cmd|internal|protocol|tools)(?:\/|\\)[^"'`]*)["'`]/g,
   ];
 
   for (const pattern of patterns) {
@@ -148,6 +149,7 @@ function checkSpecifier(filePath, specifier, config, violations) {
   const hasBoundaryKeyword =
     normalized.startsWith("cmd/") ||
     normalized.startsWith("internal/") ||
+    normalized.startsWith("tools/") ||
     normalized.startsWith("protocol/");
 
   if (!hasRelativePrefix && !hasAbsolutePrefix && !hasBoundaryKeyword) {
@@ -155,13 +157,11 @@ function checkSpecifier(filePath, specifier, config, violations) {
   }
 
   if (
-    normalized === "cmd" ||
-    normalized === "protocol" ||
-    normalized === "internal" ||
     normalized.startsWith("cmd/") ||
-    normalized.startsWith("internal/")
+    normalized.startsWith("internal/") ||
+    normalized.startsWith("tools/")
   ) {
-    violations.push(`${relativeFile} references trusted path '${specifier}'`);
+    violations.push(`${relativeFile} references restricted repo-root path '${specifier}'`);
     return;
   }
 
