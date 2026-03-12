@@ -121,7 +121,7 @@ function extractSpecifiers(content) {
     /\b(?:import|export)\s+(?:[^;]*?\s+from\s+)?["'`]([^"'`]+)["'`]/g,
     /\brequire\(\s*["'`]([^"'`]+)["'`]\s*\)/g,
     /\bimport\(\s*["'`]([^"'`]+)["'`]\s*\)/g,
-    /["'`]((?:\.\.?(?:\/|\\)[^"'`]+)|(?:[A-Za-z]:[\\/][^"'`]+)|(?:\\\\[^"'`]+)|(?:cmd|internal|protocol)(?:\/|\\)[^"'`]*)["'`]/g,
+    /["'`]((?:\.\.?(?:\/|\\)[^"'`]+)|(?:\/(?!\/)[^"'`]+)|(?:[A-Za-z]:[\\/][^"'`]+)|(?:\\\\[^"'`]+)|(?:cmd|internal|protocol)(?:\/|\\)[^"'`]*)["'`]/g,
   ];
 
   for (const pattern of patterns) {
@@ -173,6 +173,22 @@ function checkSpecifier(filePath, specifier, config, violations) {
   } else if (hasAbsolutePrefix) {
     resolvedPath = normalizeForComparison(normalized);
   } else {
+    return;
+  }
+
+  if (hasAbsolutePrefix) {
+    if (config.trustedRoots.some((root) => isInside(resolvedPath, root))) {
+      violations.push(`${relativeFile} escapes into trusted path '${specifier}'`);
+      return;
+    }
+
+    if (config.allowedProtocolRoots.some((root) => isInside(resolvedPath, root))) {
+      return;
+    }
+
+    violations.push(
+      `${relativeFile} uses absolute path '${specifier}' (only protocol/schemas and protocol/fixtures are allowed)`,
+    );
     return;
   }
 

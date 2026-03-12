@@ -56,6 +56,7 @@ The following MUST NEVER happen:
 - Node runner accessing trusted Go internal state via filesystem mounts
 - Ad-hoc JSON communication outside schema validation
 - Imports from `cmd/` or `internal/` in runner source code
+- Absolute filesystem path literals in runner source (Unix absolute paths, Windows drive-letter paths, or UNC paths), except allowed protocol schema/fixture paths
 - Direct socket/file access to trusted daemons bypassing the broker
 
 ## Enforcement
@@ -75,6 +76,7 @@ This boundary is enforced at multiple layers:
 The runner includes a mechanical boundary check (`npm run boundary-check`) that fails CI if:
 - Runner source files anywhere under `runner/` (excluding `node_modules/`, `dist/`, and guardrail test/tooling files) import from `../../internal/*` or `../../cmd/*`
 - Runner source files reference trusted code paths outside allowed `protocol/` access (`protocol/schemas/` and `protocol/fixtures/` only)
+- Runner source files use absolute path references unless they resolve under allowed protocol roots (`protocol/schemas/` and `protocol/fixtures/`)
 - No runner source files are found (fail closed)
 
 This check is intentionally best-effort static analysis, not the final security boundary.
