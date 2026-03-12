@@ -2,7 +2,7 @@
 
 ## Scope
 
-Add a dedicated web-research role with strict allowlists and citation-only outputs.
+Add a dedicated web-research gateway role with strict allowlists and citation-only outputs.
 
 ## Decisions
 
