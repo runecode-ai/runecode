@@ -54,6 +54,20 @@ func TestRegistryNamespacesAreSeparate(t *testing.T) {
 	assertRegistryCode(t, errorRegistry, "unknown_schema_id")
 	assertRegistryCode(t, errorRegistry, "unsupported_schema_version")
 	assertRegistryCode(t, errorRegistry, "unsupported_hash_algorithm")
+
+	approvalRegistry := loadRegistry(t, schemaPath(t, "registries/approval_trigger_code.registry.json"))
+	for _, code := range []string{
+		"stage_sign_off",
+		"reduced_assurance_backend",
+		"gate_override",
+		"gateway_egress_scope_change",
+		"out_of_workspace_write",
+		"secret_access_lease",
+		"dependency_install",
+		"system_command_execution",
+	} {
+		assertRegistryCode(t, approvalRegistry, code)
+	}
 }
 
 func assertManifestMetadata(t *testing.T, manifest manifestFile) {

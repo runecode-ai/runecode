@@ -1,6 +1,6 @@
 {
   "bundle_id": "runecode.protocol.v0",
-  "bundle_version": "0.1.0",
+  "bundle_version": "0.2.0",
   "json_schema_draft": "2020-12",
   "runtime_schema_prefix": "runecode.protocol.v0.",
   "canonicalization": "RFC8785-JCS",
@@ -13,21 +13,21 @@
     {
       "path": "objects/RoleManifest.schema.json",
       "schema_id": "runecode.protocol.v0.RoleManifest",
-      "schema_version": "0.1.0",
+      "schema_version": "0.2.0",
       "owner": "protocol",
       "status": "mvp"
     },
     {
       "path": "objects/CapabilityManifest.schema.json",
       "schema_id": "runecode.protocol.v0.CapabilityManifest",
-      "schema_version": "0.1.0",
+      "schema_version": "0.2.0",
       "owner": "protocol",
       "status": "mvp"
     },
     {
       "path": "objects/PrincipalIdentity.schema.json",
       "schema_id": "runecode.protocol.v0.PrincipalIdentity",
-      "schema_version": "0.1.0",
+      "schema_version": "0.2.0",
       "owner": "protocol",
       "status": "mvp"
     },
@@ -69,18 +69,16 @@
     {
       "path": "objects/ApprovalRequest.schema.json",
       "schema_id": "runecode.protocol.v0.ApprovalRequest",
-      "schema_version": "0.1.0",
+      "schema_version": "0.2.0",
       "owner": "protocol",
-      "status": "mvp",
-      "note": "Minimal family anchor for Task 4. Additional approval request fields land with the owning task and a schema version bump."
+      "status": "mvp"
     },
     {
       "path": "objects/ApprovalDecision.schema.json",
       "schema_id": "runecode.protocol.v0.ApprovalDecision",
-      "schema_version": "0.1.0",
+      "schema_version": "0.2.0",
       "owner": "protocol",
-      "status": "mvp",
-      "note": "Minimal family anchor for Task 4. Additional approval decision fields land with the owning task and a schema version bump."
+      "status": "mvp"
     },
     {
       "path": "objects/PolicyDecision.schema.json",

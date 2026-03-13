@@ -26,10 +26,8 @@ var (
 		"secret":    {},
 	}
 	placeholderSchemaIDs = map[string]struct{}{
-		"runecode.protocol.v0.ApprovalRequest":  {},
-		"runecode.protocol.v0.ApprovalDecision": {},
-		"runecode.protocol.v0.PolicyDecision":   {},
-		"runecode.protocol.v0.Error":            {},
+		"runecode.protocol.v0.PolicyDecision": {},
+		"runecode.protocol.v0.Error":          {},
 	}
 )
 
@@ -421,4 +419,19 @@ func assertNoCodeOverlap(t *testing.T, codesByRegistry map[string]map[string]str
 func requiresPlaceholderNote(schemaID string) bool {
 	_, ok := placeholderSchemaIDs[schemaID]
 	return ok
+}
+
+func digestValue(fill string) map[string]any {
+	return map[string]any{
+		"hash_alg": "sha256",
+		"hash":     strings.Repeat(fill, 64),
+	}
+}
+
+func signatureBlock() map[string]any {
+	return map[string]any{
+		"alg":       "ed25519",
+		"key_id":    "signer-1",
+		"signature": "c2ln",
+	}
 }
