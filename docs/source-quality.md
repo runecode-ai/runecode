@@ -124,6 +124,13 @@ This especially applies to:
 
 Inline comments should capture local invariants and hazards, not attempt to become the full design document.
 
+Reviewers should ask for a maintained doc, spec update, or ADR-style note when:
+
+- a trust-boundary rule only becomes understandable after reading multiple files
+- a policy decision or security tradeoff needs paragraph-level justification
+- a protocol or validation flow depends on cross-component invariants
+- a change adds complexity that cannot be justified by local inline comments alone
+
 ## Path-Tier Map
 
 RuneCode uses two source-quality policy tiers plus a small set of documentation surfaces that are protected for review purposes.
@@ -213,6 +220,7 @@ Any deterministic Tier 1 runner override or other checker-owned exception should
 - Go source-quality enforcement should use a small, version-pinned `golangci-lint` binary and a checked-in, reviewed configuration.
 - JS/TS may use a minimal, version-pinned ESLint layer if it materially improves enforcement.
 - A trusted repo-specific checker remains required for cross-language, path-tiered, and ratcheted rules.
+- In the current v0 rollout, `golangci-lint` acts as a repo-wide floor while the repo-specific checker carries stricter Tier 1 differentiation where path-specific policy is tighter than the global Go linter settings.
 - Source-quality checks are check-only and fail closed on missing files, parse/read failures, or policy violations.
 - Exit semantics should be consistent:
   - pass => `0`
@@ -225,6 +233,39 @@ Any deterministic Tier 1 runner override or other checker-owned exception should
   - observed value versus expected value or threshold
   - suggested remediation category
 
+### Hard Failures vs Review Guidance
+
+Hard-fail enforcement should stay narrow, deterministic, and tool-friendly. In v0 that means the automated gate is appropriate for:
+
+- file-size and function-size budgets
+- cognitive-complexity limits where a deterministic checker exists
+- required Tier 1 module docs
+- suppression-comment and Tier 1 exception handling
+- generated-file, parse, and scan-root fail-closed behavior
+
+Review guidance should remain responsible for higher-judgment questions such as:
+
+- whether a comment truly explains the right invariant or tradeoff
+- whether a subsystem needs a spec/doc/ADR update rather than more inline commentary
+- whether code should be decomposed further even when it technically fits under current thresholds
+- whether a new ESLint layer would add enough value to justify more dependency surface
+
+## Protected Enforcement Surfaces
+
+The following files and paths are protected source-quality surfaces because changing them can weaken enforcement or reviewer expectations:
+
+- `tools/checksourcequality/**`
+- `.source-quality-baseline.json`
+- `.source-quality-config.json`
+- `.golangci.yml`
+- `runner/eslint.config.*` (if added)
+- `justfile`
+- `docs/source-quality.md`
+- `.github/copilot-instructions.md`
+- `.github/instructions/**`
+
+Changes to these surfaces should receive explicit review and remain easy to audit in diffs.
+
 ## Review Guidance
 
 When reviewing code against this policy, prioritize:
@@ -235,3 +276,5 @@ When reviewing code against this policy, prioritize:
 - complex logic with no explanation of invariants or constraints
 - suppression comments without a concrete reason
 - rationale that belongs in a maintained doc rather than being hidden in one file
+
+Style-only nitpicks are not the goal. Review should focus on maintainability, auditability, trust-boundary clarity, and future-safe change velocity.

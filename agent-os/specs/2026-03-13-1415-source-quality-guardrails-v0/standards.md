@@ -73,6 +73,7 @@ These standards apply to implementation work produced from this spec.
 - System or subsystem rationale belongs in maintained docs/specs/ADRs when it spans multiple functions, files, or components.
 - Inline comments should capture local invariants and hazards, not become substitutes for design documentation.
 - If a reviewer needs paragraphs to understand a trust-boundary, policy, or security decision, the implementation should add or update a maintained doc in addition to any local comments.
+- Reviewer-facing guidance for this expectation should live in repository docs and instruction files, not only in the spec folder.
 
 ## Suppression Standard
 
@@ -119,3 +120,6 @@ These standards apply to implementation work produced from this spec.
 - Linter configuration and version-pinning files are also protected surfaces because changing them can silently widen or weaken enforcement.
 - These surfaces should be covered by explicit review ownership and must be easy to audit in code review.
 - Reviewer and agent instruction files should be updated together with source-quality policy changes so human guidance and mechanical enforcement stay aligned.
+- A dedicated source-quality review-instruction file is acceptable when it makes the hard-fail versus review-guidance split clearer for reviewers.
+- When broader Go, runner, or CI instruction files overlap with source-quality concerns, they should point to the dedicated source-quality review instruction file instead of duplicating detailed policy text.
+- Future ESLint config files should be treated as protected enforcement surfaces once they exist.

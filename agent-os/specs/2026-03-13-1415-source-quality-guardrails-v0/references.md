@@ -28,6 +28,10 @@
 - `.github/copilot-instructions.md`
 - `.github/instructions/go-control-plane.instructions.md`
 - `.github/instructions/runner-boundary.instructions.md`
+- `.github/instructions/ci-tooling.instructions.md`
+- `.github/instructions/source-quality.instructions.md`
+- `AGENTS.md`
+- `CONTRIBUTING.md`
 
 ## External References
 

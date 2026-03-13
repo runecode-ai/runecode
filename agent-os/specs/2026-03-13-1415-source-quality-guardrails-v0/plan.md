@@ -197,6 +197,10 @@ Deliverables:
 - A policy that distinguishes inline comments from subsystem rationale docs.
 - Clear guidance for reviewers on when to ask for docs/spec updates instead of more inline commentary.
 
+Implementation notes from v0 rollout:
+- [Implemented] Reviewer guidance lives in `docs/source-quality.md` so architecture-rationale expectations are visible outside the spec folder.
+- [Implemented] The policy explicitly tells reviewers to request maintained docs/specs/ADRs when trust-boundary, policy, protocol-validation, secrets, or audit rationale spans multiple files or components.
+
 Parallelization: can be written in parallel with source-quality scripting because it is primarily a documentation/process decision.
 
 ## Task 7: Choose Enforcement Mechanisms and Rollout Path
@@ -260,6 +264,11 @@ Deliverables:
 - A pinned `golangci-lint` integration plan for Go.
 - If ESLint is adopted in v0, a minimal pinned ESLint integration plan for JS/TS.
 
+Implementation notes from v0 rollout:
+- [Implemented] `docs/source-quality.md` distinguishes deterministic hard-fail rules from higher-judgment review guidance.
+- [Implemented] Protected enforcement surfaces are called out explicitly so policy, tooling, baselines, and instruction files are easy to audit in review.
+- [Implemented] `docs/source-quality.md` documents that `golangci-lint` currently acts as a repo-wide floor while the repo-specific checker carries stricter Tier 1 differentiation.
+
 Parallelization: implementation planning can happen in parallel with policy drafting, but integration into canonical CI commands should land only after the policy is settled.
 
 ## Task 8: Protect Guardrail Surfaces and Sync Instructions
@@ -276,6 +285,11 @@ Parallelization: implementation planning can happen in parallel with policy draf
 
 Deliverables:
 - Ownership and review guidance for source-quality enforcement surfaces.
+
+Implementation notes from v0 rollout:
+- [Implemented] `.github/CODEOWNERS` explicitly covers the source-quality checker, baseline/config files, lint config, source-quality policy doc, and future ESLint config surface.
+- [Implemented] A dedicated source-quality review-instruction file keeps detailed source-quality expectations centralized while broader scoped files point to it.
+- [Implemented] CI/tooling instruction coverage was narrowed so `.golangci.yml` and source-quality config/baseline files use the dedicated source-quality review surface instead of overlapping CI-specific applyTo globs.
 
 Parallelization: can be planned in parallel with tooling work, but should land before the checker becomes authoritative in CI.
 
@@ -300,6 +314,10 @@ Parallelization: can be planned in parallel with tooling work, but should land b
 Deliverables:
 - Reviewer guidance aligned with the source-quality policy.
 - Updated instruction-file expectations aligned with the same policy.
+
+Implementation notes from v0 rollout:
+- [Implemented] Minimum synced reviewer surfaces now include `.github/copilot-instructions.md`, Go control-plane instructions, runner boundary instructions, CI/tooling instructions, and the dedicated source-quality review instruction file.
+- [Implemented] `AGENTS.md` and `CONTRIBUTING.md` were updated so the source-quality policy and dedicated review instruction file are easier for agents and contributors to discover.
 
 Parallelization: can be implemented in parallel with tooling work, but should be finalized before the rules become mandatory.
 
