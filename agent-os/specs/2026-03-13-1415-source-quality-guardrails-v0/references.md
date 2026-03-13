@@ -17,6 +17,7 @@
 
 ## Repo Files Likely Touched by Future Implementation
 
+- `docs/source-quality.md`
 - `justfile`
 - `tools/`
 - `.source-quality-baseline.json`

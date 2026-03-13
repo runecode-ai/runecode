@@ -27,10 +27,16 @@ This spec does not require blanket "comment everything" rules, does not require 
 - Source-quality enforcement has at least two policy tiers:
   - Tier 1 (strictest): trust-boundary, policy, secrets, audit, schema-validation, path-normalization, and other security-critical enforcement logic.
   - Tier 2 (standard): ordinary commands, helpers, utilities, and lower-risk support code.
+- Tier classification must be deterministic rather than reviewer-implied.
+  - `runner/**` defaults to Tier 2 unless checked-in checker configuration explicitly marks a file as Tier 1.
+  - tools that enforce guardrails, touch `protocol/schemas/**`, or generate code for trusted paths are Tier 1 regardless of directory depth.
+  - policy/enforcement documents such as `docs/source-quality.md`, `docs/trust-boundaries.md`, `.github/instructions/**`, and `agent-os/standards/**` are Tier 1 protected surfaces for documentation/review rigor even when numeric code budgets do not apply.
 - Initial thresholds are explicit and intentionally provisional so implementation does not invent policy ad hoc.
   - Tier 1 source files target about 250 SLOC; Tier 2 source files target about 400 SLOC.
   - Tier 1 test files target about 500 SLOC; Tier 2 test files target about 800 SLOC.
-  - Tier 1 functions target cognitive/branching complexity around 10-15 and Tier 2 around 15-20, with exact tool mappings defined during implementation.
+  - Cognitive complexity is the primary function-complexity policy metric.
+  - Tier 1 functions target a maximum cognitive complexity of `10`; Tier 2 functions target a maximum of `15`, with tool mappings defined during implementation.
+  - Provisional function-length targets are stricter in Tier 1 than Tier 2.
 - File-size and function-size enforcement should be selective and ratcheted.
   - Prefer separate source/test budgets.
   - Prefer a small, checked-in ratchet baseline file over repo-wide hard limits that instantly fail on existing debt.
@@ -41,7 +47,7 @@ This spec does not require blanket "comment everything" rules, does not require 
   - The repo-specific checker remains required because several RuneCode policies are cross-language, path-tiered, and repo-specific.
 - Suppression handling is tiered:
   - source-quality suppressions (`//nolint`, `eslint-disable`, etc.) must carry a specific reason,
-  - security- or boundary-critical suppressions are stricter and should be prohibited in Tier 1 paths unless implemented through an explicit reviewed exception path.
+  - security- or boundary-critical suppressions are stricter and should be prohibited inline in Tier 1 paths unless implemented through checked-in, reviewed checker-owned configuration.
 - Source-quality tooling is itself a protected surface.
   - The repo-wide checker should live in a trusted location such as `tools/`, not in `runner/`.
   - Tooling, thresholds, baseline files, and `just` wiring must receive explicit review because changing the checker can weaken enforcement.
@@ -67,6 +73,7 @@ This spec does not require blanket "comment everything" rules, does not require 
   - V0 should intentionally add `golangci-lint` for Go rather than waiting for a later phase.
   - V0 may add only a minimal ESLint layer for JS/TS if it provides clear value; complex plugin stacks are not required.
   - The initial ratchet mechanism should stay simple because repo-wide legacy debt is still small.
+  - The Task 2 policy doc should be specific enough that implementers do not need to infer critical enforcement details from multiple later tasks.
 - Research direction informing this spec:
   - mature projects usually combine targeted docs, complexity limits, and architecture docs,
   - they rarely require comments everywhere,

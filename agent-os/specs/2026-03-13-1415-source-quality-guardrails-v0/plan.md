@@ -31,15 +31,36 @@ Parallelization: docs-only; safe to do anytime.
   - Required tiering for v0:
     - Tier 1 (strictest): security- and boundary-sensitive enforcement logic, including policy evaluation, schema validation, secrets handling, audit enforcement, path normalization, trust-boundary guardrails, and similar code under `internal/`, selected `tools/`, and selected `runner/` modules.
     - Tier 2 (standard): ordinary command wiring in `cmd/`, lower-risk helpers in `tools/`, and routine runner modules not implementing trust-boundary or policy enforcement.
+  - The tier map must include protected policy/enforcement documentation surfaces.
+    - Minimum Tier 1 protected surfaces:
+      - `docs/source-quality.md`
+      - `docs/trust-boundaries.md`
+      - `.github/copilot-instructions.md`
+      - `.github/instructions/**`
+      - `agent-os/standards/**`
+    - Planning-oriented docs under `agent-os/specs/**` and `agent-os/product/**` may remain outside code-size and function-complexity enforcement unless a future checker adds separate doc-quality rules.
+  - Runner classification must be deterministic.
+    - `runner/**` defaults to Tier 2.
+    - Tier 1 runner modules must be explicitly listed by checked-in checker configuration rather than inferred ad hoc during review.
+  - Tools classification must also be deterministic.
+    - Any tool that enforces guardrails, touches `protocol/schemas/**`, or generates code consumed by trusted paths is Tier 1 regardless of location.
   - `protocol/` scope must be explicit:
     - hand-maintained schemas and boundary-critical protocol definitions are in scope for size/maintainability guardrails,
     - generated schemas, generated artifacts, and large fixtures are excluded,
-    - if a protocol file format does not support meaningful inline comments, rationale must live in an adjacent maintained doc.
+    - trust-boundary constraints, validation rules, and non-obvious assumptions must be documented inline or in an adjacent maintained doc when the format is comment-hostile.
   - Generated files, vendored code, build outputs, and lockfiles are excluded.
+    - Generated files must be identifiable through standard generated-file markers so checker exclusions stay deterministic.
 
 Deliverables:
 - A written policy section or repo doc that explains what RuneCode means by "source quality" and what is intentionally out of scope.
 - A path-tier map that distinguishes Tier 1 and Tier 2 enforcement.
+- The Task 2 policy doc must also surface core implementation-facing decisions needed for deterministic rollout:
+  - cognitive complexity is the primary policy metric for function complexity,
+  - provisional function-length defaults are documented,
+  - `.source-quality-baseline.json` is named as the ratchet baseline file,
+  - exit-code semantics and violation-output expectations are summarized,
+  - architecture-rationale expectations are documented,
+  - Tier 1 reviewed suppressions and runner overrides require checked-in checker-owned configuration rather than casual inline comments.
 
 Parallelization: can be drafted in parallel with implementation planning, but must be stable before check thresholds are finalized.
 
@@ -123,9 +144,10 @@ Parallelization: can be implemented in parallel with complexity checks, but supp
     - avoid broad plugin sprawl unless there is a concrete policy need.
   - The repo-specific checker remains required even when `golangci-lint` and/or ESLint are present.
   - Initial function-level targets:
-    - Tier 1 functions: target cognitive/branching complexity in the 10-15 range
-    - Tier 2 functions: target cognitive/branching complexity in the 15-20 range
-    - function-length defaults should stay substantially lower in Tier 1 than Tier 2 even if the exact tool mapping differs by language
+    - policy metric: cognitive complexity
+    - Tier 1 functions: max `10`
+    - Tier 2 functions: max `15`
+    - provisional function-length defaults: Tier 1 `40` lines, Tier 2 `60` lines
   - Start with high-risk directories first if repo-wide rollout would create too much immediate debt.
 - Rollout policy:
   - New code should meet current defaults.
@@ -146,6 +168,7 @@ Required ratchet format:
   - short rationale,
   - issue or follow-up reference if one exists.
 - Baseline entries may be removed or reduced over time, but should not be increased without explicit review and written justification.
+- Any deterministic Tier 1 runner override or other reviewed checker-owned exception must live in checked-in checker configuration rather than reviewer memory.
 
 Parallelization: threshold selection can be done in parallel with tooling prototyping, but must converge before `just lint` integration.
 

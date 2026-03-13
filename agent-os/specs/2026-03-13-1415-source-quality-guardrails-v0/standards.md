@@ -16,6 +16,7 @@ These standards apply to implementation work produced from this spec.
   - Go: prefer package comments and exported declaration comments as the baseline.
   - JS/TS: prefer module-level docs for entrypoints, trust-boundary modules, policy-sensitive modules, and protocol adapters.
 - `protocol/` artifacts that are hand-maintained and boundary-critical are in scope for maintainability rules, but generated artifacts and large fixtures are excluded.
+- Generated-file exclusions must be deterministic and rely on standard generated-file markers.
 - When a file format does not support meaningful inline comments, rationale must live in an adjacent maintained doc or spec rather than a forced pseudo-comment convention.
 - Require module/package/file-level rationale docs when the code is security-sensitive, boundary-sensitive, or non-obvious enough that names and signatures are insufficient.
 - Do not use doc comments as filler. If a doc block does not explain purpose, constraints, or usage beyond the signature/name, it is not sufficient.
@@ -44,14 +45,22 @@ These standards apply to implementation work produced from this spec.
 - Use explicit policy tiers:
   - Tier 1: trust-boundary, policy, secrets, audit, schema-validation, path-normalization, and similar enforcement logic.
   - Tier 2: routine commands, helpers, and lower-risk support code.
+- Tiering must be deterministic:
+  - `runner/**` defaults to Tier 2 unless checked-in checker configuration explicitly marks files as Tier 1.
+  - tools that enforce guardrails, touch `protocol/schemas/**`, or generate code for trusted paths are Tier 1 regardless of location.
+  - policy and enforcement documents may be Tier 1 protected surfaces even when numeric code budgets do not apply.
 - Initial default budgets are:
   - Tier 1 source files: 250 SLOC
   - Tier 2 source files: 400 SLOC
   - Tier 1 test files: 500 SLOC
   - Tier 2 test files: 800 SLOC
 - Initial function-complexity targets are:
-  - Tier 1: approximately 10-15
-  - Tier 2: approximately 15-20
+  - metric: cognitive complexity
+  - Tier 1: max 10
+  - Tier 2: max 15
+- Initial function-length targets are:
+  - Tier 1: 40 lines
+  - Tier 2: 60 lines
 - Use ratcheted exception mechanisms for legacy oversized files instead of indefinite blanket exemptions.
 - The ratchet mechanism uses a checked-in repo-root file named `.source-quality-baseline.json` with per-file caps and rationales.
 - New code and high-risk code should be held to stricter defaults first.
@@ -70,7 +79,7 @@ These standards apply to implementation work produced from this spec.
 - Bare suppressions or vague suppressions such as "legacy" without context are non-compliant.
 - Suppressions are tiered:
   - ordinary source-quality suppressions may be allowed inline with a specific reason,
-  - Tier 1 security- or boundary-sensitive suppressions should be prohibited inline by default and replaced with an explicit reviewed exception path.
+  - Tier 1 security- or boundary-sensitive suppressions should be prohibited inline by default and replaced with checked-in, reviewed checker-owned configuration.
 
 ## Enforcement Standard
 
@@ -78,7 +87,7 @@ These standards apply to implementation work produced from this spec.
 - Reuse language-native tooling where it cleanly fits.
 - Use a repo-specific source-quality gate only for policies that cannot be expressed well in existing tools or that must span both Go and JS/TS.
 - The repo-wide checker should live in a trusted location such as `tools/`, not under `runner/`.
-- V0 should use `golangci-lint` for Go source-quality enforcement with a deliberately small, pinned configuration.
+- V0 should use a version-pinned `golangci-lint` binary for Go source-quality enforcement with a deliberately small, checked-in, reviewed configuration.
 - V0 may add a minimal ESLint layer for JS/TS when it materially improves enforcement, but it should stay intentionally small and pinned.
 - The repo-specific checker remains required for cross-language, path-tiered, and ratcheted policies.
 - Prefer built-in/core lint rules before adding third-party plugin surfaces.
