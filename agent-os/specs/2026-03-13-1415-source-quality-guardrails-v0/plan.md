@@ -112,9 +112,16 @@ Parallelization: can be implemented in parallel with complexity checks, but supp
     - Tier 2 test files: 800 SLOC target
   - Prefer new-file defaults plus a simple ratcheted baseline for oversized existing files.
 - Function-size / complexity policy:
-  - V0 does not require adding `golangci-lint` or ESLint as a dependency.
-  - Go implementation may start with repo-local checking and remain compatible with later use of `funlen`, `gocyclo`, `cyclop`, `gocognit`, or similar tools.
-  - JS/TS implementation may start with repo-local checks and remain compatible with later use of `complexity` or `max-lines-per-function` rules if ESLint is adopted.
+  - V0 should add `golangci-lint` for Go enforcement.
+  - Initial Go enforcement should use a deliberately small rule set focused on source quality rather than broad style churn.
+  - Candidate Go checks include `funlen`, `gocyclo`, `cyclop`, `gocognit`, exported/package comment enforcement where applicable, commented-out-code detection, and suppression hygiene where supported.
+  - `golangci-lint` version/configuration must be pinned and kept deterministic across local and CI execution.
+  - JS/TS implementation may start with repo-local checks and may optionally add a minimal ESLint setup in v0 if it provides clear enforcement value.
+  - If ESLint is added in v0, keep it intentionally small:
+    - prefer core ESLint rules first,
+    - use only a minimal rule set related to complexity and maintainability,
+    - avoid broad plugin sprawl unless there is a concrete policy need.
+  - The repo-specific checker remains required even when `golangci-lint` and/or ESLint are present.
   - Initial function-level targets:
     - Tier 1 functions: target cognitive/branching complexity in the 10-15 range
     - Tier 2 functions: target cognitive/branching complexity in the 15-20 range
@@ -164,7 +171,8 @@ Parallelization: can be written in parallel with source-quality scripting becaus
 
 - Decide which guardrails belong in existing linters versus a repo-specific `check-source-quality` script.
 - Expected split:
-  - existing tools for language-native checks (Go docs/exported comments/complexity, JS/TS complexity where available),
+  - `golangci-lint` as the required Go enforcement layer for language-native checks,
+  - minimal ESLint as an optional JS/TS enforcement layer in v0 when the added value justifies the dependency,
   - a repo-specific script for cross-language policies such as:
     - file/module budgets,
     - module doc requirements by path/category,
@@ -172,7 +180,11 @@ Parallelization: can be written in parallel with source-quality scripting becaus
     - suppression-comment reason enforcement,
     - policy/report formatting aligned with RuneCode.
 - The repo-wide checker should live in a trusted location such as `tools/`, not under `runner/`.
-- V0 should not require introducing `golangci-lint` or ESLint if the same policy can be enforced with trusted repo-local tooling in the existing CI toolchain.
+- The repo-specific checker is still mandatory; linters supplement it but do not replace it.
+- Keep third-party linting surface area intentionally constrained:
+  - pin versions,
+  - prefer built-in/core rules before plugins,
+  - justify any added plugin or linter beyond the baseline set.
 - Integrate the chosen checks into the canonical flow:
   - `just lint`
   - `just ci`
@@ -211,6 +223,8 @@ Required verification:
 Deliverables:
 - Final enforcement plan showing which rules are hard failures, which are rollout warnings, and which remain review guidance only.
 - A trusted implementation path for the checker and its tests.
+- A pinned `golangci-lint` integration plan for Go.
+- If ESLint is adopted in v0, a minimal pinned ESLint integration plan for JS/TS.
 
 Parallelization: implementation planning can happen in parallel with policy drafting, but integration into canonical CI commands should land only after the policy is settled.
 

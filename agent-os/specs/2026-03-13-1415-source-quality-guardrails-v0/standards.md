@@ -78,7 +78,10 @@ These standards apply to implementation work produced from this spec.
 - Reuse language-native tooling where it cleanly fits.
 - Use a repo-specific source-quality gate only for policies that cannot be expressed well in existing tools or that must span both Go and JS/TS.
 - The repo-wide checker should live in a trusted location such as `tools/`, not under `runner/`.
-- V0 does not require introducing `golangci-lint` or ESLint if repo-local trusted tooling can enforce the required policy.
+- V0 should use `golangci-lint` for Go source-quality enforcement with a deliberately small, pinned configuration.
+- V0 may add a minimal ESLint layer for JS/TS when it materially improves enforcement, but it should stay intentionally small and pinned.
+- The repo-specific checker remains required for cross-language, path-tiered, and ratcheted policies.
+- Prefer built-in/core lint rules before adding third-party plugin surfaces.
 - `just lint` and `just ci` remain the canonical enforcement entrypoints.
 - Source-quality checks must be check-only and must not modify tracked files.
 - Failure behavior is fail-closed:
@@ -101,5 +104,6 @@ These standards apply to implementation work produced from this spec.
 ## Guardrail Surface Protection Standard
 
 - Source-quality tooling, baseline files, threshold configuration, and `just` integration are protected surfaces because changing them can weaken enforcement.
+- Linter configuration and version-pinning files are also protected surfaces because changing them can silently widen or weaken enforcement.
 - These surfaces should be covered by explicit review ownership and must be easy to audit in code review.
 - Reviewer and agent instruction files should be updated together with source-quality policy changes so human guidance and mechanical enforcement stay aligned.

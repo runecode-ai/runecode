@@ -20,6 +20,9 @@
 - `justfile`
 - `tools/`
 - `.source-quality-baseline.json`
+- `.golangci.yml`
+- `runner/package.json`
+- `runner/eslint.config.*`
 - `.github/CODEOWNERS`
 - `.github/copilot-instructions.md`
 - `.github/instructions/go-control-plane.instructions.md`

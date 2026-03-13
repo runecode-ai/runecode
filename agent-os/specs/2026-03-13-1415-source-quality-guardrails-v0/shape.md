@@ -36,14 +36,16 @@ This spec does not require blanket "comment everything" rules, does not require 
   - Prefer a small, checked-in ratchet baseline file over repo-wide hard limits that instantly fail on existing debt.
   - Apply stricter rules first to new code and high-risk paths.
 - Complexity checks are a better first-class signal than comment volume.
-  - V0 does not require introducing `golangci-lint` or ESLint as a prerequisite; repo-local enforcement in the current toolchain is acceptable.
-  - If language-native linters are adopted later, they must preserve the same policy semantics rather than widening scope accidentally.
+  - V0 should add `golangci-lint` for Go because it gives mature, low-friction coverage for complexity, size, and documentation-adjacent rules in trusted code.
+  - JS/TS may add a minimal ESLint setup in v0 when it materially improves runner enforcement, but it should stay intentionally small and avoid plugin sprawl.
+  - The repo-specific checker remains required because several RuneCode policies are cross-language, path-tiered, and repo-specific.
 - Suppression handling is tiered:
   - source-quality suppressions (`//nolint`, `eslint-disable`, etc.) must carry a specific reason,
   - security- or boundary-critical suppressions are stricter and should be prohibited in Tier 1 paths unless implemented through an explicit reviewed exception path.
 - Source-quality tooling is itself a protected surface.
   - The repo-wide checker should live in a trusted location such as `tools/`, not in `runner/`.
   - Tooling, thresholds, baseline files, and `just` wiring must receive explicit review because changing the checker can weaken enforcement.
+  - Third-party lint dependencies should be pinned and kept intentionally small so source-quality enforcement does not create unnecessary supply-chain or maintenance risk.
 - Source-quality enforcement must stay deterministic, CI-friendly, and cross-platform.
   - `just lint` and `just ci` remain the canonical gates.
   - Checks must avoid unstable heuristics that create churn or subjective failures.
@@ -62,7 +64,8 @@ This spec does not require blanket "comment everything" rules, does not require 
   - complex security-relevant logic may remain under-documented,
   - comment quality is currently mostly social convention rather than mechanically reinforced.
 - Current implementation-reality assumptions this spec now resolves:
-  - V0 should not assume `golangci-lint` or ESLint already exist in the repo.
+  - V0 should intentionally add `golangci-lint` for Go rather than waiting for a later phase.
+  - V0 may add only a minimal ESLint layer for JS/TS if it provides clear value; complex plugin stacks are not required.
   - The initial ratchet mechanism should stay simple because repo-wide legacy debt is still small.
 - Research direction informing this spec:
   - mature projects usually combine targeted docs, complexity limits, and architecture docs,
