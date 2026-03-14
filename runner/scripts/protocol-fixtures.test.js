@@ -7,13 +7,100 @@ const Ajv2020 = require('ajv/dist/2020').default
 const addFormats = require('ajv-formats')
 
 const repoRoot = path.resolve(__dirname, '..', '..')
-const schemaRoot = path.join(repoRoot, 'protocol', 'schemas')
-const fixtureRoot = path.join(repoRoot, 'protocol', 'fixtures')
+const schemaRoot = path.join(repoRoot, 'protocol/schemas')
+const fixtureRoot = path.join(repoRoot, 'protocol/fixtures')
 
 function loadJson(filePath) {
   // JSON.parse is intentional here because the MVP canonicalization profile rejects
   // numbers outside the shared Go/TS safe-integer range before hashing.
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+}
+
+function loadCanonicalizationPayload(filePath) {
+  const raw = fs.readFileSync(filePath, 'utf8')
+  assertCanonicalNumberLexemes(raw, filePath)
+  return JSON.parse(raw)
+}
+
+function assertCanonicalNumberLexemes(raw, filePath) {
+  let index = 0
+  let inString = false
+  let escaped = false
+
+  while (index < raw.length) {
+    const char = raw[index]
+    if (inString) {
+      if (escaped) {
+        escaped = false
+      } else if (char === '\\') {
+        escaped = true
+      } else if (char === '"') {
+        inString = false
+      }
+      index += 1
+      continue
+    }
+
+    if (char === '"') {
+      inString = true
+      index += 1
+      continue
+    }
+
+    if (char === '-' || isDigit(char)) {
+      const { token, nextIndex } = readJsonNumberToken(raw, index)
+      if (token !== null) {
+        if (token.includes('.') || token.includes('e') || token.includes('E')) {
+          throw new Error(`${filePath} contains non-integer numeric literal ${token}`)
+        }
+        index = nextIndex
+        continue
+      }
+    }
+
+    index += 1
+  }
+}
+
+function readJsonNumberToken(raw, start) {
+  let index = start
+  if (raw[index] === '-') {
+    index += 1
+  }
+  if (index >= raw.length || !isDigit(raw[index])) {
+    return { token: null, nextIndex: start + 1 }
+  }
+
+  if (raw[index] === '0') {
+    index += 1
+  } else {
+    while (index < raw.length && isDigit(raw[index])) {
+      index += 1
+    }
+  }
+
+  if (raw[index] === '.') {
+    index += 1
+    while (index < raw.length && isDigit(raw[index])) {
+      index += 1
+    }
+  }
+
+  if (raw[index] === 'e' || raw[index] === 'E') {
+    index += 1
+    if (raw[index] === '+' || raw[index] === '-') {
+      index += 1
+    }
+    while (index < raw.length && isDigit(raw[index])) {
+      index += 1
+    }
+  }
+
+  return { token: raw.slice(start, index), nextIndex: index }
+}
+
+function isDigit(char) {
+  return char >= '0' && char <= '9'
 }
 
 function loadBundle() {
@@ -233,12 +320,12 @@ test('canonicalization fixtures match golden bytes and hashes', async (t) => {
 
   for (const entry of manifest.canonicalization_fixtures) {
     await t.test(entry.id, () => {
-      const payload = loadJson(path.join(fixtureRoot, entry.payload_path))
       if (!entry.expect_valid) {
-        assert.throws(() => canonicalize(payload))
+        assert.throws(() => canonicalize(loadCanonicalizationPayload(path.join(fixtureRoot, entry.payload_path))))
         return
       }
 
+      const payload = loadCanonicalizationPayload(path.join(fixtureRoot, entry.payload_path))
       const golden = fs.readFileSync(path.join(fixtureRoot, entry.canonical_json_path), 'utf8').replace(/\n$/, '')
       const canonical = canonicalize(payload)
 

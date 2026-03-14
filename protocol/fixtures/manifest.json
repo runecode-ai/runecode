@@ -213,6 +213,20 @@
       "expect_valid": false
     },
     {
+      "id": "non-integer.decimal.invalid",
+      "payload_path": "canonical/non-integer.decimal.invalid.payload.json",
+      "canonical_json_path": "",
+      "sha256": "",
+      "expect_valid": false
+    },
+    {
+      "id": "non-integer.exponent.invalid",
+      "payload_path": "canonical/non-integer.exponent.invalid.payload.json",
+      "canonical_json_path": "",
+      "sha256": "",
+      "expect_valid": false
+    },
+    {
       "id": "non-ascii-key.invalid",
       "payload_path": "canonical/non-ascii-key.invalid.payload.json",
       "canonical_json_path": "",

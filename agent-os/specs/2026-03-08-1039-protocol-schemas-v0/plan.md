@@ -297,6 +297,7 @@ Parallelization: none for MVP implementation; later bridge/provider work should 
   - hash/sign inputs are the canonical JSON bytes produced by JCS
   - canonicalized numbers normalize `-0` to `0`
   - MVP canonicalization rejects non-ASCII object keys fail-closed rather than implementing full UTF-16 key ordering; a later spec can widen this if needed
+  - JS fixture runners must preserve raw numeric lexemes long enough to reject decimal or exponent forms fail-closed before ordinary JSON number coercion can erase the distinction
   - validate canonicalization correctness using RFC 8785 reference test vectors and cross-language golden fixtures
   - canonicalization operates on plain JSON values; do not depend on language-specific serializers
   - if a third-party canonicalizer is used, pin versions and require golden-fixture parity in CI
@@ -330,12 +331,14 @@ Fixture governance:
 - fixtures live under `protocol/fixtures/` and are treated as security-sensitive contract artifacts
 - a checked-in fixture manifest defines the authoritative schema, stream-sequence, runtime-invariant, and canonicalization fixture sets consumed by both Go and TS tests
 - fixture-manifest paths are containment-checked and CI verifies bidirectional parity between manifest entries and checked-in fixture files
+- runner-side fixture tests use explicit `protocol/schemas` and `protocol/fixtures` path literals so boundary-check static analysis continues to enforce the trust-boundary allowlist
 - regeneration is explicit; tooling must not auto-update fixtures during `just ci`
 - any fixture update must be reviewable and explain whether the change is a bug fix, drift correction, or intentional capability expansion
 - fixture sets must cover both Go and TS consumers and reject the same invalid inputs
 - Go and TS test runners iterate the same manifest-defined fixture set; fixture count and fixture IDs must match across languages
 - runtime-only invariants that JSON Schema cannot express by identity (for example duplicate artifact digests or duplicate tool-call IDs) must still be captured in the shared fixture set and enforced identically in Go and TS fixture runners
 - runtime-invariant fixture sets include both positive and fail-closed cases so the shared validators prove acceptance and rejection behavior, not only rejection
+- canonicalization fixtures include fail-closed decimal/exponent numeric forms so Go and TS reject the same non-integer lexemes before hashing
 - provide an explicit repo-local fixture update workflow/command separate from `just ci`; CI verifies outputs but never regenerates them implicitly
 
 Parallelization: fixtures can be created in parallel across subsystems as long as they validate against the same schema bundle and canonicalization rules.
