@@ -1,0 +1,41 @@
+{
+  "registry_name": "approval_trigger_code",
+  "namespace": "runecode.protocol.approval.trigger",
+  "documentation_owner": "protocol",
+  "status": "mvp",
+  "description": "Stable machine-consumed trigger codes that explain why human approval is required.",
+  "codes": [
+    {
+      "code": "stage_sign_off",
+      "summary": "Stage capability manifest sign-off is required before execution can proceed."
+    },
+    {
+      "code": "reduced_assurance_backend",
+      "summary": "Execution requests a reduced-assurance backend such as the explicit container fallback."
+    },
+    {
+      "code": "gate_override",
+      "summary": "A deterministic gate or policy checkpoint is being overridden by human approval."
+    },
+    {
+      "code": "gateway_egress_scope_change",
+      "summary": "Gateway egress enablement, allowlist changes, or allowed egress data-class expansion requires approval."
+    },
+    {
+      "code": "out_of_workspace_write",
+      "summary": "A write would occur outside the declared workspace path allowlist."
+    },
+    {
+      "code": "secret_access_lease",
+      "summary": "Issuing or renewing a secret lease from secretsd requires explicit human approval."
+    },
+    {
+      "code": "dependency_install",
+      "summary": "A dependency or package installation step requires human review."
+    },
+    {
+      "code": "system_command_execution",
+      "summary": "A system-modifying command outside ordinary workspace edit or test executors requires approval."
+    }
+  ]
+}

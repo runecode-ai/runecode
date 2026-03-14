@@ -1,0 +1,37 @@
+{
+  "registry_name": "error.code",
+  "namespace": "runecode.protocol.error.code",
+  "documentation_owner": "protocol",
+  "status": "mvp",
+  "description": "Stable machine-consumed transport, validation, storage, auth, and runtime failure codes.",
+  "codes": [
+    {
+      "code": "unknown_schema_id",
+      "summary": "The schema_id is not registered in the local protocol bundle."
+    },
+    {
+      "code": "unsupported_schema_version",
+      "summary": "The schema_id is known but the exact schema_version is not supported."
+    },
+    {
+      "code": "unsupported_hash_algorithm",
+      "summary": "A digest reference uses a hash_alg value outside the MVP sha256 allowlist."
+    },
+    {
+      "code": "schema_bundle_version_mismatch",
+      "summary": "Communicating components do not share the same active local-session schema bundle version."
+    },
+    {
+      "code": "stream_timeout",
+      "summary": "A streamed model response exceeded the idle timeout before the next event arrived."
+    },
+    {
+      "code": "gateway_failure",
+      "summary": "The model gateway produced a terminal failure while handling the request."
+    },
+    {
+      "code": "request_cancelled",
+      "summary": "The streamed request was cancelled before a successful terminal response was produced."
+    }
+  ]
+}

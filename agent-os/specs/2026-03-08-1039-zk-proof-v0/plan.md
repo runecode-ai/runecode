@@ -20,7 +20,7 @@ Select one MVP proof type (keep narrow and deterministic), e.g.:
 - Policy decision integrity: prove that a policy program evaluated `{manifest_hash, request_hash}` to decision `D`.
 - Add an explicit feasibility gate:
   - the statement must have bounded inputs and fully deterministic verification
-  - if proof generation or verification performance is not acceptable, ship this as post-MVP (interfaces/fixtures only)
+  - if proof generation or verification performance is not acceptable, defer release rather than weakening the proof contract
 
 Parallelization: can be done in parallel with audit/artifact specs; keep the chosen statement aligned with the canonical audit root/verification artifacts.
 
@@ -33,7 +33,7 @@ Parallelization: can be done in parallel with audit/artifact specs; keep the cho
   - proof artifacts must have bounded size
   - proof generation must not dominate the run (or must be explicitly opt-in)
 
-Parallelization: can be evaluated in parallel with other post-MVP hardening work; treat library selection as security-sensitive.
+Parallelization: can be evaluated in parallel with other later hardening work; treat library selection as security-sensitive.
 
 ## Task 4: Proof Artifact Format + Storage
 
@@ -58,4 +58,4 @@ Parallelization: can be implemented in parallel with TUI/CLI work.
 
 - At least one proof type can be generated and verified end-to-end.
 - Proof verification is deterministic, recorded in the audit log, and failure is non-destructive (it flags the run).
-- If performance targets cannot be met with a concrete proving system, this capability is deferred post-MVP rather than weakening core MVP deliverables.
+- If performance targets cannot be met with a concrete proving system, this capability is deferred to a later release rather than weakening core deliverables.

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runecode.dev/protocol/schemas/objects/ApprovalDecision.schema.json",
+  "title": "ApprovalDecision",
+  "description": "Protocol-owned approval decision family for hash-bound approval outcomes, approver attribution, and explicit consumption semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 12,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "restrictions"
+        ]
+      },
+      "then": {
+        "required": [
+          "restrictions_schema_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "restrictions_schema_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "restrictions"
+        ]
+      }
+    }
+  ],
+  "required": [
+    "schema_id",
+    "schema_version",
+    "approval_request_hash",
+    "approver",
+    "decision_outcome",
+    "decided_at",
+    "consumption_posture"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "runecode.protocol.v0.ApprovalDecision",
+      "description": "Stable protocol object-family identifier for approval decisions.",
+      "x-data-class": "public"
+    },
+    "schema_version": {
+      "const": "0.2.0",
+      "description": "Exact protocol schema version used to validate this approval decision.",
+      "x-data-class": "public"
+    },
+    "approval_request_hash": {
+      "$ref": "Digest.schema.json#/$defs/digestValue",
+      "description": "Hash of the approval request this decision resolves.",
+      "x-data-class": "public"
+    },
+    "approver": {
+      "$ref": "PrincipalIdentity.schema.json",
+      "description": "Shared principal identity for the human or trusted component that issued this approval decision.",
+      "x-data-class": "sensitive"
+    },
+    "decision_outcome": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "deny",
+        "expired",
+        "cancelled"
+      ],
+      "description": "Outcome applied to the referenced approval request.",
+      "x-data-class": "public"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 64,
+      "description": "RFC 3339 timestamp recording when the decision was produced.",
+      "x-data-class": "public"
+    },
+    "consumption_posture": {
+      "type": "string",
+      "enum": [
+        "single_use"
+      ],
+      "description": "How the approval may be consumed after issuance. MVP approvals are single-use only.",
+      "x-data-class": "public"
+    },
+    "decision_expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 64,
+      "description": "RFC 3339 timestamp recording when this approval decision stops being valid, if it expires before consumption. This field is optional because MVP decisions are already single-use and may rely on consumption rather than a second timestamp bound.",
+      "x-data-class": "public"
+    },
+    "restrictions_schema_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Schema identifier for an optional machine-checkable restrictions payload attached to this decision.",
+      "x-data-class": "public"
+    },
+    "restrictions": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 32,
+      "description": "Optional machine-checkable restrictions or notes attached to the decision.",
+      "x-data-class": "sensitive"
+    },
+    "policy_decision_hash": {
+      "$ref": "Digest.schema.json#/$defs/digestValue",
+      "description": "Optional hash of the policy decision that prompted the human approval flow.",
+      "x-data-class": "public"
+    },
+    "stage_manifest_summary_hash": {
+      "$ref": "Digest.schema.json#/$defs/digestValue",
+      "description": "Optional hash of the stage manifest summary the approver acted on.",
+      "x-data-class": "public"
+    }
+  }
+}

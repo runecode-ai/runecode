@@ -68,17 +68,17 @@ Parallelization: can be done in parallel with spec drafting; avoid conflicting e
 ## MVP Cut (What We Intentionally Leave Out)
 
 To keep MVP essential and focused, the following are explicitly post-MVP unless pulled in by a must-have integration need:
-- GitHub PR/push automation via a dedicated git gateway.
-- Web research crawling + domain bundles/domain-expansion workflows.
-- Dependency fetching role and offline dependency caches.
-- Subscription-backed model provider access (e.g., ChatGPT subscription OAuth, Copilot subscription bridging).
-- External audit anchoring targets that require external receipts/services (e.g., RFC3161 timestamping, witness services) beyond local anchoring receipts.
+- GitHub PR/push automation via `agent-os/specs/2026-03-08-1039-git-gateway/`.
+- Web research crawling + domain bundles/domain-expansion workflows via `agent-os/specs/2026-03-08-1039-web-research-role/`.
+- Dependency fetching role and offline dependency caches via `agent-os/specs/2026-03-08-1039-deps-fetch-cache/`.
+- Subscription-backed model provider access via `agent-os/specs/2026-03-11-1920-openai-chatgpt-subscription-provider-v0/`, `agent-os/specs/2026-03-11-1921-github-copilot-subscription-provider-v0/`, and `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`.
+- External audit anchoring targets beyond local anchoring receipts via `agent-os/specs/2026-03-13-1603-external-audit-anchoring-v0/`.
 
 ## Notes / Open Questions (To Resolve Inside Individual Specs)
 
 - Local durable state: SQLite (WAL) for MVP (runs/approvals/artifact metadata/audit indexing), with append-only files for large immutable blobs.
   - Pin SQLite to a version that includes known WAL integrity fixes (e.g., the WAL-reset fix in SQLite >= 3.52.0 or an equivalent backport) when WAL is enabled.
-- Protocol encoding: MVP uses JSON (schema-validated) for both on-wire and on-disk objects, while keeping the logical object model encoding-agnostic so on-wire can migrate post-MVP to protobuf over local IPC (gRPC optional and local-only).
+- Protocol encoding: MVP uses JSON (schema-validated) for both on-wire and on-disk objects; later local transport migration is tracked in `agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`.
 - Transport: vsock-first on Linux, virtio-serial fallback for portability; always run a mandatory message-level authenticated+encrypted session (do not rely on transport properties).
-- MicroVM support by OS: MVP runtime targets Linux + KVM; macOS HVF is optional only if it does not materially slow MVP; Windows runtime support is post-MVP.
+- MicroVM support by OS: MVP runtime targets Linux + KVM; later macOS and Windows runtime work is tracked in `agent-os/specs/2026-03-08-1039-macos-virtualization-polish/` and `agent-os/specs/2026-03-08-1039-windows-microvm-runtime/`.
 - Local auth: local IPC only; require OS peer credentials on platforms that support them (fail closed for MVP when unavailable).

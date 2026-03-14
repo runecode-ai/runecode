@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runecode.dev/protocol/schemas/objects/PrincipalIdentity.schema.json",
+  "title": "PrincipalIdentity",
+  "description": "Protocol-owned shared identity family for human, daemon, role-instance, local-client, and external-runtime actors, including lifecycle context and active manifest bindings.",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 12,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "actor_kind": {
+            "const": "role_instance"
+          }
+        },
+        "required": [
+          "actor_kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "role_kind"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "actor_kind": {
+            "enum": [
+              "user",
+              "local_client"
+            ]
+          }
+        },
+        "required": [
+          "actor_kind"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "role_kind"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "stage_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "run_id"
+        ]
+      }
+    }
+  ],
+  "required": [
+    "schema_id",
+    "schema_version",
+    "actor_kind",
+    "principal_id",
+    "instance_id"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "runecode.protocol.v0.PrincipalIdentity",
+      "description": "Stable protocol object-family identifier for principal identity objects.",
+      "x-data-class": "public"
+    },
+    "schema_version": {
+      "const": "0.2.0",
+      "description": "Exact protocol schema version used to validate this identity object.",
+      "x-data-class": "public"
+    },
+    "actor_kind": {
+      "type": "string",
+      "enum": [
+        "user",
+        "daemon",
+        "role_instance",
+        "local_client",
+        "external_runtime"
+      ],
+      "description": "Actor category for the identified caller or runtime principal.",
+      "x-data-class": "public"
+    },
+    "principal_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable principal identifier for the user, daemon, role, or runtime being described.",
+      "x-data-class": "sensitive"
+    },
+    "instance_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable instance identifier for the concrete daemon, client, or role instance represented by this identity object.",
+      "x-data-class": "sensitive"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable session identifier bound to this principal when approvals, audit events, or leases need session-level attribution.",
+      "x-data-class": "sensitive"
+    },
+    "role_kind": {
+      "type": "string",
+      "enum": [
+        "workspace",
+        "gateway",
+        "auth",
+        "model",
+        "git",
+        "web",
+        "deps"
+      ],
+      "description": "Role category bound to the principal when the actor is role-scoped or gateway-like.",
+      "x-data-class": "public"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Run identifier associated with this principal when the identity is scoped to one active run.",
+      "x-data-class": "sensitive"
+    },
+    "stage_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Stage identifier associated with this principal when the identity is scoped to one active stage.",
+      "x-data-class": "sensitive"
+    },
+    "active_role_manifest_hash": {
+      "$ref": "Digest.schema.json#/$defs/digestValue",
+      "description": "Digest of the active role manifest bound to this principal identity.",
+      "x-data-class": "public"
+    },
+    "active_capability_manifest_hash": {
+      "$ref": "Digest.schema.json#/$defs/digestValue",
+      "description": "Digest of the active capability manifest bound to this principal identity.",
+      "x-data-class": "public"
+    },
+    "verifier_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Signing key identifier or verifier reference associated with this principal when signatures or receipts are expected.",
+      "x-data-class": "public"
+    }
+  }
+}

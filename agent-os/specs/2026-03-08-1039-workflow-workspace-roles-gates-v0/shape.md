@@ -18,7 +18,6 @@ Build the end-to-end workflow engine and offline workspace execution roles, with
 - The runner has no public network egress (it is not a gateway role).
 - Workspace roles are offline; any public egress is only via dedicated gateway roles (model inference via model-gateway).
 - Runner persistence stores control-plane state only (IDs/hashes/approvals); it must never store raw workspace/code or secrets.
-- "Shared memory" (if any) is a rebuildable, ephemeral accelerator keyed by `(repo, commitSHA)`; raw content remains in the CAS.
 - Pause/resume is implemented via a persisted run state machine (durable state), not in-memory orchestration.
 - Approval requests/decisions are hash-bound and time-bounded (TTL/expiry); stale approvals must be re-requested.
 - Gate failure semantics are explicit (fail/abort, retry, and any override requires recorded approval).

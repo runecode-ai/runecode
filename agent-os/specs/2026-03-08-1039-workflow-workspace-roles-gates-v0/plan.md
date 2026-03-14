@@ -50,7 +50,7 @@ Parallelization: docs-only; safe to do anytime.
   - define strict rules for what LangGraph may checkpoint (control-plane IDs/hashes only).
 - Define MVP concurrency rules:
   - default: one active run per workspace (explicit workspace lock)
-  - concurrent runs require explicit design and are post-MVP unless proven safe
+  - concurrent runs require explicit design and are specified in `agent-os/specs/2026-03-13-1730-workflow-concurrency-v0/`
   - multiple runs across distinct workspaces are permitted by default (locks are per-workspace, not global)
 
 Node SEA feasibility note (MVP):
@@ -59,26 +59,16 @@ Node SEA feasibility note (MVP):
 
 Parallelization: runner implementation can proceed in parallel with the broker/policy engine as long as the runner<->broker schema contract is finalized early.
 
-## Task 2b: User-Configurable Processes (Post-MVP)
+## Task 2b: Workflow Extensibility Follow-On Spec
 
-- Provide a schema-validated `ProcessDefinition` (JSON/YAML) as the user extension point.
-  - ProcessDefinition composes a fixed allowlist of RuneCode step types; it cannot introduce new capabilities.
-  - Config may choose which steps exist, their ordering/branching, per-step provider/model selection, and sequential vs parallel blocks.
-- Safety model remains manifest/policy-driven; ProcessDefinition only composes allowlisted steps.
+- Post-MVP user-configurable workflows and shared-memory accelerators now live in `agent-os/specs/2026-03-13-1600-workflow-extensibility-v0/`.
+- This MVP runner spec keeps the baseline runner contract and durable-state rules those later workflow extensions build on.
 
-Governance note (post-MVP): adding a new allowlisted step type is a capability expansion and requires a schema version bump + security review (see `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/`).
-
-Parallelization: can be designed in parallel with policy work; implementation should wait until the core step-type allowlist governance is established.
-
-## Task 2c: Runner Persistence + Memory Rules (MVP + Post-MVP)
+## Task 2c: Runner Persistence Rules (MVP)
 
 - Restrict LangGraph persistence to runner control-plane state only (MVP):
   - thread/run IDs, step IDs, artifact hashes, approval handles, and other non-sensitive bookkeeping.
   - explicitly forbid storing raw workspace/code, unredacted excerpts, or secrets in runner persistence.
-- Define "shared memory" as an optional, rebuildable accelerator keyed by `(repo, commitSHA)` (post-MVP):
-  - cache derived summaries/maps/selections only
-  - invalidate/rebuild on commit changes
-  - raw content remains in the artifact store (CAS) with immutable data classes and explicit approvals for promotion
 
 Parallelization: can be implemented in parallel with artifact store work; it depends on stable artifact reference schemas.
 

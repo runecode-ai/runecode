@@ -19,8 +19,8 @@ Parallelization: docs-only; safe to do anytime.
 - Pin and record the QEMU version/build provenance (reproducibility + patch posture) and emit it into audit metadata.
 - Define a cross-platform abstraction for acceleration:
   - Linux: KVM (MVP runtime)
-  - macOS: HVF (only if it does not materially slow the Linux/KVM MVP; otherwise post-MVP)
-  - Windows: WHPX/Hyper-V (post-MVP runtime)
+  - later macOS runtime work lives in `agent-os/specs/2026-03-08-1039-macos-virtualization-polish/`
+  - later Windows runtime work lives in `agent-os/specs/2026-03-08-1039-windows-microvm-runtime/`
 - Standardize an isolate <-> host/broker transport that works everywhere:
   - MVP (Linux): vsock (AF_VSOCK) is the preferred transport
   - fallback: `virtio-serial` for portability and non-vsock environments

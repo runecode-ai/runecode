@@ -33,7 +33,7 @@ Runtime compatibility policy (post-MVP):
   - require an explicit user acknowledgment surfaced in TUI
   - record the runtime identity/version and "untested" posture in audit metadata
 
-Parallelization: can be designed in parallel with the `model-gateway` bridge envelope work in `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/`.
+Parallelization: can be designed in parallel with the shared bridge-runtime work in `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`.
 
 ## Task 3: Auth Model (No Env Vars, No Second Store)
 
@@ -65,7 +65,7 @@ Parallelization: can be implemented in parallel with `auth-gateway` role work an
 - Prefer protocol-level contract tests over HTTP wire fixtures.
   - add RPC request/response fixture tests and stable error taxonomy mapping
 
-Parallelization: can be prototyped in parallel with core `model-gateway` work; it depends on the shared bridge envelope/error taxonomy.
+Parallelization: can be prototyped in parallel with core `model-gateway` work; it depends on the shared bridge envelope/error taxonomy in `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`.
 
 ## Task 5: Policy + Audit Integration
 

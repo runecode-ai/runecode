@@ -12,7 +12,7 @@ Implement the core policy evaluator that enforces manifests, role invariants, an
 - Core security invariants are non-negotiable; any "approval policy" or UX setting may only tighten policy, never loosen it.
 - Network egress is a hard boundary: workspace roles are offline; public egress is only via explicit gateway roles (model inference via `model-gateway`), and non-gateway network egress is not approvable.
 - MVP uses checkpoint-style approvals (stage sign-off and explicit posture changes) instead of per-action nags.
-- MVP supports a single approval profile (`moderate`); strict/permissive profiles are post-MVP.
+- MVP supports a single approval profile (`moderate`); later profile expansion lives in `agent-os/specs/2026-03-10-1530-approval-profiles-v0/`.
 
 - Approvals are typed, hash-bound to immutable inputs, and time-bounded (TTL/expiry); stale approvals are invalid.
 - Policy decisions and failures use a shared protocol error envelope and stable reason codes.
