@@ -6,7 +6,7 @@
 
 ## Status Semantics
 
-- `mvp` means the object family is in MVP bundle scope. Some `mvp` families are intentionally minimal anchors until their owning spec task lands; those entries include a manifest `note` describing the pending task. In the current bundle, `PolicyDecision` and `Error` remain the main placeholder MVP families.
+- `mvp` means the object family is in MVP bundle scope. Some `mvp` families are intentionally narrow anchors until their owning spec task lands; those entries include a manifest `note` describing the pending task. In the current bundle, `ApprovalRequest`, `ApprovalDecision`, `PolicyDecision`, and `Error` are the main constrained MVP anchors.
 - `reserved` means the family is reserved for post-MVP extension work and must not expand capabilities without a later schema/task update.
 
 ## Current Lifecycle Coverage

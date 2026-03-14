@@ -4,5 +4,14 @@
   "documentation_owner": "protocol",
   "status": "mvp",
   "description": "Stable machine-consumed event types for audit event classification.",
-  "codes": []
+  "codes": [
+    {
+      "code": "session_open",
+      "summary": "Records the opening of a local session and the schema bundle versions used by participating components."
+    },
+    {
+      "code": "model_egress",
+      "summary": "Records a model-gateway outbound request with allowlist and destination attribution."
+    }
+  ]
 }

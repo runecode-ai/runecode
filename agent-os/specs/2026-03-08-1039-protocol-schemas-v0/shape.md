@@ -28,6 +28,7 @@ Refine the schema foundation for manifests, identities, approvals, artifacts/pro
 - Shared schemas include conservative structural bounds, field-level descriptions, and bidirectional manifest verification so stray files, escaped manifest paths, and undocumented property contracts fail closed.
 - Shared `$ref` definitions are verified with the same invariant checks as inline schemas so reusable digest/signature fragments cannot drift silently.
 - MVP-scoped placeholder families remain explicit via manifest notes; dedicated later tasks add their remaining fields under schema-versioned follow-up work instead of silently widening Task 2 shells.
+- MVP registries ship the seed `policy_reason_code`, `audit_event_type`, and streamed-terminal `error.code` values already exercised by shared fixtures so runtime allowlists and checked-in examples do not drift apart.
 - The broker is the canonical enforcement point for schema-driven secret/sensitive field rejection or stripping at the trusted/untrusted boundary.
 - MVP favors a single schema source of truth that can be validated in both Go and TS.
 - MVP uses JSON Schema draft 2020-12 and JSON-on-wire; the logical object model remains encoding-agnostic so on-wire RPC can migrate post-MVP to protobuf over local IPC.

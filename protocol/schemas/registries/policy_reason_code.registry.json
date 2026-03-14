@@ -4,5 +4,18 @@
   "documentation_owner": "protocol",
   "status": "mvp",
   "description": "Stable machine-consumed reason codes for deterministic policy outcomes.",
-  "codes": []
+  "codes": [
+    {
+      "code": "deny_by_default",
+      "summary": "The request is denied by the default fail-closed policy posture."
+    },
+    {
+      "code": "allow_manifest_opt_in",
+      "summary": "The request is allowed because the signed manifest explicitly opts into the evaluated capability."
+    },
+    {
+      "code": "approval_required",
+      "summary": "The request remains allowed only after the required human-approval checkpoint is satisfied."
+    }
+  ]
 }

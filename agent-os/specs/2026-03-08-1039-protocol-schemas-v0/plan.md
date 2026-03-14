@@ -80,9 +80,10 @@ Implementation findings + decisions after the initial Task 2 review:
 - Task 2 treats shared registry code values as pairwise non-overlapping across all bundle registries to keep machine-consumed namespaces fail-closed even when short codes are reused accidentally.
 - `PrincipalIdentity.role_kind` is now schema-constrained: `role_instance` actors must declare it, while `user` and `local_client` identities must not attach role kinds prematurely; daemon and external-runtime semantics stay extensible for Task 3.
 - Task 2 adds meta-schemas for the schema manifest and registry files plus CI validation for those documents so Go/TS tooling can share a machine-readable contract for bundle metadata.
-- Task 2 keeps `ApprovalRequest`, `ApprovalDecision`, `PolicyDecision`, and `Error` in MVP bundle scope but marks them as minimal family anchors via manifest notes; their owning tasks still add the remaining shared fields under explicit schema-versioned follow-up work.
+- Task 2 keeps `ApprovalRequest`, `ApprovalDecision`, `PolicyDecision`, and `Error` in MVP bundle scope but now records them as minimal family anchors via explicit manifest notes so bundle metadata, docs, and verifier expectations stay aligned; their owning tasks still add the remaining shared fields under explicit schema-versioned follow-up work.
 - Task 2 documents that schema-document `$id` URIs are canonical identifiers for tooling and reference resolution, not a requirement to fetch live network content.
-- Empty `policy_reason_code`, `approval_trigger_code`, and `audit_event_type` registries remain intentionally reserved until downstream policy, approval, and audit specs define concrete values.
+- Task 2 seeds the `policy_reason_code` and `audit_event_type` registries with the MVP values already exercised by checked-in fixtures/tests so fail-closed runtime validation and fixture coverage stay coherent while later specs extend those registries.
+- Task 5/6 align streamed terminal fixture errors with the `error.code` registry so `Error` examples, stream fixtures, and future runtime membership checks use one authoritative allowlist.
 
 Parallelization: finalize the object-family list and code-registry split early so policy, broker, audit, and gateway work do not diverge.
 

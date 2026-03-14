@@ -280,11 +280,11 @@ func validAuditEvent() map[string]any {
 	return map[string]any{
 		"schema_id":               "runecode.protocol.v0.AuditEvent",
 		"schema_version":          "0.3.0",
-		"audit_event_type":        "session_start",
+		"audit_event_type":        "session_open",
 		"seq":                     1,
 		"occurred_at":             "2026-03-13T12:15:00Z",
 		"principal":               manifestPrincipal(),
-		"event_payload_schema_id": "runecode.protocol.audit.payload.session-start.v0",
+		"event_payload_schema_id": "runecode.protocol.audit.payload.session-open.v0",
 		"event_payload":           map[string]any{"session_id": "session-1"},
 		"event_payload_hash":      testDigestValue("c"),
 		"signatures":              []any{signatureBlock()},

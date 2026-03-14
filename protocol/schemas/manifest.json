@@ -71,21 +71,24 @@
       "schema_id": "runecode.protocol.v0.ApprovalRequest",
       "schema_version": "0.2.0",
       "owner": "protocol",
-      "status": "mvp"
+      "status": "mvp",
+      "note": "MVP anchor family for typed approval requests; later approval-profile and workflow tasks add broader payload semantics under versioned follow-up work."
     },
     {
       "path": "objects/ApprovalDecision.schema.json",
       "schema_id": "runecode.protocol.v0.ApprovalDecision",
       "schema_version": "0.2.0",
       "owner": "protocol",
-      "status": "mvp"
+      "status": "mvp",
+      "note": "MVP anchor family for typed approval decisions; later approval-profile and workflow tasks add broader consumption and restriction semantics under versioned follow-up work."
     },
     {
       "path": "objects/PolicyDecision.schema.json",
       "schema_id": "runecode.protocol.v0.PolicyDecision",
       "schema_version": "0.3.0",
       "owner": "protocol",
-      "status": "mvp"
+      "status": "mvp",
+      "note": "MVP anchor family for deterministic policy outcomes; the policy-engine spec owns later expansion of shared reason-code coverage and detail payload semantics."
     },
     {
       "path": "objects/LLMRequest.schema.json",
@@ -120,7 +123,8 @@
       "schema_id": "runecode.protocol.v0.Error",
       "schema_version": "0.3.0",
       "owner": "protocol",
-      "status": "mvp"
+      "status": "mvp",
+      "note": "MVP anchor family for shared fail-closed boundary errors; later transport, auth, storage, and gateway tasks extend typed details and registry coverage under versioned follow-up work."
     },
     {
       "path": "objects/WorkflowDefinition.schema.json",

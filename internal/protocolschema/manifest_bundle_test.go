@@ -42,6 +42,15 @@ func TestManifestAndRegistryDocumentsValidateAgainstMetaSchemas(t *testing.T) {
 func TestRegistryNamespacesAreSeparate(t *testing.T) {
 	manifest := loadManifest(t)
 	registryNames, codesByRegistry := collectRegistryData(t, manifest)
+	assertRegistryCodeNamespacesSeparate(t, registryNames, codesByRegistry)
+	assertErrorRegistryCodes(t)
+	assertPolicyRegistryCodes(t)
+	assertAuditRegistryCodes(t)
+	assertApprovalRegistryCodes(t)
+}
+
+func assertRegistryCodeNamespacesSeparate(t *testing.T, registryNames []string, codesByRegistry map[string]map[string]struct{}) {
+	t.Helper()
 
 	sort.Strings(registryNames)
 	for i := 0; i < len(registryNames); i++ {
@@ -49,15 +58,49 @@ func TestRegistryNamespacesAreSeparate(t *testing.T) {
 			assertNoCodeOverlap(t, codesByRegistry, registryNames[i], registryNames[j])
 		}
 	}
+}
+
+func assertErrorRegistryCodes(t *testing.T) {
+	t.Helper()
 
 	errorRegistry := loadRegistry(t, schemaPath(t, "registries/error.code.registry.json"))
-	assertRegistryCode(t, errorRegistry, "unknown_schema_id")
-	assertRegistryCode(t, errorRegistry, "unsupported_schema_version")
-	assertRegistryCode(t, errorRegistry, "unsupported_hash_algorithm")
-	assertRegistryCode(t, errorRegistry, "schema_bundle_version_mismatch")
+	assertRegistryContainsCodes(t, errorRegistry,
+		"unknown_schema_id",
+		"unsupported_schema_version",
+		"unsupported_hash_algorithm",
+		"schema_bundle_version_mismatch",
+		"stream_timeout",
+		"gateway_failure",
+		"request_cancelled",
+	)
+}
+
+func assertPolicyRegistryCodes(t *testing.T) {
+	t.Helper()
+
+	policyRegistry := loadRegistry(t, schemaPath(t, "registries/policy_reason_code.registry.json"))
+	assertRegistryContainsCodes(t, policyRegistry,
+		"deny_by_default",
+		"allow_manifest_opt_in",
+		"approval_required",
+	)
+}
+
+func assertAuditRegistryCodes(t *testing.T) {
+	t.Helper()
+
+	auditRegistry := loadRegistry(t, schemaPath(t, "registries/audit_event_type.registry.json"))
+	assertRegistryContainsCodes(t, auditRegistry,
+		"session_open",
+		"model_egress",
+	)
+}
+
+func assertApprovalRegistryCodes(t *testing.T) {
+	t.Helper()
 
 	approvalRegistry := loadRegistry(t, schemaPath(t, "registries/approval_trigger_code.registry.json"))
-	for _, code := range []string{
+	assertRegistryContainsCodes(t, approvalRegistry,
 		"stage_sign_off",
 		"reduced_assurance_backend",
 		"gate_override",
@@ -66,8 +109,14 @@ func TestRegistryNamespacesAreSeparate(t *testing.T) {
 		"secret_access_lease",
 		"dependency_install",
 		"system_command_execution",
-	} {
-		assertRegistryCode(t, approvalRegistry, code)
+	)
+}
+
+func assertRegistryContainsCodes(t *testing.T, registry registryFile, codes ...string) {
+	t.Helper()
+
+	for _, code := range codes {
+		assertRegistryCode(t, registry, code)
 	}
 }
 

@@ -20,6 +20,18 @@
     {
       "code": "schema_bundle_version_mismatch",
       "summary": "Communicating components do not share the same active local-session schema bundle version."
+    },
+    {
+      "code": "stream_timeout",
+      "summary": "A streamed model response exceeded the idle timeout before the next event arrived."
+    },
+    {
+      "code": "gateway_failure",
+      "summary": "The model gateway produced a terminal failure while handling the request."
+    },
+    {
+      "code": "request_cancelled",
+      "summary": "The streamed request was cancelled before a successful terminal response was produced."
     }
   ]
 }
