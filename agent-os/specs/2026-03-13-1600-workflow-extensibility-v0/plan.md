@@ -16,6 +16,8 @@ Parallelization: docs-only; safe to do anytime.
 ## Task 2: ProcessDefinition Object Model
 
 - Define a schema-validated `ProcessDefinition` as the user extension point for post-MVP workflow composition.
+  - `ProcessDefinition` uses JSON as the canonical runtime and persisted format for v0.
+  - Validation uses JSON Schema as the single source of truth for object shape and bounds.
   - `ProcessDefinition` is a top-level object family with explicit `schema_id` and `schema_version`.
   - Nested step/block objects stay typed and discriminator-driven; the schema must reject unknown block kinds and unknown fields.
 - `ProcessDefinition` may choose:
@@ -35,9 +37,12 @@ Parallelization: can be designed in parallel with runner and policy follow-on wo
 
 ## Task 3: ProcessDefinition Validation + Governance
 
-- Support JSON and YAML authoring, but normalize both to the same canonical logical object before hashing/validation.
+- Accept `ProcessDefinition` inputs as JSON in v0 and validate them with JSON Schema draft 2020-12.
+- Use RFC 8785 JCS canonicalization for hash/sign inputs so process-definition identity matches the repo-wide signed-object model.
+- Defer alternative authoring formats such as YAML to later tooling; any future adapter must normalize to the same canonical JSON object before validation and hashing.
 - Fail closed on:
   - unknown step types or block kinds
+  - schema-validation failures or non-JSON inputs
   - cycles or unsupported recursion
   - unsupported concurrency/fanout shapes
   - omitted required capability references
@@ -77,7 +82,7 @@ Parallelization: can be implemented in parallel across runner, policy, and TUI o
 - Add checked-in fixtures for:
   - valid `ProcessDefinition` examples (linear, branching, parallel)
   - invalid definitions (unknown step kinds, capability escalation attempts, invalid recursion/fanout)
-  - JSON/YAML equivalence for the same logical workflow
+  - canonical JSON + hash fixtures for the same logical workflow
   - shared-memory metadata/invalidation examples
 - Fixture updates must stay explicit and reviewable; CI verifies but does not regenerate them implicitly.
 
@@ -86,6 +91,7 @@ Parallelization: fixtures can be created in parallel with implementation so long
 ## Acceptance Criteria
 
 - Users can opt into schema-validated custom workflows without introducing new capabilities outside signed manifests + policy.
+- Runtime `ProcessDefinition` objects are JSON and validate against JSON Schema deterministically.
 - Unknown or malformed process definitions fail closed.
 - The active process definition is hash-bound and auditable.
 - Shared memory is optional, rebuildable, and never authoritative for security-sensitive state.

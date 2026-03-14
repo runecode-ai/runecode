@@ -16,4 +16,7 @@
 
 ## Similar Implementations
 
-None yet.
+- GitHub Actions workflow syntax - YAML-authored workflow files
+- Argo Workflows - YAML-authored workflow specs with step/DAG structure
+- Tekton Pipelines - YAML-authored pipeline/task definitions
+- AWS Step Functions Amazon States Language - JSON-defined state machines

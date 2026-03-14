@@ -149,7 +149,7 @@ func validRoleManifest() map[string]any {
 		"role_kind":          "workspace",
 		"approval_profile":   "moderate",
 		"capability_opt_ins": []any{"workspace_write"},
-		"allowlist_refs":     []any{digestValue("a")},
+		"allowlist_refs":     []any{testDigestValue("a")},
 		"signatures":         []any{signatureBlock()},
 	}
 }
@@ -162,7 +162,7 @@ func validRoleManifestWithoutCapabilities() map[string]any {
 
 func invalidRoleManifestWithDuplicateAllowlists() map[string]any {
 	manifest := validRoleManifest()
-	manifest["allowlist_refs"] = []any{digestValue("a"), digestValue("a")}
+	manifest["allowlist_refs"] = []any{testDigestValue("a"), testDigestValue("a")}
 	return manifest
 }
 
@@ -175,7 +175,7 @@ func validRunCapabilityManifest() map[string]any {
 		"run_id":             "run-1",
 		"approval_profile":   "moderate",
 		"capability_opt_ins": []any{"model_egress"},
-		"allowlist_refs":     []any{digestValue("a")},
+		"allowlist_refs":     []any{testDigestValue("a")},
 		"signatures":         []any{signatureBlock()},
 	}
 }
@@ -195,7 +195,7 @@ func validStageCapabilityManifest() map[string]any {
 
 func invalidRunCapabilityManifestWithDuplicateAllowlists() map[string]any {
 	manifest := validRunCapabilityManifest()
-	manifest["allowlist_refs"] = []any{digestValue("a"), digestValue("a")}
+	manifest["allowlist_refs"] = []any{testDigestValue("a"), testDigestValue("a")}
 	return manifest
 }
 
@@ -218,9 +218,9 @@ func validApprovalRequest() map[string]any {
 		"approval_profile":         "moderate",
 		"requester":                manifestPrincipal(),
 		"approval_trigger_code":    "gateway_egress_scope_change",
-		"manifest_hash":            digestValue("a"),
-		"action_request_hash":      digestValue("b"),
-		"relevant_artifact_hashes": []any{digestValue("c")},
+		"manifest_hash":            testDigestValue("a"),
+		"action_request_hash":      testDigestValue("b"),
+		"relevant_artifact_hashes": []any{testDigestValue("c")},
 		"details_schema_id":        "runecode.protocol.details.approval.gateway-egress.v0",
 		"details":                  map[string]any{"requested_category": "model"},
 		"requested_at":             "2026-03-13T12:00:00Z",
@@ -264,7 +264,7 @@ func validApprovalDecision() map[string]any {
 	return map[string]any{
 		"schema_id":                   "runecode.protocol.v0.ApprovalDecision",
 		"schema_version":              "0.2.0",
-		"approval_request_hash":       digestValue("d"),
+		"approval_request_hash":       testDigestValue("d"),
 		"approver":                    approverPrincipal(),
 		"decision_outcome":            "approve",
 		"decided_at":                  "2026-03-13T12:05:00Z",
@@ -272,8 +272,8 @@ func validApprovalDecision() map[string]any {
 		"decision_expires_at":         "2026-03-13T12:30:00Z",
 		"restrictions_schema_id":      "runecode.protocol.details.approval.restrictions.v0",
 		"restrictions":                map[string]any{"max_uses": 1},
-		"policy_decision_hash":        digestValue("e"),
-		"stage_manifest_summary_hash": digestValue("f"),
+		"policy_decision_hash":        testDigestValue("e"),
+		"stage_manifest_summary_hash": testDigestValue("f"),
 	}
 }
 
@@ -281,7 +281,7 @@ func validMinimalApprovalDecision() map[string]any {
 	return map[string]any{
 		"schema_id":             "runecode.protocol.v0.ApprovalDecision",
 		"schema_version":        "0.2.0",
-		"approval_request_hash": digestValue("d"),
+		"approval_request_hash": testDigestValue("d"),
 		"approver":              approverPrincipal(),
 		"decision_outcome":      "approve",
 		"decided_at":            "2026-03-13T12:05:00Z",

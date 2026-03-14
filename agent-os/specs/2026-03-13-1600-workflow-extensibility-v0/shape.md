@@ -9,7 +9,9 @@ Define post-MVP workflow composition and shared-memory acceleration without chan
 - `ProcessDefinition` is a typed, schema-validated composition surface, not a plugin system.
 - Custom workflows compose an allowlist of existing RuneCode step types; they do not add new privileged operations.
 - Selected process definitions are signed, hash-bound inputs to policy, approval, and audit flows.
-- JSON and YAML authoring converge to one canonical logical object before validation and hashing.
+- `ProcessDefinition` uses JSON as its runtime and canonical on-disk format.
+- JSON Schema is the single validation source of truth for `ProcessDefinition` objects.
+- Future authoring adapters must normalize to the same canonical JSON object before validation and hashing; direct runtime execution consumes JSON only.
 - Shared memory is a rebuildable accelerator for derived artifacts only; authoritative state remains in the run DB, artifact store, and audit trail.
 
 ## Context

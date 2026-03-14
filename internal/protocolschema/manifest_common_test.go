@@ -421,10 +421,14 @@ func requiresPlaceholderNote(schemaID string) bool {
 	return ok
 }
 
-func digestValue(fill string) map[string]any {
+func testDigestValue(nibble string) map[string]any {
+	if len(nibble) != 1 || !strings.Contains("0123456789abcdef", nibble) {
+		panic("testDigestValue requires exactly one lowercase hex nibble")
+	}
+
 	return map[string]any{
 		"hash_alg": "sha256",
-		"hash":     strings.Repeat(fill, 64),
+		"hash":     strings.Repeat(nibble, 64),
 	}
 }
 

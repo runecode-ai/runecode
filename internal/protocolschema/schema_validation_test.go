@@ -249,8 +249,8 @@ func principalIdentityRoleInstanceCase() validationCase {
 			"principal_id":                    "role-123",
 			"instance_id":                     "gateway-1",
 			"role_kind":                       "gateway",
-			"active_role_manifest_hash":       digestValue("a"),
-			"active_capability_manifest_hash": digestValue("b"),
+			"active_role_manifest_hash":       testDigestValue("a"),
+			"active_capability_manifest_hash": testDigestValue("b"),
 		},
 	}
 }
@@ -264,8 +264,8 @@ func principalIdentityRoleInstanceMissingRoleKindCase() validationCase {
 			"actor_kind":                      "role_instance",
 			"principal_id":                    "role-123",
 			"instance_id":                     "gateway-1",
-			"active_role_manifest_hash":       digestValue("a"),
-			"active_capability_manifest_hash": digestValue("b"),
+			"active_role_manifest_hash":       testDigestValue("a"),
+			"active_capability_manifest_hash": testDigestValue("b"),
 		},
 		wantErr: true,
 	}
