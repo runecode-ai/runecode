@@ -61,22 +61,37 @@ This is the canonical view of what is planned next (as specs) and what has shipp
   - Git operations are isolated behind a gateway with outbound patch verification.
 - [ ] Approval Profiles (Strict/Permissive) (`agent-os/specs/2026-03-10-1530-approval-profiles-v0/`)
   - Add selectable human-in-the-loop profiles beyond MVP moderate.
+- [ ] Workflow Extensibility v0 (`agent-os/specs/2026-03-13-1600-workflow-extensibility-v0/`)
+  - Add schema-validated custom workflows and rebuildable shared-memory accelerators without changing the safety model.
 - [ ] Auth Gateway Role v0 (`agent-os/specs/2026-03-12-1030-auth-gateway-role-v0/`)
   - Provider login/refresh runs in an auth-only gateway role; long-lived tokens live only in secretsd.
+- [ ] Bridge Runtime Protocol v0 (`agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`)
+  - Shared bridge contracts keep user-installed provider runtimes auditable and in explicit LLM-only mode.
 - [ ] OpenAI ChatGPT Subscription Provider (OAuth + Codex Bridge) (`agent-os/specs/2026-03-11-1920-openai-chatgpt-subscription-provider-v0/`)
   - Access GPT models via a ChatGPT subscription OAuth flow without expanding the trust boundary.
 - [ ] GitHub Copilot Subscription Provider (Official Runtime Bridge) (`agent-os/specs/2026-03-11-1921-github-copilot-subscription-provider-v0/`)
   - Access Copilot models via an official local runtime bridge in LLM-only mode.
+- [ ] Local IPC Protobuf Transport v0 (`agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`)
+  - Migrate local broker IPC to protobuf without changing the logical protocol or local-only posture.
 - [ ] Web Research Role (`agent-os/specs/2026-03-08-1039-web-research-role/`)
   - Controlled web research runs with strict egress allowlists and citation artifacts.
 - [ ] Deps Fetch + Offline Cache (`agent-os/specs/2026-03-08-1039-deps-fetch-cache/`)
   - Dependencies can be fetched without giving workspace roles internet access.
+- [ ] External Audit Anchoring v0 (`agent-os/specs/2026-03-13-1603-external-audit-anchoring-v0/`)
+  - Optionally anchor audit roots to external targets with explicit egress and typed receipts.
 - [ ] Image/Toolchain Signing Pipeline (`agent-os/specs/2026-03-08-1039-image-toolchain-signing/`)
   - Isolate images/toolchains are signed and enforced at boot to reduce supply chain risk.
 - [ ] Windows MicroVM Runtime Support (`agent-os/specs/2026-03-08-1039-windows-microvm-runtime/`)
   - MicroVM-backed roles run on Windows with consistent policy and audit semantics.
 - [ ] macOS Virtualization Polish (`agent-os/specs/2026-03-08-1039-macos-virtualization-polish/`)
   - macOS microVM reliability and UX are improved without changing the security model.
+
+### vNext (Planned)
+
+- [ ] Workflow Concurrency v0 (`agent-os/specs/2026-03-13-1730-workflow-concurrency-v0/`)
+  - Add explicit, auditable shared-workspace concurrency instead of relying on one-run-per-workspace forever.
+- [ ] Isolate Attestation v0 (`agent-os/specs/2026-03-13-1731-isolate-attestation-v0/`)
+  - Upgrade MVP TOFU isolate binding to measured, attestable provisioning without changing the core audit contract.
 
 ## Unscheduled (Needs Specs)
 

@@ -70,7 +70,7 @@ Parallelization: can be implemented in parallel with audit anchoring; both rely 
     - a launcher-generated `session_nonce` (unique per session)
     - a `handshake_transcript_hash` (hash of canonical handshake messages)
   - Verifiers and UI must surface TOFU as a degraded posture (not a silent detail).
-  - post-MVP: measured boot / attestation can upgrade TOFU to an attested binding without changing the audit/event format.
+  - later attestation work that upgrades TOFU to an attested binding lives in `agent-os/specs/2026-03-13-1731-isolate-attestation-v0/`.
 
 - Algorithm agility (MVP requirement):
   - Every signature envelope includes `{alg, key_id}`.

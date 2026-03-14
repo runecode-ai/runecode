@@ -24,7 +24,18 @@ Parallelization: docs-only; safe to do anytime.
 
 Parallelization: can be designed in parallel with provider specs; it depends on a stable gateway allowlist model in `agent-os/specs/2026-03-08-1039-policy-engine-v0/`.
 
-## Task 3: OAuth + Device-Code Flow Contract (Provider-Agnostic)
+## Task 3: Shared Auth Object Families + Flow Contract (Provider-Agnostic)
+
+- Define the shared auth object families used by later provider specs:
+  - `AuthRequest`
+  - `AuthChallenge`
+  - `AuthCompletion`
+  - `AuthLeaseGrant`
+  - typed auth failure/error detail objects where needed
+- Shared auth objects must support browser-loopback, device-code, and refresh-style flows at the object-family level.
+- Shared auth objects must include provider identity, flow kind, correlation/state binding, requested scopes, and callback/challenge descriptors where applicable.
+- No auth object that can reach TUI, runner, audit fixtures, or general broker clients may contain raw secret values.
+- Provider-specific OAuth parameters stay in provider specs; this spec owns the shared auth object families, invariants, and versioning expectations.
 
 - Support two official login paths (provider-specific details live in provider specs):
   - browser-based flow with a localhost callback bound to loopback only
@@ -34,7 +45,7 @@ Parallelization: can be designed in parallel with provider specs; it depends on 
 - Do not accept secrets via environment variables or CLI args.
   - token material flows only via local IPC to `secretsd` (or via FD/stdin where needed).
 
-Parallelization: can be implemented in parallel with `secretsd` and the broker local API once token/lease schemas are defined.
+Parallelization: can be implemented in parallel with `secretsd` and the broker local API once the shared auth schema contract and token/lease schemas are defined.
 
 ## Task 4: Secretsd Integration (No Second Store)
 
@@ -54,9 +65,22 @@ Parallelization: can be implemented in parallel with model-gateway/provider brid
 
 Parallelization: can be implemented in parallel with audit log verify work; it depends on stable audit event schemas.
 
+## Task 6: Fixtures + Validation
+
+- Add checked-in fixtures for:
+  - browser-loopback auth start/challenge/completion flows
+  - device-code flows
+  - refresh/lease-handoff flows
+  - invalid state/correlation mismatches
+  - auth lease-grant receipts with no raw secret material
+- Go and TS consumers must reject the same invalid auth objects and agree on the same typed success fixtures.
+
+Parallelization: fixtures can be produced in parallel with provider-specific auth work once the shared object families are fixed.
+
 ## Acceptance Criteria
 
 - Auth flows run only inside `auth-gateway` and never in workspace roles.
 - No environment-variable secret injection is used.
 - `secretsd` is the only long-lived secrets store.
 - Auth activity is auditable with typed events and stable errors.
+- Later provider specs reuse the shared auth object families instead of inventing ad-hoc control messages.

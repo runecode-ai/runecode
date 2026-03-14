@@ -2,13 +2,44 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runecode.dev/protocol/schemas/objects/CapabilityManifest.schema.json",
   "title": "CapabilityManifest",
-  "description": "Protocol-owned capability manifest family for run- and stage-scoped opt-ins. The scope is explicit so manifests never rely on implicit security-sensitive defaults.",
+  "description": "Protocol-owned capability manifest family for run- and stage-scoped opt-ins. The scope, lifecycle identifiers, and shared principal identity are explicit so manifests never rely on implicit security-sensitive defaults.",
   "type": "object",
   "additionalProperties": false,
-  "maxProperties": 7,
+  "maxProperties": 10,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "manifest_scope": {
+            "const": "stage"
+          }
+        },
+        "required": [
+          "manifest_scope"
+        ]
+      },
+      "then": {
+        "required": [
+          "run_id",
+          "stage_id"
+        ]
+      },
+      "else": {
+        "required": [
+          "run_id"
+        ],
+        "not": {
+          "required": [
+            "stage_id"
+          ]
+        }
+      }
+    }
+  ],
   "required": [
     "schema_id",
     "schema_version",
+    "principal",
     "manifest_scope",
     "approval_profile",
     "capability_opt_ins",
@@ -22,9 +53,14 @@
       "x-data-class": "public"
     },
     "schema_version": {
-      "const": "0.1.0",
+      "const": "0.2.0",
       "description": "Exact protocol schema version used to validate this capability manifest.",
       "x-data-class": "public"
+    },
+    "principal": {
+      "$ref": "PrincipalIdentity.schema.json",
+      "description": "Shared principal identity for the run or stage this capability manifest governs.",
+      "x-data-class": "sensitive"
     },
     "manifest_scope": {
       "type": "string",
@@ -35,17 +71,32 @@
       "description": "Scope of capability opt-ins covered by this manifest.",
       "x-data-class": "public"
     },
-    "approval_profile": {
+    "run_id": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 64,
-      "description": "Approval profile selected as a signed manifest input for this capability manifest.",
+      "maxLength": 128,
+      "description": "Run identifier bound into the capability manifest so approvals and leases fail closed when the run changes.",
+      "x-data-class": "sensitive"
+    },
+    "stage_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Stage identifier required for stage-scoped capability manifests.",
+      "x-data-class": "sensitive"
+    },
+    "approval_profile": {
+      "type": "string",
+      "enum": [
+        "moderate"
+      ],
+      "description": "Approval profile selected as a signed manifest input for this capability manifest. MVP currently allows only the moderate profile.",
       "x-data-class": "public"
     },
     "capability_opt_ins": {
       "type": "array",
       "maxItems": 64,
-      "description": "Explicit capability opt-ins enabled for the run or stage scope.",
+      "description": "Explicit capability opt-ins enabled for the run or stage scope. An empty array is the intentional signed no-capabilities posture.",
       "x-data-class": "public",
       "items": {
         "type": "string",
@@ -63,7 +114,8 @@
       "items": {
         "$ref": "Digest.schema.json#/$defs/digestValue",
         "description": "Digest reference to an allowlist artifact consumed by this manifest."
-      }
+      },
+      "uniqueItems": true
     },
     "signatures": {
       "type": "array",

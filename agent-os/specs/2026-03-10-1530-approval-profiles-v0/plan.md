@@ -21,6 +21,8 @@ Parallelization: docs-only; safe to do anytime.
 - Define how profiles are selected:
   - profile is an explicit field in the run/stage capability manifest (signed input)
   - the system fails closed on unknown profile values
+- Adding a new profile value is a protocol-visible schema change.
+  - Version-bump every object family that constrains or surfaces the profile enum, starting with the run/stage capability manifest and any typed summaries that expose the active profile.
 - Profiles must never convert `deny -> allow`; they only affect whether an otherwise-allowed action requires explicit human approval.
 - Define the non-negotiable invariant set that profiles cannot bypass.
 
@@ -49,7 +51,6 @@ Parallelization: can be designed in parallel with TUI work; it depends on struct
   - posture-changing actions (e.g., container backend, new egress scopes) remain explicit approvals
   - gate overrides remain explicit approvals
   - when git-gateway exists: require an explicit final approval for git remote state changes (push/tag/PR creation)
-- post-MVP review: consider a dedicated `git-remote-ops` approval trigger category once git-gateway exists
 
 Parallelization: can be designed in parallel with workflow runner work; it depends on the policy engine being the only pause/resume authority.
 

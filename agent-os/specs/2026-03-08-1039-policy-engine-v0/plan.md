@@ -77,9 +77,7 @@ Approval lifecycle semantics (MVP):
     - system-modifying command execution (beyond ordinary workspace edit/test executors)
     - gateway egress scope changes (enable a gateway role; change allowlists; expand allowed egress data classes)
     - actions wholly inside the workspace sandbox and within the signed manifest execute without intermediate approvals
-- Post-MVP:
-  - add `strict` and `permissive` approval profiles in a dedicated spec (without changing MVP invariants)
-  - review adding a distinct approval trigger category for `git-remote-ops` (push/tag/PR creation) once the git-gateway exists
+- Later approval-profile expansion lives in `agent-os/specs/2026-03-10-1530-approval-profiles-v0/`, and the dedicated `git-remote-ops` trigger category lives in `agent-os/specs/2026-03-08-1039-git-gateway/`.
 
 Parallelization: can be implemented in parallel with the workflow runner pause/resume work as long as the approval request/decision schemas are shared.
 

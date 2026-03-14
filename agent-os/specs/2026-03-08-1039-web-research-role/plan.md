@@ -37,6 +37,7 @@ Parallelization: crawler implementation can proceed in parallel with artifact st
 
 - Emit `web_citations` artifacts only (URLs + quoted excerpts).
 - Ensure no workspace-derived data classes flow into this role.
+- Audit outbound web activity with the standard gateway network fields: allowlist id, destination descriptor, bytes, timing, and outcome.
 
 Parallelization: can be implemented in parallel with the artifact store (data classes + flow matrix); depends on stable `web_citations` artifact schema.
 

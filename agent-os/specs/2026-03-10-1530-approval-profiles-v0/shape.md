@@ -9,6 +9,7 @@ Define additional human-in-the-loop approval profiles beyond MVP `moderate`, and
 - Approval profiles affect *when* an allowed action requires explicit human approval; they must not change isolation boundaries or weaken invariants.
 - Profiles must never convert `deny -> allow`.
 - Profiles are signed inputs (part of the run/stage capability manifest) and are fully auditable.
+- Adding or constraining profile values is a schema-versioned protocol change for every object family that carries the enum.
 - MVP ships with `moderate` only; `strict` and `permissive` are post-MVP extensions.
 
 ## Context

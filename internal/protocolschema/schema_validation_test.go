@@ -70,10 +70,14 @@ func TestManifestsRequireExplicitSignedInputs(t *testing.T) {
 		t.Run(schemaFile, func(t *testing.T) {
 			schema := loadJSONMap(t, schemaPath(t, schemaFile))
 			required := stringSliceValue(t, schema, "required")
+			assertContains(t, required, "principal")
 			assertContains(t, required, "approval_profile")
 			assertContains(t, required, "capability_opt_ins")
 			assertContains(t, required, "allowlist_refs")
 			assertContains(t, required, "signatures")
+
+			approvalProfile := objectValue(t, objectValue(t, schema, "properties"), "approval_profile")
+			assertContains(t, stringSliceValue(t, approvalProfile, "enum"), "moderate")
 		})
 	}
 
@@ -228,6 +232,8 @@ func principalIdentityCases() []validationCase {
 		principalIdentityRoleInstanceCase(),
 		principalIdentityRoleInstanceMissingRoleKindCase(),
 		principalIdentityDaemonCase(),
+		principalIdentityExternalRuntimeCase(),
+		principalIdentityExternalRuntimeWithRoleKindCase(),
 		principalIdentityUserWithRoleKindCase(),
 		principalIdentityLocalClientWithRoleKindCase(),
 	}
@@ -237,11 +243,14 @@ func principalIdentityRoleInstanceCase() validationCase {
 	return validationCase{
 		name: "role instance requires role kind",
 		value: map[string]any{
-			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
-			"schema_version": "0.1.0",
-			"actor_kind":     "role_instance",
-			"principal_id":   "role-123",
-			"role_kind":      "gateway",
+			"schema_id":                       "runecode.protocol.v0.PrincipalIdentity",
+			"schema_version":                  "0.2.0",
+			"actor_kind":                      "role_instance",
+			"principal_id":                    "role-123",
+			"instance_id":                     "gateway-1",
+			"role_kind":                       "gateway",
+			"active_role_manifest_hash":       testDigestValue("a"),
+			"active_capability_manifest_hash": testDigestValue("b"),
 		},
 	}
 }
@@ -250,10 +259,13 @@ func principalIdentityRoleInstanceMissingRoleKindCase() validationCase {
 	return validationCase{
 		name: "role instance without role kind fails",
 		value: map[string]any{
-			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
-			"schema_version": "0.1.0",
-			"actor_kind":     "role_instance",
-			"principal_id":   "role-123",
+			"schema_id":                       "runecode.protocol.v0.PrincipalIdentity",
+			"schema_version":                  "0.2.0",
+			"actor_kind":                      "role_instance",
+			"principal_id":                    "role-123",
+			"instance_id":                     "gateway-1",
+			"active_role_manifest_hash":       testDigestValue("a"),
+			"active_capability_manifest_hash": testDigestValue("b"),
 		},
 		wantErr: true,
 	}
@@ -264,10 +276,38 @@ func principalIdentityDaemonCase() validationCase {
 		name: "daemon may include role kind",
 		value: map[string]any{
 			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
-			"schema_version": "0.1.0",
+			"schema_version": "0.2.0",
 			"actor_kind":     "daemon",
 			"principal_id":   "secretsd",
+			"instance_id":    "daemon-1",
 			"role_kind":      "auth",
+		},
+	}
+}
+
+func principalIdentityExternalRuntimeCase() validationCase {
+	return validationCase{
+		name: "external runtime may omit role kind",
+		value: map[string]any{
+			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
+			"schema_version": "0.2.0",
+			"actor_kind":     "external_runtime",
+			"principal_id":   "provider-runtime",
+			"instance_id":    "runtime-1",
+		},
+	}
+}
+
+func principalIdentityExternalRuntimeWithRoleKindCase() validationCase {
+	return validationCase{
+		name: "external runtime may include role kind",
+		value: map[string]any{
+			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
+			"schema_version": "0.2.0",
+			"actor_kind":     "external_runtime",
+			"principal_id":   "provider-runtime",
+			"instance_id":    "runtime-1",
+			"role_kind":      "model",
 		},
 	}
 }
@@ -277,9 +317,10 @@ func principalIdentityUserWithRoleKindCase() validationCase {
 		name: "user may not include role kind",
 		value: map[string]any{
 			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
-			"schema_version": "0.1.0",
+			"schema_version": "0.2.0",
 			"actor_kind":     "user",
 			"principal_id":   "alice",
+			"instance_id":    "user-session-1",
 			"role_kind":      "gateway",
 		},
 		wantErr: true,
@@ -291,9 +332,10 @@ func principalIdentityLocalClientWithRoleKindCase() validationCase {
 		name: "local client may not include role kind",
 		value: map[string]any{
 			"schema_id":      "runecode.protocol.v0.PrincipalIdentity",
-			"schema_version": "0.1.0",
+			"schema_version": "0.2.0",
 			"actor_kind":     "local_client",
 			"principal_id":   "cli-session",
+			"instance_id":    "client-1",
 			"role_kind":      "workspace",
 		},
 		wantErr: true,

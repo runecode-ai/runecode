@@ -46,7 +46,6 @@ Parallelization: can be implemented in parallel with broker development once the
 - Surface degraded posture states prominently:
   - TOFU isolate key provisioning
   - unanchored audit segments (when anchoring is configured/expected)
-  - untested-but-probe-passing vendor bridge runtimes (post-MVP)
 - For each approval request, show a concise, structured "what changes if approved" view.
 
 Parallelization: can be implemented in parallel with policy engine approval payload design; it depends on stable reason codes and structured decision details.
