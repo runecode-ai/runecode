@@ -62,14 +62,9 @@ Supported MVP deployment shape:
 
 Parallelization: can be implemented in parallel with TUI and CLI work; depends on a stable local API transport contract.
 
-### Post-MVP note: protobuf and optional gRPC
+### Follow-On Local Transport Spec
 
-- Prefer protobuf message encoding over the existing local IPC transports (UDS / named pipes).
-- gRPC is optional; if adopted for ergonomics:
-  - do not use TCP by default
-  - prefer gRPC over Unix domain sockets (Unix) or OS-native local IPC (e.g., named pipes on Windows) where supported
-  - if TCP loopback is used for compatibility, require mTLS or a strong short-lived local token
-  - binding safety is a security requirement: never bind privileged APIs to non-loopback interfaces
+- Post-MVP protobuf/gRPC transport work now lives in `agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`.
 
 ## Task 5: Artifact Routing Integration
 

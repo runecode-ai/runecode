@@ -73,7 +73,7 @@ Parallelization: can be implemented in parallel with `secretsd` and policy engin
   - generate and pin app-server schema artifacts for the selected runtime version
   - add RPC request/response fixture tests and stable error taxonomy mapping
 
-Parallelization: can be prototyped in parallel with core `model-gateway` work; it depends on the shared bridge envelope/error taxonomy in `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/`.
+Parallelization: can be prototyped in parallel with core `model-gateway` work; it depends on the shared bridge envelope/error taxonomy in `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`.
 
 ## Task 5: Policy + Audit Integration
 

@@ -8,7 +8,7 @@ Add a single ZK proof capability for narrow integrity attestations over determin
 
 - ZK is used for integrity attestations of deterministic computations/records, not for proving arbitrary reasoning.
 - Proof generation is an explicit workflow step; verification is always deterministic.
-- MVP includes ZK only if a concrete proving system can be selected with acceptable performance; otherwise this spec yields interfaces/fixtures and ships post-MVP.
+- The first ZK proof ships only if a concrete proving system can be selected with acceptable performance; otherwise release is deferred rather than weakening the contract.
 
 ## Context
 

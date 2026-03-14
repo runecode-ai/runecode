@@ -17,6 +17,7 @@ Parallelization: docs-only; safe to do anytime.
 
 - Represent canonical repo identity and allowed operations in the run/stage manifest.
 - Disallow URL-based policy decisions.
+- Define a dedicated `git-remote-ops` approval trigger category for push/tag/PR creation so approval profiles can treat remote state changes explicitly.
 
 Parallelization: can be designed in parallel with policy engine gateway allowlist work; it depends on stable destination descriptor schemas.
 
@@ -39,6 +40,7 @@ Parallelization: can be implemented in parallel with artifact store and protocol
 
 - Create PRs via provider APIs.
 - Attach run artifacts (spec links, gate results) as structured metadata.
+- Audit remote git operations with the standard gateway network fields: allowlist id, destination descriptor, bytes, timing, and outcome.
 
 Parallelization: can be implemented in parallel with provider-specific API adapters once the core git-gateway boundary is stable.
 

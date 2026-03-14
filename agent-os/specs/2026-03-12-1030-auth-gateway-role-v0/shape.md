@@ -10,6 +10,7 @@ Define the provider-agnostic `auth-gateway` role boundary and contracts for OAut
   - `auth-gateway` performs login/refresh and has auth-only egress.
   - `model-gateway` performs inference egress and never receives long-lived credentials.
 - `secretsd` is the only long-lived secrets store; there is no second credential cache.
+- Shared auth object families are provider-agnostic, typed, and versioned; provider specs extend them rather than redefining the control flow.
 - No environment-variable or CLI-arg secret injection.
 - Auth flows are typed, auditable, and fail closed on state/protocol mismatches.
 

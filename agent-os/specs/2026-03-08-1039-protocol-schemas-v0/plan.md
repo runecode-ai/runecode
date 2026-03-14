@@ -1,6 +1,6 @@
 # Protocol & Schema Bundle v0
 
-User-visible outcome: cross-boundary and cross-isolate communication is structured, schema-validated, versioned, and hash-addressable, with typed approvals, stable identities, auditable streaming/model outputs, and reserved extension points for future auth and bridge-provider work.
+User-visible outcome: cross-boundary and cross-isolate communication is structured, schema-validated, versioned, and hash-addressable, with typed approvals, stable identities, and auditable streaming/model outputs.
 
 ## Task 1: Save Spec Documentation
 
@@ -27,7 +27,6 @@ Define the shared top-level object families that all downstream specs must use r
 - `LLMRequest` / `LLMResponse` + streaming event objects
 - signed object envelopes
 - shared error envelopes
-- post-MVP reserved workflow/process-definition objects that remain schema-governed and cannot expand capabilities without a schema bump + security review
 
 Define registry boundaries so machine-consumed codes do not bleed together:
 - `error.code` for transport/validation/storage/auth/runtime failures
@@ -144,7 +143,6 @@ Approval invariants:
 Approval profile rules (MVP):
 - MVP supports a single profile value: `moderate`
 - unknown approval profile values fail closed
-- adding new profile values (for example `strict` and `permissive`) is post-MVP and requires a schema version bump for the affected object families
 
 Parallelization: finalize approval objects early because runner, policy, TUI, and audit all depend on the same contract.
 
@@ -253,46 +251,19 @@ Audit event requirements:
 
 Parallelization: can be implemented in parallel with artifact store and audit work once provenance and audit linkage fields are agreed.
 
-## Task 8: Define Auth Extension Object Families (Post-MVP Reserved)
+## Task 8: Auth Extension Families Live in Later Specs
 
-Reserve provider-agnostic auth object families now so later auth/provider specs do not invent ad-hoc control messages:
-- `AuthRequest`
-- `AuthChallenge`
-- `AuthCompletion`
-- `AuthLeaseGrant` / equivalent lease-handoff receipt
-- typed auth failure/error detail objects where needed
+- Shared auth object families, invariants, and fixtures live in `agent-os/specs/2026-03-12-1030-auth-gateway-role-v0/` plus later provider specs.
+- This MVP protocol bundle remains the source of the shared identity, error, signing, and versioning rules those later auth specs inherit.
 
-Reserved auth-family requirements:
-- support browser-loopback, device-code, and refresh-style flows at the object-family level
-- include provider identity, flow kind, correlation/state binding, requested scopes, and callback/challenge descriptors where applicable
-- model the handoff to `secretsd` / `model-gateway` via lease references and receipts, not raw token values
-- no auth object that can reach TUI, runner, audit fixtures, or general broker clients may contain raw secrets
-- provider-specific OAuth parameters stay in provider specs; this protocol spec owns the shared object families, invariants, and versioning expectations only
+Parallelization: none for MVP implementation; later auth/provider work should build on the shared MVP foundations defined here.
 
-Parallelization: design-only for MVP; reserve the object families now so post-MVP auth-gateway and provider work inherit consistent contracts.
+## Task 9: Bridge Runtime Extension Families Live in Later Specs
 
-## Task 9: Define Bridge Runtime Extension Object Families (Post-MVP Reserved)
+- Shared bridge/runtime object families and fixtures live in `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`, with provider-specific RPC details in later provider specs.
+- This MVP protocol bundle remains the source of the shared identity, error, model request/response, and versioning rules those later bridge specs inherit.
 
-Reserve bridge-provider object families for local runtimes behind `model-gateway`:
-- `BridgeRuntimeIdentity`
-- `BridgeCompatibilityProbe`
-- `BridgeSessionPosture`
-- `BridgeTokenChallenge` or equivalent refresh-needed signal
-- typed bridge RPC error mapping objects
-
-Reserved bridge-family requirements:
-- runtime identity/version must be explicit and auditable
-- compatibility probe results must be typed and record required features, tested-range posture, and pass/fail status
-- bridge posture must expose whether the runtime is in explicit `LLM-only` mode
-- token delivery modes must avoid env vars and raw secret logging
-- provider specs choose the exact RPC mapping/protocol details; this protocol spec owns the shared object families, invariants, and versioning expectations only
-
-Security invariants:
-- bridge requests to execute commands, read/write workspace files, or apply patches are denied and treated as policy violations
-- no listening network ports by default; prefer local child-process IPC
-- these bridge invariants are shared broker/policy enforcement requirements, not optional provider-specific behavior
-
-Parallelization: design-only for MVP; reserve the bridge object families now so subscription-backed providers align to the same posture and audit model later.
+Parallelization: none for MVP implementation; later bridge/provider work should build on the shared MVP foundations defined here.
 
 ## Task 10: Choose Schema + Validation Strategy
 
@@ -310,7 +281,6 @@ Parallelization: design-only for MVP; reserve the bridge object families now so 
 - Fail closed at trust boundaries:
   - reject unknown fields
   - enforce message size limits and structural complexity limits (depth / array length)
-  - keep auth/bridge reserved families under the same fail-closed discipline even before they are implemented
 - Canonicalization for hashing/signing (MVP requirement):
   - use RFC 8785 (JSON Canonicalization Scheme, JCS) for canonical bytes
   - prohibit floats/NaN/Infinity in hashed/signed objects; use integers or strings
@@ -338,8 +308,6 @@ Add checked-in fixtures that validate against schemas and capture both success a
 - `LLMRequest` / `LLMResponse` fixtures using only `spec_text` inputs for MVP
 - streaming event-sequence fixtures, including success, interruption/cancellation, timeout, and failure
 - artifact provenance / receipt fixtures linking artifacts back to producing audit events
-- auth reserved-family fixtures (shape-only, no secret material)
-- bridge reserved-family fixtures for runtime identity, compatibility probe pass/fail, posture, and error mapping
 - schema-bundle session/open fixtures that record bundle versions per participating component/client
 - canonicalization + hashing fixtures:
   - canonical JSON bytes (golden)
@@ -356,22 +324,12 @@ Fixture governance:
 
 Parallelization: fixtures can be created in parallel across subsystems as long as they validate against the same schema bundle and canonicalization rules.
 
-## Task 12: On-Wire Encoding Migration Plan (Post-MVP)
+## Task 12: On-Wire Encoding Migration Lives in a Later Transport Spec
 
-- Keep the logical object model stable and documented independent of encoding.
-- Prefer protobuf message encoding for on-wire local RPC post-MVP without requiring gRPC:
-  - define `.proto` message definitions that map 1:1 to the logical model
-  - keep golden fixtures and cross-language tests so JSON and protobuf encodings are behaviorally equivalent
-  - continue using local IPC transports (UDS / named pipes / vsock / virtio-serial); do not introduce a network API by default
-  - keep message framing, size limits, deadlines/timeouts, and backpressure as explicit requirements regardless of transport
-- gRPC is optional (post-MVP) and must remain local-only:
-  - prefer gRPC over Unix domain sockets (Unix) and OS-native local IPC (for example named pipes on Windows) where supported
-  - do not use TCP by default
-  - if TCP loopback is used for compatibility, require either mTLS with pinned/trusted local certificates or a strong short-lived local token mechanism stored with strict filesystem permissions
-  - binding safety is a security requirement: never bind privileged APIs to non-loopback interfaces
-- Do not change hashing/signing semantics for persisted or signed objects; canonicalization remains defined by this spec.
+- The post-MVP protobuf/gRPC migration plan lives in `agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`.
+- This MVP spec keeps the logical object model and schema-authoring constraints stable so that later transport work can change encoding without redefining the protocol.
 
-Parallelization: design-only; can be done anytime after MVP schema rules are stable.
+Parallelization: none for MVP implementation; later transport work can start after these schema rules are stable.
 
 ## Acceptance Criteria
 
@@ -382,7 +340,7 @@ Parallelization: design-only; can be done anytime after MVP schema rules are sta
 - Shared digest/hash references use an explicit digest object and pin `sha256` as the MVP hash algorithm.
 - Signed object envelopes define the exact signing input as the JCS canonical bytes of the detached payload.
 - Shared approval request/decision schemas exist and cover binding, expiry, and stale-input invalidation semantics.
-- Shared principal identity objects are used consistently across manifests, approvals, leases, audit events, and bridge/auth extension families.
+- Shared principal identity objects are used consistently across manifests, approvals, leases, and audit events, and provide the actor model downstream specs build on.
 - All communicating components in a live local session use the same schema bundle version, and session/open audit metadata records those versions.
 - Streaming responses have ordered event types, sequence rules, and exactly one terminal event with deterministic success/interruption/failure semantics.
 - Broker-enforced truncation/timeouts produce broker-attributed terminal status rather than ambiguous gateway output.
@@ -391,5 +349,4 @@ Parallelization: design-only; can be done anytime after MVP schema rules are sta
 - Error codes, policy reason codes, and approval trigger codes are documented as separate registries.
 - Concrete MVP defaults exist for model request size, tool-call limits, structured-output size, and streamed-byte limits.
 - Broker boundary enforcement uses schema field classification metadata as the canonical secret/sensitive redaction or rejection mechanism.
-- Reserved auth and bridge object families are defined strongly enough that downstream specs can extend them without inventing ad-hoc cross-boundary shapes.
 - The schema/profile avoids constructs that would make post-MVP protobuf migration impractical.

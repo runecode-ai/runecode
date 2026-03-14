@@ -20,7 +20,7 @@ Parallelization: docs-only; safe to do anytime.
   - includes: `{schema_id, schema_version, anchor_kind, audit_segment_id, audit_segment_root_hash, created_at, signer_key_id, signer_posture, receipt_payload}`
 - Define `anchor_kind` values:
   - MVP baseline: `local_user_presence_signature`
-  - reserved (post-MVP): `tpm_pcr`, `rfc3161`, `witness_service`, `transparency_log`
+  - later non-MVP target kinds live in `agent-os/specs/2026-03-13-1603-external-audit-anchoring-v0/`
 - Define how receipts are referenced from audit events without embedding large payloads in the audit log.
 
 Parallelization: can be implemented in parallel with audit writer/verify so long as the receipt schema and audit event reference shape are agreed first (coordinate with `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/` and `agent-os/specs/2026-03-08-1039-audit-log-verify-v0/`).
@@ -37,15 +37,11 @@ Parallelization: can be implemented in parallel with audit writer/verify so long
 
 Parallelization: can proceed in parallel with the crypto and audit subsystems; it depends on the machine signing key + user-presence hook and on audit log segmentation/root hash commitments.
 
-## Task 4: External Anchoring Targets (Post-MVP)
+## Task 4: External Anchoring Follow-On Spec
 
-- Evaluate and optionally implement at least one external anchor target:
-  - RFC 3161 timestamping
-  - lightweight witness service
-  - transparency log
-- External anchoring requires an explicit egress model and must never silently enable network access.
+- Post-MVP external anchor targets now live in `agent-os/specs/2026-03-13-1603-external-audit-anchoring-v0/`.
 
-Parallelization: can be designed in parallel with provider/gateway work; implementation should wait until gateway egress models are stable.
+Parallelization: none for MVP implementation; later anchoring work should build on the MVP receipt model defined here.
 
 ## Task 5: Artifact + Audit Integration
 

@@ -28,8 +28,8 @@ Parallelization: docs-only; safe to do anytime.
 - Include explicit schema identifiers so verification can be performed across schema versions.
 - Make audit events gateway-role aware (role identity + egress category), so network activity is attributable and enforceable:
   - model egress events (model-gateway): allowlist id, destination descriptor, bytes, timing, outcome
-  - auth egress events (future auth-gateway): login/refresh lifecycle events (no secrets in logs)
-  - git/web/deps egress events (post-MVP gateways): allowlist id, destination descriptor, bytes, timing, outcome
+  - auth egress events in `agent-os/specs/2026-03-12-1030-auth-gateway-role-v0/`: login/refresh lifecycle events (no secrets in logs)
+  - later gateway specs (`agent-os/specs/2026-03-08-1039-git-gateway/`, `agent-os/specs/2026-03-08-1039-web-research-role/`, `agent-os/specs/2026-03-08-1039-deps-fetch-cache/`) extend the same event model with allowlist id, destination descriptor, bytes, timing, and outcome
 - Record secrets lease lifecycle events as first-class audit events (issuance/renewal/revocation), without logging secret values.
 - Add event types required to harden against “audit writer compromise” (see `agent-os/specs/2026-03-08-1039-audit-anchoring/`):
   - audit segment root commitment events (segment id + root hash)

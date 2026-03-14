@@ -24,8 +24,7 @@ Implement secrets storage/lease issuance and a dedicated model-gateway that cent
 - Streaming and tool calling are supported only within the typed boundary; tool calls remain untrusted proposals.
 - MVP default for model egress is `spec_text` only; allowing `diffs` or `approved_file_excerpts` is an explicit, auditable opt-in.
 - For future remote API providers, prefer each provider's official SDK for fixture generation; OpenAI-compatible providers without a solid official SDK remain a separate lower-confidence compatibility lane until explicitly promoted.
-- Post-MVP: add `bridge` providers for officially supported user-installed local runtimes (subscription access) behind model-gateway, with an explicit LLM-only mode and a compatibility probe policy.
-  - Permit untested vendor versions only if the probe passes, with explicit user acknowledgment recorded in audit.
+- Later bridge-provider work is specified separately so the MVP gateway spec stays focused on direct HTTP providers and shared egress foundations.
 
 ## Context
 

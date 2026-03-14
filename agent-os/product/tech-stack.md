@@ -19,10 +19,10 @@
 
 ## Other
 
-- Isolation: microVMs preferred (QEMU with KVM/HVF/WHPX); hardened containers fallback with explicit reduced-assurance UX
-- MVP runtime target: Linux + KVM on a single-user local machine; macOS HVF and Windows WHPX/Hyper-V are post-MVP unless proven low-effort
+- Isolation: microVMs preferred for high-assurance roles; hardened containers remain explicit reduced-assurance fallback
+- MVP runtime target: Linux + KVM on a single-user local machine; later macOS and Windows runtime work is tracked in `agent-os/specs/2026-03-08-1039-macos-virtualization-polish/` and `agent-os/specs/2026-03-08-1039-windows-microvm-runtime/`
 - Isolate transport (MVP): vsock-first on Linux; virtio-serial fallback; message-level authenticated+encrypted session required
-- Local APIs/protocols: JSON + JSON Schema for MVP; post-MVP on-wire RPC may migrate to protobuf over local IPC (gRPC optional and must remain local-only)
+- Local APIs/protocols: JSON + JSON Schema for MVP; later local transport migration work is tracked in `agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`
 - Security/provenance: signed capability manifests, per-isolate identity keys, hash-chained audit events, content-addressed artifacts
 - Storage: encrypted workspace disks/snapshots (LUKS2/dm-crypt baseline)
 - Key management (where available): TPM/Secure Enclave; user-presence approvals via OS-confirmation and/or FIDO2/YubiKey

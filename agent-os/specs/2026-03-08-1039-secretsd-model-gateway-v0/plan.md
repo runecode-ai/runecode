@@ -95,24 +95,10 @@ Parallelization: can be implemented in parallel with broker + policy engine once
 
 Parallelization: can be implemented in parallel with protocol schema work (fixtures) and with broker limits; avoid conflicts by agreeing on canonicalization and fixture locations early.
 
-## Task 3c: Bridge Providers (Post-MVP)
+## Task 3c: Bridge Provider Follow-On Specs
 
-- Support a second provider integration mode for subscription-backed and local runtimes:
-  - policy constraint: RuneCode does not ship/bundle/redistribute vendor CLIs or proprietary runtimes; integrate with user-installed official runtimes
-  - `http` providers (MVP): model-gateway translates `LLMRequest -> provider HTTP` directly.
-- `bridge` providers (post-MVP): model-gateway translates `LLMRequest -> local RPC` and the local runtime performs upstream network calls.
-  - prefer spawned child processes over stdio (no listening ports)
-  - require runtime identity + version discovery and per-request version logging
-    - compatibility policy: do not require RuneCode updates for every vendor release
-      - define a "tested range" plus a compatibility probe (contract tests / schema validation / required feature flags)
-      - allow newer versions if the probe passes; otherwise fail closed with a clear remediation (downgrade vendor runtime or upgrade RuneCode)
-      - if running an untested-but-probe-passing version, require an explicit acknowledgment surfaced in TUI and recorded in audit metadata
-  - enforce an explicit "LLM-only" mode (deny tool execution and file operations)
-  - run with isolated `HOME`/tool dirs pointing at an allowlisted provider sandbox directory
-    - disable core dumps; treat the sandbox dir as hostile and prevent token spills (no env/argv injection; controlled temp dirs)
-    - restrict child process spawning (deny-by-default; allowlist only if required and audited)
-  - default to ephemeral sessions (no persisted conversation state unless enabled by manifest+policy)
-  - prefer protocol-level contract tests (RPC fixtures) over HTTP wire fixtures
+- Post-MVP bridge-provider work now lives in `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/` plus provider-specific post-MVP specs.
+- This MVP spec keeps the direct `http` provider path and shared `model-gateway` foundations those later bridge specs build on.
 
 ## Task 4: Data-Class Policy for Model Egress
 

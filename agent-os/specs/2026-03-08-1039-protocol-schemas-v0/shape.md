@@ -2,7 +2,7 @@
 
 ## Scope
 
-Refine the schema foundation for manifests, identities, approvals, artifacts/provenance, audit events, policy decisions, and the model-gateway request/response boundary so downstream MVP and post-MVP specs inherit stable shared contracts instead of inventing ad-hoc payloads.
+Refine the schema foundation for manifests, identities, approvals, artifacts/provenance, audit events, policy decisions, and the model-gateway request/response boundary so downstream specs inherit stable shared contracts instead of inventing ad-hoc payloads.
 
 ## Decisions
 
@@ -33,7 +33,7 @@ Refine the schema foundation for manifests, identities, approvals, artifacts/pro
 - MVP uses JSON Schema draft 2020-12 and JSON-on-wire; the logical object model remains encoding-agnostic so on-wire RPC can migrate post-MVP to protobuf over local IPC.
 - Bundle metadata (`manifest.json` and registry files) also has machine-readable meta-schemas, and schema-document `$id` URIs are canonical identifiers rather than a network fetch contract.
 - MVP runtime posture is same-schema-bundle only; upgrades are coordinated restarts rather than mixed-version live negotiation.
-- Auth and bridge-provider object families are reserved now at the shared-contract level, but provider-specific OAuth/RPC details stay in dedicated later specs.
+- Later auth, bridge-runtime, workflow-extensibility, and local-transport specs extend these MVP contracts in their own folders rather than embedding follow-on details here.
 
 ## Context
 
@@ -44,7 +44,10 @@ Refine the schema foundation for manifests, identities, approvals, artifacts/pro
   - `agent-os/product/tech-stack.md`
   - `docs/trust-boundaries.md`
   - `agent-os/specs/2026-03-10-1530-approval-profiles-v0/`
+  - `agent-os/specs/2026-03-13-1600-workflow-extensibility-v0/`
   - `agent-os/specs/2026-03-12-1030-auth-gateway-role-v0/`
+  - `agent-os/specs/2026-03-13-1601-bridge-runtime-protocol-v0/`
+  - `agent-os/specs/2026-03-13-1602-local-ipc-protobuf-transport-v0/`
   - `agent-os/specs/2026-03-11-1920-openai-chatgpt-subscription-provider-v0/`
   - `agent-os/specs/2026-03-11-1921-github-copilot-subscription-provider-v0/`
 - Product alignment: reinforces least-privilege defaults, brokered schema-validated trust boundaries, typed approvals, and tamper-evident auditability without over-specifying provider details too early.

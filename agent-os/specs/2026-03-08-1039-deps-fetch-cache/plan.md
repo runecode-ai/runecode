@@ -23,6 +23,7 @@ Parallelization: can be implemented in parallel with artifact store work; it dep
 
 - Allow egress only to approved package registries.
 - Emit a read-only dependency cache artifact.
+- Audit outbound dependency-fetch activity with the standard gateway network fields: allowlist id, destination descriptor, bytes, timing, and outcome.
 
 Parallelization: can be implemented in parallel with policy engine gateway allowlist work; it depends on stable destination descriptor schemas and broker limits.
 
