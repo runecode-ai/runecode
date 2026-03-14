@@ -11,6 +11,12 @@ It treats isolation and cryptographic provenance as co-equal pillars: work runs 
 
 RuneCode is pre-alpha and not production-ready.
 
+## Install
+
+Official binaries are published through GitHub Releases.
+The canonical unsigned release artifacts are built from `flake.nix`.
+For latest-release install commands and full verification steps, see `docs/install-verify.md`.
+
 Implemented in this repo today:
 - A protocol/schema bundle in `protocol/schemas/` with an authoritative manifest at `protocol/schemas/manifest.json`
 - Shared JSON Schema object families for manifests, identities, approvals, artifacts/provenance, audit events/receipts, policy decisions, model request/response/streaming, detached signature envelopes, and shared errors
@@ -146,6 +152,9 @@ go run ./cmd/runecode-auditd --help
 
 ## Docs
 
+- Install and verify releases: `docs/install-verify.md`
+- Maintainer release process: `docs/release-process.md`
+- Nix release/dev layout: `nix/README.md`
 - Mission: `agent-os/product/mission.md`
 - Roadmap: `agent-os/product/roadmap.md`
 - Trust boundaries: `docs/trust-boundaries.md`
