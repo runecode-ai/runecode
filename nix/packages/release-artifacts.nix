@@ -74,7 +74,7 @@ pkgs.buildGoModule {
   src = releaseSource;
   go = goToolchain;
   # Refresh with `nix build .#release-artifacts` and copy the reported hash.
-  vendorHash = "sha256-eGBsX8XrbDDYsHw1fslgX/O7O7ekX6oF773/hy8YNj8=";
+  vendorHash = "sha256-a8RK4rT7wxfHU+b9YVreqFiAY01JzBSPplRz50pXPrM=";
   # The workflow runs `just ci` before building this packaging-focused derivation.
   doCheck = false;
   strictDeps = true;

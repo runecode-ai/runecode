@@ -233,23 +233,34 @@ func newZipInput(sourceDir, path string, d fs.DirEntry) (zipInput, error) {
 }
 
 func validateZipRelativePath(rel string) (string, error) {
-	cleanRel := filepath.Clean(rel)
+	// Normalize backslashes to forward slashes before validation so archive entry
+	// checks use ZIP path semantics on every host OS. This intentionally treats
+	// literal backslashes in source filenames as path separators for portability.
+	slashPath := strings.ReplaceAll(rel, "\\", "/")
+	cleanRel := path.Clean(slashPath)
 	if cleanRel == "." {
 		return "", fmt.Errorf("zip entry path must not be empty")
 	}
-	if filepath.IsAbs(cleanRel) {
+	if path.IsAbs(cleanRel) {
 		return "", fmt.Errorf("zip entry path must be relative: %s", rel)
 	}
-	if cleanRel == ".." || strings.HasPrefix(cleanRel, ".."+string(filepath.Separator)) {
+	if cleanRel == ".." || strings.HasPrefix(cleanRel, "../") {
 		return "", fmt.Errorf("zip entry path escapes source directory: %s", rel)
 	}
-
-	slashPath := path.Clean(filepath.ToSlash(cleanRel))
-	if slashPath == ".." || strings.HasPrefix(slashPath, "../") || strings.HasPrefix(slashPath, "/") {
-		return "", fmt.Errorf("zip entry path escapes source directory: %s", rel)
+	if hasWindowsDrivePrefix(cleanRel) {
+		return "", fmt.Errorf("zip entry path must not contain Windows drive-letter forms: %s", rel)
 	}
 
-	return slashPath, nil
+	return cleanRel, nil
+}
+
+func hasWindowsDrivePrefix(pathValue string) bool {
+	if len(pathValue) < 2 || pathValue[1] != ':' {
+		return false
+	}
+
+	first := pathValue[0]
+	return (first >= 'a' && first <= 'z') || (first >= 'A' && first <= 'Z')
 }
 
 func normalizeZipFileMode(mode fs.FileMode) fs.FileMode {

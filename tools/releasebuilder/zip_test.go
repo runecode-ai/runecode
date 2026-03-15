@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -66,6 +67,46 @@ func TestValidateZipRelativePathRejectsEscapes(t *testing.T) {
 	if _, err := validateZipRelativePath(filepath.Join("..", "escape.txt")); err == nil {
 		t.Fatal("expected escape path validation to fail")
 	}
+	if _, err := validateZipRelativePath("..\\escape.txt"); err == nil {
+		t.Fatal("expected backslash escape path validation to fail")
+	}
+	if _, err := validateZipRelativePath("C:\\escape.txt"); err == nil {
+		t.Fatal("expected drive-letter path validation to fail")
+	}
+	if _, err := validateZipRelativePath("C:relative.txt"); err == nil {
+		t.Fatal("expected drive-relative path validation to fail")
+	}
+	if _, err := validateZipRelativePath("a/../../escape.txt"); err == nil {
+		t.Fatal("expected escaping internal traversal to fail")
+	}
+}
+
+func TestValidateZipRelativePathAcceptsValidPaths(t *testing.T) {
+	t.Parallel()
+
+	for _, tc := range []struct {
+		name string
+		in   string
+		want string
+	}{
+		{name: "nested path", in: "foo/bar.txt", want: "foo/bar.txt"},
+		{name: "source binary", in: "source/bin/runecode", want: "source/bin/runecode"},
+		{name: "normalized inner dotdot", in: "a/b/../c.txt", want: "a/c.txt"},
+		{name: "unix colon filename", in: "man3/std::string.3", want: "man3/std::string.3"},
+	} {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := validateZipRelativePath(tc.in)
+			if err != nil {
+				t.Fatalf("validateZipRelativePath(%q) error: %v", tc.in, err)
+			}
+			if got != tc.want {
+				t.Fatalf("validateZipRelativePath(%q) = %q, want %q", tc.in, got, tc.want)
+			}
+		})
+	}
 }
 
 func writeZipFixture(t *testing.T, sourceDir string) {
@@ -107,12 +148,23 @@ func assertZipEntries(t *testing.T, files []*zip.File) {
 		}
 	}
 
-	if mode := files[1].Mode().Perm(); mode != 0o755 {
-		t.Fatalf("expected executable mode 0755, got %o", mode)
+	if mode := files[1].Mode().Perm(); mode != expectedExecutableMode() {
+		t.Fatalf("expected executable mode %o, got %o", expectedExecutableMode(), mode)
 	}
 	if mode := files[0].Mode().Perm(); mode != 0o644 {
 		t.Fatalf("expected README mode 0644, got %o", mode)
 	}
+}
+
+func expectedExecutableMode() os.FileMode {
+	// Local Windows tests cannot preserve Unix execute bits via os.WriteFile.
+	// Official release archives are still built through Nix on Linux, where the
+	// canonical package payload records executable binaries as 0755.
+	if runtime.GOOS == "windows" {
+		return 0o644
+	}
+
+	return 0o755
 }
 
 func mustWriteFile(t *testing.T, path string, contents []byte, mode os.FileMode) {
