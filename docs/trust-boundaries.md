@@ -63,12 +63,12 @@ The following MUST NEVER happen:
 
 This boundary is enforced at multiple layers:
 
-| Enforcement Point | Owner Spec |
-|-------------------|------------|
-| Broker local API auth + schema validation | `agent-os/specs/2026-03-08-1039-broker-local-api-v0/` |
-| Deterministic policy decisions | `agent-os/specs/2026-03-08-1039-policy-engine-v0/` |
-| Runtime isolation (no host filesystem mounts) | `agent-os/specs/2026-03-08-1039-launcher-microvm-backend-v0/` |
-| Optional container backend | `agent-os/specs/2026-03-08-1039-container-backend-opt-in-v0/` |
+| Enforcement Point | Owner Artifact |
+|-------------------|----------------|
+| Broker local API auth + schema validation | `runecontext/changes/CHG-2026-008-62e1-broker-local-api-v0/` |
+| Deterministic policy decisions | `runecontext/changes/CHG-2026-007-2315-policy-engine-v0/` |
+| Runtime isolation (no host filesystem mounts) | `runecontext/changes/CHG-2026-009-1672-launcher-microvm-backend-v0/` |
+| Optional container backend | `runecontext/changes/CHG-2026-010-54b7-container-backend-v0-explicit-opt-in/` |
 | CI boundary guardrail | This spec (`npm run boundary-check`) |
 
 ## CI Guardrail
@@ -80,4 +80,4 @@ The runner includes a mechanical boundary check (`npm run boundary-check`) that 
 - No runner source files are found (fail closed)
 
 This check is intentionally best-effort static analysis, not the final security boundary.
-Authoritative runtime enforcement is provided by broker auth/schema validation, policy decisions, and isolation backends in follow-on specs.
+Authoritative runtime enforcement is provided by broker auth/schema validation, policy decisions, and isolation backends captured in the corresponding RuneContext changes.

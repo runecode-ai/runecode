@@ -61,7 +61,7 @@ Excluded or reduced-scope surfaces:
 - build output directories
 - lockfiles
 - large protocol fixtures and other non-source test data
-- planning-only docs under `agent-os/specs/**` and `runecontext/project/**`, unless a later checker explicitly adds doc-quality rules for them
+- planning-only docs under `runecontext/changes/**` and `runecontext/project/**`, unless a later checker explicitly adds doc-quality rules for them
 
 If an artifact format does not support meaningful inline comments, the rationale should live in an adjacent maintained document or spec instead of a forced pseudo-comment convention.
 
@@ -172,7 +172,7 @@ Treat the following as Tier 2 by default:
 - lower-risk helpers in `tools/**` that do not enforce guardrails, touch `protocol/schemas/**`, or generate code for trusted paths
 - routine runner modules that do not implement trust-boundary or policy enforcement
 
-Planning-oriented docs under `agent-os/specs/**` and `runecontext/project/**` remain outside code-size and function-complexity enforcement unless a future checker adds separate doc-quality rules.
+Planning-oriented docs under `runecontext/changes/**` and `runecontext/project/**` remain outside code-size and function-complexity enforcement unless a future checker adds separate doc-quality rules.
 
 ## Initial Policy Defaults
 

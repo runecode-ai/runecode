@@ -20,7 +20,8 @@ Repo bootstrap for coding agents. Read this first, then follow the linked standa
 - `runner/` - untrusted Node/TypeScript package
 - `protocol/` - authoritative schema bundle, registries, and shared fixtures for trusted/untrusted contracts
 - `tools/` - repo-local helper tools
-- `agent-os/` - specs, standards, roadmap/product docs
+- `runecontext/` - canonical project context, standards, changes, specs, decisions, and bundles
+- `agent-os/doc-dump/` - frozen historical migration material
 - `docs/trust-boundaries.md` - boundary contract and prohibited bypasses
 - `docs/source-quality.md` - source-quality policy and enforcement expectations
 
@@ -78,7 +79,7 @@ Repo bootstrap for coding agents. Read this first, then follow the linked standa
   - `runecontext/standards/product/roadmap-conventions.md` when touching `runecontext/project/roadmap.md`
 - Rules:
   - Keep the standards inventory doc and bundle set concise and accurate
-  - Maintain roadmap-to-spec traceability
+  - Maintain roadmap-to-change/spec traceability
   - Never modify `agent-os/doc-dump/project-idea.md`
 
 ## Verification Expectations

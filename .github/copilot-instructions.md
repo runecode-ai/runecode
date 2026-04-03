@@ -8,8 +8,8 @@ When reviewing pull requests in this repository:
   - `/CONTRIBUTING.md`
   - `/justfile`
   - `/.github/workflows/ci.yml`
-  - `/agent-os/standards/index.yml`
-  - `/agent-os/standards/product/roadmap-conventions.md`
+  - `/runecontext/project/standards-inventory.md`
+  - `/runecontext/standards/product/roadmap-conventions.md`
 - Prioritize findings in this order: security, correctness, reliability, portability, maintainability.
 - De-prioritize style-only comments unless they hide a functional risk or violate a documented convention.
 - For each finding, include severity (`Critical`, `High`, `Medium`, `Low`), file path, impact, and a concrete fix recommendation.
@@ -48,4 +48,4 @@ Review expectations:
   - higher-judgment questions such as whether a subsystem needs a spec/doc/ADR update should remain review guidance.
 - Reject source-quality suppressions that lack concrete rationale or a reviewed exception path.
 - If a trust-boundary, policy, protocol-validation, secrets, or audit change needs paragraph-level explanation, ask for a maintained doc/spec/ADR update instead of only requesting more inline comments.
-- If roadmap or spec docs change, verify they follow `agent-os/standards/product/roadmap-conventions.md`.
+- If roadmap or spec docs change, verify they follow `runecontext/standards/product/roadmap-conventions.md`.
