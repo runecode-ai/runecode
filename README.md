@@ -54,7 +54,7 @@ Details (diagram, allowed interfaces, prohibited bypasses, and CI guardrail): `d
 - `protocol/` — authoritative schema bundle, shared registries, and cross-language fixtures for trusted/untrusted messages
 - `tools/` — repo-local helper tools for deterministic checks and fixes
 - `docs/` — trust-boundary contract and supporting design docs
-- `agent-os/` — product/spec/standards documents (git-native system of record)
+- `runecontext/` — canonical project context, standards, changes, specs, decisions, and bundles
 
 ## Install
 
@@ -147,7 +147,7 @@ This quick path verifies signed checksums and the signed archive before install.
 Still incremental / not implemented end-to-end yet:
 - Broker runtime, policy evaluation, secrets handling, audit persistence/verification, and isolation backends remain scaffolded or are implemented in later specs
 
-- Roadmap: `agent-os/product/roadmap.md`
+- Roadmap: `runecontext/project/roadmap.md`
 
 ## Protocol Foundation
 
@@ -239,11 +239,12 @@ go run ./cmd/runecode-auditd --help
 - Install and verify releases: `docs/install-verify.md`
 - Maintainer release process: `docs/release-process.md`
 - Nix release/dev layout: `nix/README.md`
-- Mission: `agent-os/product/mission.md`
-- Roadmap: `agent-os/product/roadmap.md`
+- Mission: `runecontext/project/mission.md`
+- Roadmap: `runecontext/project/roadmap.md`
+- Tech stack: `runecontext/project/tech-stack.md`
 - Trust boundaries: `docs/trust-boundaries.md`
 - Protocol schemas: `protocol/schemas/README.md`
-- Protocol/schema spec: `agent-os/specs/2026-03-08-1039-protocol-schemas-v0/`
+- Protocol/schema spec: `runecontext/specs/protocol-schema-bundle-v0.md`
 - Agent and AI contributor guidance: `AGENTS.md`
 
 ## Uninstall

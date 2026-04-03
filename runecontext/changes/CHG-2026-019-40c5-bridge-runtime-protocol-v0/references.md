@@ -1,0 +1,21 @@
+# References
+
+## Product Context
+
+- **Mission:** `runecontext/project/mission.md`
+- **Roadmap:** `runecontext/project/roadmap.md`
+- **Tech stack:** `runecontext/project/tech-stack.md`
+- **Trust boundaries:** `docs/trust-boundaries.md`
+
+## Related Specs
+
+- `runecontext/specs/protocol-schema-bundle-v0.md`
+- `runecontext/changes/CHG-2026-011-7240-secretsd-model-gateway-v0/`
+- `runecontext/changes/CHG-2026-013-d2c9-minimal-tui-v0/`
+- `runecontext/changes/CHG-2026-018-5900-auth-gateway-role-v0/`
+- `runecontext/changes/CHG-2026-020-4425-openai-chatgpt-subscription-provider-oauth-codex-bridge/`
+- `runecontext/changes/CHG-2026-022-8051-github-copilot-subscription-provider-official-runtime-bridge/`
+
+## Similar Implementations
+
+None yet.

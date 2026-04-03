@@ -10,7 +10,7 @@ This policy defines what RuneCode means by source quality, what is in scope, wha
 
 - `docs/trust-boundaries.md`
 - `AGENTS.md`
-- `agent-os/specs/2026-03-13-1415-source-quality-guardrails-v0/`
+- `runecontext/specs/source-quality-guardrails-v0.md`
 
 ## What Source Quality Means In RuneCode
 
@@ -39,7 +39,7 @@ This policy applies to hand-maintained repo code and policy surfaces that define
   - `docs/trust-boundaries.md`
   - `.github/copilot-instructions.md`
   - `.github/instructions/**`
-  - `agent-os/standards/**`
+  - `runecontext/standards/**`
 
 The following concern areas are in scope:
 
@@ -61,7 +61,7 @@ Excluded or reduced-scope surfaces:
 - build output directories
 - lockfiles
 - large protocol fixtures and other non-source test data
-- planning-only docs under `agent-os/specs/**` and `agent-os/product/**`, unless a later checker explicitly adds doc-quality rules for them
+- planning-only docs under `runecontext/changes/**` and `runecontext/project/**`, unless a later checker explicitly adds doc-quality rules for them
 
 If an artifact format does not support meaningful inline comments, the rationale should live in an adjacent maintained document or spec instead of a forced pseudo-comment convention.
 
@@ -150,7 +150,7 @@ Treat the following as Tier 1 protected policy surfaces:
 - `docs/trust-boundaries.md`
 - `.github/copilot-instructions.md`
 - `.github/instructions/**`
-- `agent-os/standards/**`
+- `runecontext/standards/**`
 
 Runner classification is deterministic:
 
@@ -172,7 +172,7 @@ Treat the following as Tier 2 by default:
 - lower-risk helpers in `tools/**` that do not enforce guardrails, touch `protocol/schemas/**`, or generate code for trusted paths
 - routine runner modules that do not implement trust-boundary or policy enforcement
 
-Planning-oriented docs under `agent-os/specs/**` and `agent-os/product/**` remain outside code-size and function-complexity enforcement unless a future checker adds separate doc-quality rules.
+Planning-oriented docs under `runecontext/changes/**` and `runecontext/project/**` remain outside code-size and function-complexity enforcement unless a future checker adds separate doc-quality rules.
 
 ## Initial Policy Defaults
 

@@ -1,0 +1,22 @@
+# Design
+
+## Overview
+Define post-MVP approval profiles that adjust approval timing without weakening core policy invariants or trust boundaries.
+
+## Key Decisions
+- Approval profiles affect *when* an allowed action requires explicit human approval; they must not change isolation boundaries or weaken invariants.
+- Profiles must never convert `deny -> allow`.
+- Profiles are signed inputs (part of the run/stage capability manifest) and are fully auditable.
+- Adding or constraining profile values is a schema-versioned protocol change for every object family that carries the enum.
+- MVP ships with `moderate` only; `strict` and `permissive` are post-MVP extensions.
+
+## Main Workstreams
+- Approval Profile Model (Post-MVP)
+- Strict Profile Semantics
+- Permissive Profile Semantics
+- Policy + Runner + TUI Integration
+
+## RuneContext Migration Notes
+- Canonical references now point at `runecontext/project/`, `runecontext/specs/`, and `runecontext/changes/` paths.
+- Future-facing planning assumptions are rewritten to use RuneContext as the canonical planning substrate for this repository.
+- Where this feature touches project context, approvals, assurance, or typed contracts, the migrated plan assumes bundled verified-mode RuneContext integration from the feature surface rather than a later retrofit.
