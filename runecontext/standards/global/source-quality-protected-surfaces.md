@@ -3,8 +3,6 @@ schema_version: 1
 id: global/source-quality-protected-surfaces
 title: Source-Quality Protected Surfaces
 status: active
-aliases:
-    - agent-os/standards/global/source-quality-protected-surfaces
 ---
 
 # Source-Quality Protected Surfaces

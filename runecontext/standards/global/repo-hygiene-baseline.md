@@ -3,8 +3,6 @@ schema_version: 1
 id: global/repo-hygiene-baseline
 title: Repo Hygiene Baseline
 status: active
-aliases:
-    - agent-os/standards/global/repo-hygiene-baseline
 ---
 
 # Repo Hygiene Baseline

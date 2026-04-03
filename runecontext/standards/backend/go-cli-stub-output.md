@@ -3,8 +3,6 @@ schema_version: 1
 id: backend/go-cli-stub-output
 title: Go CLI Stub Output
 status: active
-aliases:
-    - agent-os/standards/backend/go-cli-stub-output
 ---
 
 # Go CLI Stub Output

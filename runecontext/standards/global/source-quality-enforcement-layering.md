@@ -5,8 +5,6 @@ title: Source-Quality Enforcement Layering
 status: active
 suggested_context_bundles:
     - go-control-plane
-aliases:
-    - agent-os/standards/global/source-quality-enforcement-layering
 ---
 
 # Source-Quality Enforcement Layering

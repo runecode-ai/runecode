@@ -5,8 +5,6 @@ title: Runner Boundary Check
 status: active
 suggested_context_bundles:
     - runner-boundary
-aliases:
-    - agent-os/standards/security/runner-boundary-check
 ---
 
 # Runner Boundary Check

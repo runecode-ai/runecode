@@ -5,8 +5,6 @@ title: Protocol Registry Discipline
 status: active
 suggested_context_bundles:
     - protocol-foundation
-aliases:
-    - agent-os/standards/global/protocol-registry-discipline
 ---
 
 # Protocol Registry Discipline

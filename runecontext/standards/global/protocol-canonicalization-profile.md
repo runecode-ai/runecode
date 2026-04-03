@@ -5,8 +5,6 @@ title: Protocol Canonicalization Profile
 status: active
 suggested_context_bundles:
     - protocol-foundation
-aliases:
-    - agent-os/standards/global/protocol-canonicalization-profile
 ---
 
 # Protocol Canonicalization Profile

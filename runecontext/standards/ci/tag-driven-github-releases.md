@@ -3,8 +3,6 @@ schema_version: 1
 id: ci/tag-driven-github-releases
 title: Tag-Driven GitHub Releases
 status: active
-aliases:
-    - agent-os/standards/ci/tag-driven-github-releases
 ---
 
 # Tag-Driven GitHub Releases

@@ -6,8 +6,6 @@ status: active
 suggested_context_bundles:
     - ci-tooling
     - runner-boundary
-aliases:
-    - agent-os/standards/ci/worktree-cleanliness
 ---
 
 # CI Worktree Cleanliness

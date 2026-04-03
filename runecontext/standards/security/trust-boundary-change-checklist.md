@@ -5,8 +5,6 @@ title: Trust Boundary Change Checklist
 status: active
 suggested_context_bundles:
     - runner-boundary
-aliases:
-    - agent-os/standards/security/trust-boundary-change-checklist
 ---
 
 # Trust Boundary Change Checklist

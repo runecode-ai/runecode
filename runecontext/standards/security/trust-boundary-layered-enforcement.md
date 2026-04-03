@@ -5,8 +5,6 @@ title: 'Trust Boundary: Layered Enforcement'
 status: active
 suggested_context_bundles:
     - runner-boundary
-aliases:
-    - agent-os/standards/security/trust-boundary-layered-enforcement
 ---
 
 # Trust Boundary: Layered Enforcement

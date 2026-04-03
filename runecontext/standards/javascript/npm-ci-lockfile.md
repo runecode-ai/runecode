@@ -3,8 +3,6 @@ schema_version: 1
 id: javascript/npm-ci-lockfile
 title: Deterministic npm Installs (Runner)
 status: active
-aliases:
-    - agent-os/standards/javascript/npm-ci-lockfile
 ---
 
 # Deterministic npm Installs (Runner)

@@ -6,8 +6,6 @@ status: active
 suggested_context_bundles:
     - project-core
     - product-planning
-aliases:
-    - agent-os/standards/product/roadmap-conventions
 ---
 
 # Product Roadmap Conventions

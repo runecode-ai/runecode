@@ -5,8 +5,6 @@ title: Deterministic Check/Write Tool Pattern
 status: active
 suggested_context_bundles:
     - ci-tooling
-aliases:
-    - agent-os/standards/global/deterministic-check-write-tools
 ---
 
 # Deterministic Check/Write Tool Pattern

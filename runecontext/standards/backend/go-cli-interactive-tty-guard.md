@@ -3,8 +3,6 @@ schema_version: 1
 id: backend/go-cli-interactive-tty-guard
 title: Go CLI Interactive TTY Guard
 status: active
-aliases:
-    - agent-os/standards/backend/go-cli-interactive-tty-guard
 ---
 
 # Go CLI Interactive TTY Guard

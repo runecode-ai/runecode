@@ -3,8 +3,6 @@ schema_version: 1
 id: javascript/runner-typescript-as-lint
 title: TypeScript-as-Lint (Runner)
 status: active
-aliases:
-    - agent-os/standards/javascript/runner-typescript-as-lint
 ---
 
 # TypeScript-as-Lint (Runner)

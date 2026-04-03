@@ -3,8 +3,6 @@ schema_version: 1
 id: backend/go-cli-main-pattern
 title: Go CLI `main.go` Pattern
 status: active
-aliases:
-    - agent-os/standards/backend/go-cli-main-pattern
 ---
 
 # Go CLI `main.go` Pattern

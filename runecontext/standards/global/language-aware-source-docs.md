@@ -5,8 +5,6 @@ title: Language-Aware Source Docs
 status: active
 suggested_context_bundles:
     - go-control-plane
-aliases:
-    - agent-os/standards/global/language-aware-source-docs
 ---
 
 # Language-Aware Source Docs

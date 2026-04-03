@@ -3,8 +3,6 @@ schema_version: 1
 id: javascript/node-engine-enforcement
 title: Node Engine Enforcement (Runner)
 status: active
-aliases:
-    - agent-os/standards/javascript/node-engine-enforcement
 ---
 
 # Node Engine Enforcement (Runner)

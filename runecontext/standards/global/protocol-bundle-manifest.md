@@ -5,8 +5,6 @@ title: Protocol Bundle Manifest
 status: active
 suggested_context_bundles:
     - protocol-foundation
-aliases:
-    - agent-os/standards/global/protocol-bundle-manifest
 ---
 
 # Protocol Bundle Manifest

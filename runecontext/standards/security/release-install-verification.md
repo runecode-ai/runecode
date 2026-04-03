@@ -3,8 +3,6 @@ schema_version: 1
 id: security/release-install-verification
 title: Release Install Verification
 status: active
-aliases:
-    - agent-os/standards/security/release-install-verification
 ---
 
 # Release Install Verification

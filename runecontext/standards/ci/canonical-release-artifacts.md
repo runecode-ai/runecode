@@ -3,8 +3,6 @@ schema_version: 1
 id: ci/canonical-release-artifacts
 title: Canonical Release Artifacts
 status: active
-aliases:
-    - agent-os/standards/ci/canonical-release-artifacts
 ---
 
 # Canonical Release Artifacts

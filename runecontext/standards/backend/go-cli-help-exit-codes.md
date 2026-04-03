@@ -3,8 +3,6 @@ schema_version: 1
 id: backend/go-cli-help-exit-codes
 title: Go CLI Help + Exit Codes
 status: active
-aliases:
-    - agent-os/standards/backend/go-cli-help-exit-codes
 ---
 
 # Go CLI Help + Exit Codes

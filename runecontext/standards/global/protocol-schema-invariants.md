@@ -5,8 +5,6 @@ title: Protocol Schema Invariants
 status: active
 suggested_context_bundles:
     - protocol-foundation
-aliases:
-    - agent-os/standards/global/protocol-schema-invariants
 ---
 
 # Protocol Schema Invariants

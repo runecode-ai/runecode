@@ -3,8 +3,6 @@ schema_version: 1
 id: global/review-instructions-files
 title: Scoped Review Instruction Files
 status: active
-aliases:
-    - agent-os/standards/global/review-instructions-files
 ---
 
 # Scoped Review Instruction Files

@@ -3,8 +3,6 @@ schema_version: 1
 id: global/dco-signoff
 title: DCO Sign-off
 status: active
-aliases:
-    - agent-os/standards/global/dco-signoff
 ---
 
 # DCO Sign-off

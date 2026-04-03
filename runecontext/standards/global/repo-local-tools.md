@@ -6,8 +6,6 @@ status: active
 suggested_context_bundles:
     - go-control-plane
     - ci-tooling
-aliases:
-    - agent-os/standards/global/repo-local-tools
 ---
 
 # Repo-Local Helper Tools

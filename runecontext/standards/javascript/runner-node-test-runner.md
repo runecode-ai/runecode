@@ -3,8 +3,6 @@ schema_version: 1
 id: javascript/runner-node-test-runner
 title: Node Test Runner (Runner)
 status: active
-aliases:
-    - agent-os/standards/javascript/runner-node-test-runner
 ---
 
 # Node Test Runner (Runner)

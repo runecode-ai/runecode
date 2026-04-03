@@ -3,8 +3,6 @@ schema_version: 1
 id: ci/nix-flake-ci-invariants
 title: Nix Flake CI Invariants
 status: active
-aliases:
-    - agent-os/standards/ci/nix-flake-ci-invariants
 ---
 
 # Nix Flake CI Invariants

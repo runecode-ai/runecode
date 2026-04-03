@@ -3,8 +3,6 @@ schema_version: 1
 id: global/source-quality-reviewed-exceptions
 title: Source-Quality Reviewed Exceptions
 status: active
-aliases:
-    - agent-os/standards/global/source-quality-reviewed-exceptions
 ---
 
 # Source-Quality Reviewed Exceptions

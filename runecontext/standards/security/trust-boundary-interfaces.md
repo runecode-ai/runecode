@@ -6,8 +6,6 @@ status: active
 suggested_context_bundles:
     - runner-boundary
     - protocol-foundation
-aliases:
-    - agent-os/standards/security/trust-boundary-interfaces
 ---
 
 # Trust Boundary Interfaces

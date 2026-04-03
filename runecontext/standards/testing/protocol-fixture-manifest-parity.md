@@ -5,8 +5,6 @@ title: Protocol Fixture Manifest Parity
 status: active
 suggested_context_bundles:
     - protocol-foundation
-aliases:
-    - agent-os/standards/testing/protocol-fixture-manifest-parity
 ---
 
 # Protocol Fixture Manifest Parity

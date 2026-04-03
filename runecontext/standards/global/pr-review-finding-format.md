@@ -3,8 +3,6 @@ schema_version: 1
 id: global/pr-review-finding-format
 title: PR Review Finding Format
 status: active
-aliases:
-    - agent-os/standards/global/pr-review-finding-format
 ---
 
 # PR Review Finding Format

@@ -3,8 +3,6 @@ schema_version: 1
 id: global/local-first-future-optionality
 title: Local-First Future Optionality
 status: active
-aliases:
-    - agent-os/standards/global/local-first-future-optionality
 ---
 
 # Local-First Future Optionality

@@ -3,8 +3,6 @@ schema_version: 1
 id: ci/release-metadata-source-of-truth
 title: Release Metadata Source Of Truth
 status: active
-aliases:
-    - agent-os/standards/ci/release-metadata-source-of-truth
 ---
 
 # Release Metadata Source Of Truth

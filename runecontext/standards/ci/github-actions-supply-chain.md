@@ -3,8 +3,6 @@ schema_version: 1
 id: ci/github-actions-supply-chain
 title: GitHub Actions Supply Chain
 status: active
-aliases:
-    - agent-os/standards/ci/github-actions-supply-chain
 ---
 
 # GitHub Actions Supply Chain

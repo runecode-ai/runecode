@@ -5,8 +5,6 @@ title: '`just ci` Convention'
 status: active
 suggested_context_bundles:
     - ci-tooling
-aliases:
-    - agent-os/standards/ci/just-ci
 ---
 
 # `just ci` Convention
