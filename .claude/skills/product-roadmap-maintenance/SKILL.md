@@ -1,6 +1,6 @@
 # Skill: product-roadmap-maintenance
 
-Keep `agent-os/product/roadmap.md` up to date as specs are created and releases ship.
+Keep `runecontext/project/roadmap.md` up to date as the human-facing product summary while canonical lifecycle state moves through RuneContext changes and specs.
 
 ## Standards to read first
 
@@ -8,8 +8,8 @@ Keep `agent-os/product/roadmap.md` up to date as specs are created and releases 
 
 ## When to use
 
-- After creating a new spec under `agent-os/specs/`
-- When a spec changes scope/title and the roadmap entry should be updated
+- After creating a new canonical RuneContext change or spec that should be reflected in the roadmap summary
+- When a planned or completed item changes scope/title and the roadmap summary should be updated
 - When a version is released and its block should be moved to Completed
 
 ## Inputs
@@ -34,19 +34,19 @@ Keep `agent-os/product/roadmap.md` up to date as specs are created and releases 
    - If the user provided a version, use it.
    - Otherwise default to `### vNext (Planned)` and mention that assumption.
 
-4. Update `agent-os/product/roadmap.md`:
+4. Update `runecontext/project/roadmap.md`:
    - Ensure the required sections exist: `## Upcoming Features`, `## Unscheduled (Needs Specs)`, `## Completed Features`.
    - Ensure the target version heading exists under Upcoming; create it if needed.
    - Add the entry using the standard template:
 
 ```md
-- [ ] Spec Title (`agent-os/specs/YYYY-MM-DD-HHMM-spec-slug/`)
+- Feature Title
   - Short description of the user-visible outcome.
 ```
 
    - Avoid duplicates:
-     - If the spec path already exists in the roadmap, update the title/description in-place.
-     - Ensure the spec is not listed in both Upcoming and Completed.
+      - If the same feature already exists in the roadmap, update the title/description in place.
+      - Ensure the same item is not listed in both Upcoming and Completed.
 
 5. If an equivalent item exists under `## Unscheduled (Needs Specs)`:
    - Remove the unscheduled duplicate after adding the spec entry.
@@ -57,23 +57,21 @@ Keep `agent-os/product/roadmap.md` up to date as specs are created and releases 
    - If the user provides a version label, use it.
    - If not provided, ask for the version label and stop.
 
-2. In `agent-os/product/roadmap.md`, find the version block under `## Upcoming Features`.
-
-3. Mark all items in that version block as complete (`- [x]`).
+2. In `runecontext/project/roadmap.md`, find the version block under `## Upcoming Features`.
 
 4. Move the entire version block (heading + items) to `## Completed Features`:
-   - Keep Completed ordered newest-first.
-   - Do not drop the spec paths or descriptions when moving.
+    - Keep Completed ordered newest-first.
+    - Do not drop descriptions or any existing canonical RuneContext references when moving.
 
 ## Verification
 
-- Re-read `agent-os/product/roadmap.md` and confirm:
-  - Sections and headings follow the standard.
-  - No duplicate spec paths across Upcoming/Completed.
-  - Checkbox state matches section (Upcoming: `[ ]`, Completed: `[x]`).
+- Re-read `runecontext/project/roadmap.md` and confirm:
+   - Sections and headings follow the standard.
+   - No duplicate feature entries appear across Upcoming/Completed.
+   - The roadmap remains a summary rather than a lifecycle source of truth.
 
 ## Guardrails
 
-- Do not invent spec paths; only reference folders that exist.
+- Do not invent RuneContext change IDs or spec paths.
 - If version assignment is ambiguous, default to `vNext (Planned)` and state the assumption.
 - Do not commit or push changes unless explicitly requested.

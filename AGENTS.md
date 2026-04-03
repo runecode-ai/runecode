@@ -72,10 +72,10 @@ Repo bootstrap for coding agents. Read this first, then follow the linked standa
   - relevant `go test ./...` target(s)
   - `just lint`
 
-### `agent-os/` docs, specs, roadmap, or standards
+### Planning docs, specs, roadmap, or standards
 - Read:
   - `/.github/instructions/agent-os-docs.instructions.md`
-  - `agent-os/standards/product/roadmap-conventions.md` when touching `agent-os/product/roadmap.md`
+  - `agent-os/standards/product/roadmap-conventions.md` when touching `runecontext/project/roadmap.md`
 - Rules:
   - Keep standards index entries concise and accurate
   - Maintain roadmap-to-spec traceability

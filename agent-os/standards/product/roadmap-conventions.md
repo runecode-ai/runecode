@@ -1,8 +1,8 @@
 # Product Roadmap Conventions
 
-Applies to: `agent-os/product/roadmap.md`
+Applies to: `runecontext/project/roadmap.md`
 
-This roadmap is the canonical view of what is planned next (as specs) and what has shipped (as releases).
+This roadmap is a human-facing product summary. Lifecycle state for active work lives in `runecontext/changes/*/status.yaml`, and durable completed outcomes live in `runecontext/specs/*.md`.
 
 ## Structure
 
@@ -19,34 +19,34 @@ This roadmap is the canonical view of what is planned next (as specs) and what h
 
 ## Spec Entry Format
 
-- Each spec entry is a checkbox with:
-  - Spec title
-  - Spec folder path (in backticks)
+- Each roadmap entry should include:
+  - Feature title
   - A short, user-visible description (1-2 lines)
+  - Optional canonical RuneContext artifact references when they already exist
 
 Template:
 
 ```md
-- [ ] Spec Title (`agent-os/specs/YYYY-MM-DD-HHMM-spec-slug/`)
+- Feature Title
   - Short description of the user-visible outcome.
 ```
 
 Rules:
 
-- Upcoming work uses `- [ ]`.
-- Completed work uses `- [x]`.
-- Reference specs by title + spec folder path (do not use numeric spec IDs).
+- Do not use checkboxes as lifecycle state; active status belongs in `runecontext/changes/*/status.yaml`.
+- Reference canonical RuneContext change or spec artifacts when they exist.
+- Do not use `agent-os/specs/*` as canonical roadmap links.
 - Keep descriptions outcome-focused (what changes for the user), not implementation notes.
 
 ## Moving Items On Release
 
 - When a version is released:
-  - Mark all items in that version block as `- [x]`.
   - Move the entire version block from `## Upcoming Features` to `## Completed Features`.
+  - Update any durable spec references if they now exist.
   - Keep Completed ordered newest-first.
 
 ## Converting Unscheduled Items Into Specs
 
 - If an item exists under `## Unscheduled (Needs Specs)` and a spec is created for it:
-  - Replace the unscheduled item with a proper spec entry under the target version group.
-  - Remove the duplicate unscheduled checkbox.
+  - Replace the unscheduled item with a proper roadmap entry under the target version group.
+  - Remove the duplicate unscheduled item.

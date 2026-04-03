@@ -72,7 +72,7 @@ javascript:
 
 product:
   roadmap-conventions:
-    description: Conventions for `agent-os/product/roadmap.md` (sections, spec entry format, and moving releases to Completed).
+    description: Conventions for `runecontext/project/roadmap.md` (sections, human-facing summary format, and moving releases to Completed).
 
 security:
   release-install-verification:
