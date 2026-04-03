@@ -1,0 +1,24 @@
+# Design
+
+## Overview
+Add anchoring receipts for audit segment roots and integrate them with verification. MVP includes a local-only anchoring mode with no network egress. Later external-anchoring work is tracked separately.
+
+## Key Decisions
+- Anchoring is an explicit step and produces receipts.
+- Failures are recorded; no history rewriting.
+- MVP baseline anchoring is local-only and requires explicit user presence to mint receipts.
+- Verification distinguishes `verified_unanchored` vs `verified_anchored`; missing anchors are not a verification failure by default.
+- Invalid receipts fail closed.
+- External anchoring lives in `runecontext/changes/CHG-2026-025-5679-external-audit-anchoring-v0/` and requires an explicit egress model.
+
+## Main Workstreams
+- Anchor Receipt Object Model (MVP)
+- MVP Local Anchoring (No Network Egress)
+- External Anchoring Follow-On Spec
+- Artifact + Audit Integration
+- Verification
+
+## RuneContext Migration Notes
+- Canonical references now point at `runecontext/project/`, `runecontext/specs/`, and `runecontext/changes/` paths.
+- Future-facing planning assumptions are rewritten to use RuneContext as the canonical planning substrate for this repository.
+- Where this feature touches project context, approvals, assurance, or typed contracts, the migrated plan assumes bundled verified-mode RuneContext integration from the feature surface rather than a later retrofit.

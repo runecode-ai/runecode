@@ -1,0 +1,20 @@
+# Design
+
+## Overview
+Define the explicit web-research gateway role with strict egress controls, citation artifacts, and no workspace-derived data exposure.
+
+## Key Decisions
+- Egress is deny-by-default and policy-driven.
+- Web research must not consume workspace-derived data classes.
+- Fetching is hardened against SSRF/DNS rebinding (block private/reserved IP ranges; constrain redirects).
+
+## Main Workstreams
+- Web Research Gateway Contract
+- Egress Controls + Fetch Hardening
+- Citation Artifact Model
+- Policy + Audit Integration
+
+## RuneContext Migration Notes
+- Canonical references now point at `runecontext/project/`, `runecontext/specs/`, and `runecontext/changes/` paths.
+- Future-facing planning assumptions are rewritten to use RuneContext as the canonical planning substrate for this repository.
+- Where this feature touches project context, approvals, assurance, or typed contracts, the migrated plan assumes bundled verified-mode RuneContext integration from the feature surface rather than a later retrofit.

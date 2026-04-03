@@ -1,0 +1,30 @@
+# Tasks
+
+## Attestation Evidence Model
+
+- [ ] Define the attestation evidence objects that upgrade an isolate or session from TOFU to an attested binding.
+- [ ] Keep evidence bound at least to image identity, session identity, and provisioning evidence.
+- [ ] Preserve compatibility with the MVP audit/event envelope so previously recorded TOFU fields do not need a format break.
+
+## Launch, Verification, and Policy Integration
+
+- [ ] Define how the launcher obtains and verifies attestation evidence before trusting the upgraded isolate binding.
+- [ ] Distinguish TOFU-only, attested-valid, unavailable, and invalid attestation postures across policy and verification flows.
+- [ ] Fail closed when an attested posture is required and evidence is invalid or replayed.
+
+## TUI + Audit Posture
+
+- [ ] Make provisioning posture explicit in audit metadata and TUI surfaces.
+- [ ] Replace degraded TOFU-only posture with an attested posture only when verification succeeds.
+- [ ] Record why an attested posture was unavailable or rejected without leaking sensitive local details.
+
+## Fixtures + Cross-Platform Considerations
+
+- [ ] Add checked-in fixtures for valid, invalid, replayed, and unavailable attestation evidence.
+- [ ] Account for platform-specific attestation sources without making the shared verifier contract platform-specific.
+
+## Acceptance Criteria
+
+- [ ] RuneCode can represent and verify an attested isolate or session binding without changing the MVP audit/event contract.
+- [ ] Verifiers and TUI distinguish TOFU-only, attested-valid, unavailable, and invalid attestation states.
+- [ ] Replay and invalid-evidence cases fail closed when attestation is required.

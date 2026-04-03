@@ -1,0 +1,34 @@
+schema_version: 1
+id: CHG-2026-014-0c5d-approval-profiles-strict-permissive
+title: Approval Profiles (Strict/Permissive)
+status: planned
+type: feature
+size: medium
+verification_status: pending
+context_bundles:
+  - product-planning
+related_specs: []
+related_decisions:
+  - decisions/DEC-2026-001-runecontext-canonical-planning-system.md
+  - decisions/DEC-2026-002-verified-assurance-and-assurance-path.md
+  - decisions/DEC-2026-003-bundled-runecontext-default-and-verified-requirement.md
+  - decisions/DEC-2026-004-runecode-ux-ownership-and-runecontext-generic-boundary.md
+related_changes:
+  - CHG-2026-002-33c5-git-gateway-commit-push-pr
+  - CHG-2026-004-acdb-artifact-store-data-classes-v0
+  - CHG-2026-007-2315-policy-engine-v0
+  - CHG-2026-011-7240-secretsd-model-gateway-v0
+  - CHG-2026-012-f1ef-workflow-runner-workspace-roles-deterministic-gates-v0
+  - CHG-2026-013-d2c9-minimal-tui-v0
+  - CHG-2026-017-3d58-workflow-extensibility-v0
+  - CHG-2026-020-4425-openai-chatgpt-subscription-provider-oauth-codex-bridge
+  - CHG-2026-022-8051-github-copilot-subscription-provider-official-runtime-bridge
+depends_on: []
+informed_by: []
+supersedes: []
+superseded_by: []
+created_at: "2026-04-03"
+closed_at: null
+promotion_assessment:
+  status: pending
+  suggested_targets: []
