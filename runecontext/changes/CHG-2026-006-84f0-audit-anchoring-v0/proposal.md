@@ -12,7 +12,7 @@ This feature now has a canonical RuneContext change record, preserving the migra
 - Verification.
 
 ## Why Now
-This work remains scheduled for v0.1.0-alpha.2, and keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
+This work remains scheduled for v0.1.0-alpha.4, after the local audit, policy, artifact, and primary isolated execution path exist. Keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
 
 ## Assumptions
 - `runecontext/changes/*` is the canonical planning surface for this repository.

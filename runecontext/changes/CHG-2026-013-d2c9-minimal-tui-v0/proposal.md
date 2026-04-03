@@ -11,7 +11,7 @@ This feature now has a canonical RuneContext change record, preserving the migra
 - Safety UX.
 
 ## Why Now
-This work remains scheduled for v0.1.0-alpha.4, and keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
+This work remains scheduled for v0.1.0-alpha.3 so users can feel the first secure end-to-end slice through the real brokered local API, policy, audit, artifact, and approval surfaces rather than through a shortcut UX layer. Keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
 
 ## Assumptions
 - `runecontext/changes/*` is the canonical planning surface for this repository.

@@ -14,7 +14,7 @@ This feature now has a canonical RuneContext change record, preserving the migra
 - Minimal End-to-End Demo Run.
 
 ## Why Now
-This work remains scheduled for v0.1.0-alpha.4, and keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
+This work remains scheduled for v0.1.0-alpha.3 as the first honest end-to-end slice built strictly on the secure substrate, with remaining hardening and scope completed in v0.1.0-alpha.4. Keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
 
 ## Assumptions
 - `runecontext/changes/*` is the canonical planning surface for this repository.

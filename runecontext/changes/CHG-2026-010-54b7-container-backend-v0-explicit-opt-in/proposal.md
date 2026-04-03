@@ -11,7 +11,7 @@ This feature now has a canonical RuneContext change record, preserving the migra
 - Policy Integration.
 
 ## Why Now
-This work remains scheduled for v0.1.0-alpha.3, and keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
+This work remains scheduled for v0.1.0-alpha.4 so the primary microVM-backed path lands first and the reduced-assurance option does not compete with the initial secure end-to-end slice. Keeping it on this canonical RuneContext change preserves direct roadmap-to-change traceability for later delivery and verification.
 
 ## Assumptions
 - `runecontext/changes/*` is the canonical planning surface for this repository.

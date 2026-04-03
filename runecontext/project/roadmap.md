@@ -16,36 +16,41 @@ Active lifecycle state lives in `runecontext/changes/*/status.yaml`, and durable
 - Audit Log v0 + Verify
   - Runs produce a tamper-evident audit trail with local verification.
   - Planned change: `runecontext/changes/CHG-2026-003-b567-audit-log-v0-verify/`
-- Audit Anchoring v0
-  - Audit segment roots can be anchored with verifiable receipts to strengthen tamper-evidence beyond local verification.
-  - Planned change: `runecontext/changes/CHG-2026-006-84f0-audit-anchoring-v0/`
-
-### v0.1.0-alpha.3
-
 - Broker + Local API v0
   - Components and isolates communicate via a local brokered API with schema validation.
   - Planned change: `runecontext/changes/CHG-2026-008-62e1-broker-local-api-v0/`
+
+### v0.1.0-alpha.3
+
 - Policy Engine v0
   - Actions are deterministically allowed or denied by signed policy with explicit approvals.
   - Planned change: `runecontext/changes/CHG-2026-007-2315-policy-engine-v0/`
 - Launcher MicroVM Backend v0
   - Roles can run in microVM isolates (Linux-first) with no host filesystem mounts.
   - Planned change: `runecontext/changes/CHG-2026-009-1672-launcher-microvm-backend-v0/`
-- Container Backend v0 (Explicit Opt-In)
-  - Container isolation is available only via explicit opt-in with reduced-assurance UX.
-  - Planned change: `runecontext/changes/CHG-2026-010-54b7-container-backend-v0-explicit-opt-in/`
+- Workflow Runner + Workspace Roles + Deterministic Gates v0
+  - A first honest end-to-end slice executes offline workspace roles through the secure policy and evidence loop.
+  - Planned change: `runecontext/changes/CHG-2026-012-f1ef-workflow-runner-workspace-roles-deterministic-gates-v0/`
+- Minimal TUI v0
+  - Users can approve actions and inspect diffs, artifacts, and audit timelines locally through the real secure local API.
+  - Planned change: `runecontext/changes/CHG-2026-013-d2c9-minimal-tui-v0/`
 
 ### v0.1.0-alpha.4
 
 - Secretsd + Model Gateway v0
   - Model egress is centralized behind a gateway with scoped secret leases and auditing.
   - Planned change: `runecontext/changes/CHG-2026-011-7240-secretsd-model-gateway-v0/`
-- Workflow Runner + Workspace Roles + Deterministic Gates v0
-  - End-to-end runs execute offline workspace roles with deterministic evidence gates.
-  - Planned change: `runecontext/changes/CHG-2026-012-f1ef-workflow-runner-workspace-roles-deterministic-gates-v0/`
-- Minimal TUI v0
-  - Users can approve actions and inspect diffs, artifacts, and audit timelines locally.
-  - Planned change: `runecontext/changes/CHG-2026-013-d2c9-minimal-tui-v0/`
+- Container Backend v0 (Explicit Opt-In)
+  - Container isolation is available only via explicit opt-in with reduced-assurance UX after the primary high-assurance path exists.
+  - Planned change: `runecontext/changes/CHG-2026-010-54b7-container-backend-v0-explicit-opt-in/`
+- Audit Anchoring v0
+  - Audit segment roots can be anchored with verifiable receipts to strengthen tamper-evidence beyond local verification.
+  - Planned change: `runecontext/changes/CHG-2026-006-84f0-audit-anchoring-v0/`
+- Alpha Implementation Callouts
+  - `Minimal TUI v0` must remain a strict client of the brokered local API and real policy, audit, artifact, and approval surfaces.
+  - The first end-to-end demo must use explicit artifact handoff, audit capture plus verify, signed policy decisions, and one real isolated backend with no trust-boundary shortcuts.
+  - `Workflow Runner + Workspace Roles + Deterministic Gates v0` is sequenced as a thin MVP in `v0.1.0-alpha.3`; remaining hardening and scope complete in `v0.1.0-alpha.4`.
+  - `Audit Anchoring v0` and `Container Backend v0 (Explicit Opt-In)` remain follow-on hardening work and must not displace the primary secure path.
 
 ### v0.1.0-beta.1
 
