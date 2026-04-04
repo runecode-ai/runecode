@@ -1,29 +1,17 @@
 # Design
 
 ## Overview
-Implement the secrets daemon and model egress gateway, including lease handling, typed model requests, egress hardening, and provider drift detection.
+Use this change as the project-level tracker for secrets and model-gateway work while feature-level implementation lands in child changes.
 
 ## Key Decisions
-- Third-party model usage is explicit opt-in; deny by default.
-- Model traffic goes only through model-gateway; workspace roles remain offline.
-- Only `secretsd` stores long-lived secrets; other daemons/components must not persist secret values (leases only).
-- Secret values are never accepted or delivered via environment variables; use stdin/file-descriptor onboarding and brokered lease IPC.
-- Secrets storage fails closed by default if secure key storage is unavailable (no silent plaintext-on-disk fallback).
-- Model gateway egress is hardened against SSRF/DNS rebinding and enforces TLS-only provider connections.
-- Model-gateway uses a typed `LLMRequest`/`LLMResponse` boundary; inputs reference artifacts by hash (no freeform prompt blobs).
-- Model-gateway fetches artifact bytes by hash (via broker-mediated CAS access) and fails closed on disallowed data classes.
-- Model-gateway is implemented in Go for MVP to minimize TCB; provider request shaping stays inside the Go gateway.
-- Official provider SDKs are used only for fixture generation and drift detection, not in the production egress path.
-- Streaming and tool calling are supported only within the typed boundary; tool calls remain untrusted proposals.
-- MVP default for model egress is `spec_text` only; allowing `diffs` or `approved_file_excerpts` is an explicit, auditable opt-in.
+- Child features own runtime implementation detail.
+- Parent project owns sequencing, boundaries, and integration posture.
+- Security invariants remain deny-by-default, lease-only secret use, and typed/auditable egress.
 
 ## Main Workstreams
-- Secretsd MVP Interface
-- Model-Gateway Role
-- Provider Adapters + Drift Detection (MVP)
-- Bridge Provider Follow-On Specs
-- Data-Class Policy for Model Egress
-- Audit + Quotas
+- `CHG-2026-031-7a3c-secretsd-core-v0`
+- `CHG-2026-032-4d1f-model-gateway-v0`
+- Cross-lane integration with auth/bridge/provider features
 
 ## RuneContext Migration Notes
 - Canonical references now point at `runecontext/project/`, `runecontext/specs/`, and `runecontext/changes/` paths.

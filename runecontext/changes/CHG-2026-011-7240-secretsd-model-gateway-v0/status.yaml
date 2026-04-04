@@ -2,7 +2,7 @@ schema_version: 1
 id: CHG-2026-011-7240-secretsd-model-gateway-v0
 title: Secretsd + Model Gateway v0
 status: planned
-type: feature
+type: project
 size: large
 verification_status: pending
 context_bundles:
@@ -14,6 +14,9 @@ related_decisions:
   - decisions/DEC-2026-003-bundled-runecontext-default-and-verified-requirement.md
   - decisions/DEC-2026-004-runecode-ux-ownership-and-runecontext-generic-boundary.md
 related_changes:
+  - CHG-2026-031-7a3c-secretsd-core-v0
+  - CHG-2026-032-4d1f-model-gateway-v0
+  - CHG-2026-036-a4f9-secure-model-provider-access-v0
   - CHG-2026-002-33c5-git-gateway-commit-push-pr
   - CHG-2026-004-acdb-artifact-store-data-classes-v0
   - CHG-2026-005-cfd0-crypto-key-management-v0

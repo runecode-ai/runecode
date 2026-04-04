@@ -1,7 +1,7 @@
 schema_version: 1
 id: CHG-2026-001-57d6-agent-os-to-runecontext-migration-umbrella
 title: Agent OS to RuneContext Migration Umbrella
-status: planned
+status: implemented
 type: feature
 size: medium
 verification_status: pending
