@@ -30,7 +30,10 @@ Parallelization: can be implemented in parallel with policy engine and TUI work 
   - `put(stream) -> {hash, size, metadata}`
   - `get(hash) -> stream`
   - `head(hash) -> metadata`
-- [ ] Ensure hashing is deterministic and uses the canonicalization rules from the schema spec.
+- [x] Ensure hashing is deterministic and uses the canonicalization rules from the schema spec.
+
+Implementation note:
+Trusted artifact hashing and backup-manifest signing now canonicalize JSON with RFC 8785 JCS semantics via a pinned vendored implementation snapshot wrapped in repository-local code, keeping Go and runner fixture checks aligned on the same canonical byte contract. RuneCode currently treats top-level object or array JSON values as the supported canonicalized roots for these trusted paths.
 - [ ] At-rest protection (MVP):
   - store artifacts under encrypted-at-rest storage by default (e.g., inside the encrypted workspace volume)
   - record storage protection posture in audit metadata

@@ -1,14 +1,12 @@
 package artifacts
 
 import (
-	"bytes"
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -148,24 +146,7 @@ func canonicalBackupManifestBytes(manifest BackupManifest) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	dec := json.NewDecoder(bytes.NewReader(b))
-	dec.UseNumber()
-	var value any
-	if err := dec.Decode(&value); err != nil {
-		return nil, err
-	}
-	var extra any
-	if err := dec.Decode(&extra); err != io.EOF {
-		if err == nil {
-			return nil, fmt.Errorf("unexpected trailing JSON after backup manifest")
-		}
-		return nil, err
-	}
-	canonical, err := canonicalizeJSONValue(value)
-	if err != nil {
-		return nil, err
-	}
-	return []byte(canonical), nil
+	return canonicalizeJSONBytes(b)
 }
 
 func backupKeyID(key string) string {

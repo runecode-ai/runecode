@@ -3,16 +3,18 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/runecode-ai/runecode/internal/artifacts"
+	"github.com/runecode-ai/runecode/internal/brokerapi"
 )
 
 func TestHelpAndUnknownCommand(t *testing.T) {
-	setBrokerStoreRoot(t)
+	setBrokerServiceForTest(t)
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
 	if err := run([]string{"--help"}, stdout, stderr); err != nil {
@@ -31,7 +33,7 @@ func TestHelpAndUnknownCommand(t *testing.T) {
 }
 
 func TestPutListHeadGetArtifactCLI(t *testing.T) {
-	root := setBrokerStoreRoot(t)
+	root := setBrokerServiceForTest(t)
 	payloadPath := writeTempFile(t, "payload.txt", "hello artifact")
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
@@ -60,7 +62,7 @@ func TestPutListHeadGetArtifactCLI(t *testing.T) {
 }
 
 func TestPromotionFlowAndCheckFlowCLI(t *testing.T) {
-	setBrokerStoreRoot(t)
+	setBrokerServiceForTest(t)
 	stderr := &bytes.Buffer{}
 	stdout := &bytes.Buffer{}
 	unapprovedPath := writeTempFile(t, "excerpt.txt", "private excerpt")
@@ -81,7 +83,7 @@ func TestPromotionFlowAndCheckFlowCLI(t *testing.T) {
 }
 
 func TestGCAndBackupCommands(t *testing.T) {
-	setBrokerStoreRoot(t)
+	setBrokerServiceForTest(t)
 	stderr := &bytes.Buffer{}
 	stdout := &bytes.Buffer{}
 	payloadPath := writeTempFile(t, "tmp.txt", "tmp payload")
@@ -188,16 +190,43 @@ func promoteViaCLI(t *testing.T, stdout, stderr *bytes.Buffer, digest string) ar
 	return approved
 }
 
-func setBrokerStoreRoot(t *testing.T) string {
+func setBrokerServiceForTest(t *testing.T) string {
 	t.Helper()
 	root := filepath.Join(t.TempDir(), "store")
-	if err := os.Setenv("RUNE_BROKER_STORE_ROOT", root); err != nil {
-		t.Fatalf("Setenv error: %v", err)
+	brokerServiceFactory = func() (*brokerapi.Service, error) {
+		return brokerapi.NewService(root)
 	}
 	t.Cleanup(func() {
-		_ = os.Unsetenv("RUNE_BROKER_STORE_ROOT")
+		brokerServiceFactory = brokerService
 	})
 	return root
+}
+
+func TestBrokerServiceUsesTempFallbackWhenUserDirsUnavailable(t *testing.T) {
+	originalFactory := brokerServiceFactory
+	defer func() { brokerServiceFactory = originalFactory }()
+
+	t.Setenv("HOME", "")
+	if err := os.Unsetenv("XDG_CACHE_HOME"); err != nil {
+		t.Fatalf("Unsetenv(XDG_CACHE_HOME) error: %v", err)
+	}
+	if err := os.Unsetenv("XDG_CONFIG_HOME"); err != nil {
+		t.Fatalf("Unsetenv(XDG_CONFIG_HOME) error: %v", err)
+	}
+
+	root := defaultBrokerStoreRoot()
+	wantPrefix := filepath.Join(os.TempDir(), "runecode", "artifact-store")
+	if root != wantPrefix {
+		t.Fatalf("defaultBrokerStoreRoot = %q, want %q", root, wantPrefix)
+	}
+
+	storePath := filepath.Join(root, fmt.Sprintf("test-%d", os.Getpid()))
+	if err := os.MkdirAll(storePath, 0o755); err != nil {
+		t.Fatalf("MkdirAll(%q) error: %v", storePath, err)
+	}
+	if _, err := brokerapi.NewService(storePath); err != nil {
+		t.Fatalf("NewService(%q) error: %v", storePath, err)
+	}
 }
 
 func testDigest(seed string) string {

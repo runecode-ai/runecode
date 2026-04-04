@@ -151,7 +151,10 @@ func validateRestoredRecord(record ArtifactRecord, ioStore *storeIO) (ArtifactRe
 	if _, ok := allDataClasses[record.Reference.DataClass]; !ok {
 		return ArtifactRecord{}, ErrInvalidDataClass
 	}
-	blobPath := ioStore.blobPath(record.Reference.Digest)
+	blobPath, err := ioStore.validatedBlobPath(record.Reference.Digest)
+	if err != nil {
+		return ArtifactRecord{}, err
+	}
 	blob, err := ioStore.readBlob(blobPath)
 	if err != nil {
 		return ArtifactRecord{}, err

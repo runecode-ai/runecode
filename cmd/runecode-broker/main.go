@@ -38,7 +38,7 @@ func run(args []string, stdout io.Writer, stderr io.Writer) error {
 		return writeHelp(stdout)
 	}
 
-	service, err := brokerService()
+	service, err := brokerServiceFactory()
 	if err != nil {
 		return fmt.Errorf("runecode-broker failed to initialize store: %w", err)
 	}
@@ -49,6 +49,8 @@ func run(args []string, stdout io.Writer, stderr io.Writer) error {
 	}
 	return handler(args[1:], service, stdout)
 }
+
+var brokerServiceFactory = brokerService
 
 type commandHandler func([]string, *brokerapi.Service, io.Writer) error
 
@@ -357,11 +359,19 @@ Commands:
 }
 
 func brokerService() (*brokerapi.Service, error) {
-	root := os.Getenv("RUNE_BROKER_STORE_ROOT")
-	if root == "" {
-		root = filepath.Join(".opencode", "artifact-store")
+	return brokerapi.NewService(defaultBrokerStoreRoot())
+}
+
+func defaultBrokerStoreRoot() string {
+	cacheDir, err := os.UserCacheDir()
+	if err == nil && cacheDir != "" {
+		return filepath.Join(cacheDir, "runecode", "artifact-store")
 	}
-	return brokerapi.NewService(root)
+	configDir, configErr := os.UserConfigDir()
+	if configErr == nil && configDir != "" {
+		return filepath.Join(configDir, "runecode", "artifact-store")
+	}
+	return filepath.Join(os.TempDir(), "runecode", "artifact-store")
 }
 
 func writeJSON(w io.Writer, value interface{}) error {

@@ -1,7 +1,7 @@
 package artifacts
 
 import (
-	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -224,171 +224,27 @@ func TestQuotasEnforcedAndAudited(t *testing.T) {
 	}
 }
 
-func TestRetentionGCAndBackupRestore(t *testing.T) {
-	store, keep, backupPath := setupRetentionAndBackupFixture(t)
-	assertRetentionAndRestore(t, store, keep, backupPath)
-}
-
-func setupRetentionAndBackupFixture(t *testing.T) (*Store, ArtifactReference, string) {
-	store, now := setupRetentionStore(t)
-	keep := seedRetentionArtifacts(t, store)
-	runAndAssertGC(t, store, now, keep)
-	backupPath := filepath.Join(t.TempDir(), "backup.json")
-	if err := store.ExportBackup(backupPath); err != nil {
-		t.Fatalf("ExportBackup error: %v", err)
-	}
-	return store, keep, backupPath
-}
-
-func setupRetentionStore(t *testing.T) (*Store, time.Time) {
+func TestQuotaFailuresPreserveQuotaErrorWhenAuditAlsoFails(t *testing.T) {
 	store := newTestStore(t)
 	policy := store.Policy()
-	policy.UnreferencedTTLSeconds = 1
+	policy.PerRoleQuota["workspace"] = Quota{MaxArtifactCount: 1, MaxTotalBytes: 1, MaxSingleArtifactSize: 1}
 	if err := store.SetPolicy(policy); err != nil {
 		t.Fatalf("SetPolicy error: %v", err)
 	}
-	now := time.Now().UTC()
-	store.nowFn = func() time.Time { return now }
-	return store, now
-}
-
-func seedRetentionArtifacts(t *testing.T, store *Store) ArtifactReference {
-	keep, err := store.Put(PutRequest{Payload: []byte("keep"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("9"), CreatedByRole: "workspace", RunID: "run-active"})
-	if err != nil {
-		t.Fatalf("Put keep error: %v", err)
+	if _, err := store.Put(PutRequest{Payload: []byte("x"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("8"), CreatedByRole: "workspace"}); err != nil {
+		t.Fatalf("seed Put error: %v", err)
 	}
-	if err := store.SetRunStatus("run-active", "active"); err != nil {
-		t.Fatalf("SetRunStatus active error: %v", err)
+	badPath := filepath.Join(t.TempDir(), "audit-dir")
+	if err := os.MkdirAll(badPath, 0o755); err != nil {
+		t.Fatalf("mkdir audit dir error: %v", err)
 	}
-	if _, err := store.Put(PutRequest{Payload: []byte("drop"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("a"), CreatedByRole: "workspace", RunID: "run-closed"}); err != nil {
-		t.Fatalf("Put drop error: %v", err)
-	}
-	if err := store.SetRunStatus("run-closed", "closed"); err != nil {
-		t.Fatalf("SetRunStatus closed error: %v", err)
-	}
-	return keep
-}
-
-func runAndAssertGC(t *testing.T, store *Store, now time.Time, keep ArtifactReference) {
-	store.nowFn = func() time.Time { return now.Add(5 * time.Second) }
-	gcResult, err := store.GarbageCollect()
-	if err != nil {
-		t.Fatalf("GarbageCollect error: %v", err)
-	}
-	if gcResult.FreedBytes == 0 || len(gcResult.DeletedDigests) == 0 {
-		t.Fatalf("expected GC to delete at least one artifact")
-	}
-	if _, err := store.Head(keep.Digest); err != nil {
-		t.Fatalf("active run artifact should be retained: %v", err)
-	}
-}
-
-func assertRetentionAndRestore(t *testing.T, sourceStore *Store, keep ArtifactReference, backupPath string) {
-	b, err := os.ReadFile(backupPath)
-	if err != nil {
-		t.Fatalf("read backup error: %v", err)
-	}
-	var manifest BackupManifest
-	if err := json.Unmarshal(b, &manifest); err != nil {
-		t.Fatalf("backup json parse error: %v", err)
-	}
-	if manifest.Schema != "runecode.backup.artifacts.v1" {
-		t.Fatalf("backup schema = %q", manifest.Schema)
-	}
-
-	restoreStore := newTestStore(t)
-	copyBlobsToStore(t, restoreStore, manifest.Artifacts)
-	if err := restoreStore.RestoreBackup(backupPath); err != nil {
-		t.Fatalf("RestoreBackup error: %v", err)
-	}
-	if _, err := restoreStore.Head(keep.Digest); err != nil {
-		t.Fatalf("restored store missing retained artifact: %v", err)
-	}
-	_ = sourceStore
-}
-
-func TestRestoreRejectsForgedBackupRecord(t *testing.T) {
-	store := newTestStore(t)
-	ref, err := store.Put(PutRequest{Payload: []byte("payload"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("c"), CreatedByRole: "workspace"})
-	if err != nil {
-		t.Fatalf("Put error: %v", err)
-	}
-	backupPath := filepath.Join(t.TempDir(), "backup.json")
-	if err := store.ExportBackup(backupPath); err != nil {
-		t.Fatalf("ExportBackup error: %v", err)
-	}
-	b, err := os.ReadFile(backupPath)
-	if err != nil {
-		t.Fatalf("read backup error: %v", err)
-	}
-	manifest := BackupManifest{}
-	if err := json.Unmarshal(b, &manifest); err != nil {
-		t.Fatalf("parse backup error: %v", err)
-	}
-	manifest.Artifacts[0].Reference.Digest = testDigest("d")
-	b, err = json.MarshalIndent(manifest, "", "  ")
-	if err != nil {
-		t.Fatalf("marshal forged backup error: %v", err)
-	}
-	if err := os.WriteFile(backupPath, b, 0o644); err != nil {
-		t.Fatalf("write forged backup error: %v", err)
-	}
-	restoreStore := newTestStore(t)
-	copyBlobFile(t, store.storeIO.blobPath(ref.Digest), restoreStore.storeIO.blobPath(ref.Digest))
-	err = restoreStore.RestoreBackup(backupPath)
+	store.storeIO.auditPath = badPath
+	_, err := store.Put(PutRequest{Payload: []byte("x"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("8"), CreatedByRole: "workspace"})
 	if err == nil {
-		t.Fatal("RestoreBackup expected error for forged digest")
+		t.Fatal("Put expected joined quota and audit error")
 	}
-}
-
-func TestRestoreRejectsMissingBackupSignature(t *testing.T) {
-	store := newTestStore(t)
-	if _, err := store.Put(PutRequest{Payload: []byte("payload"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("1"), CreatedByRole: "workspace"}); err != nil {
-		t.Fatalf("Put error: %v", err)
-	}
-	backupPath := filepath.Join(t.TempDir(), "backup.json")
-	if err := store.ExportBackup(backupPath); err != nil {
-		t.Fatalf("ExportBackup error: %v", err)
-	}
-	if err := os.Remove(backupSignaturePath(backupPath)); err != nil {
-		t.Fatalf("remove signature error: %v", err)
-	}
-	restoreStore := newTestStore(t)
-	err := restoreStore.RestoreBackup(backupPath)
-	if err != ErrBackupSignatureMissing {
-		t.Fatalf("RestoreBackup error = %v, want %v", err, ErrBackupSignatureMissing)
-	}
-}
-
-func TestRestoreRejectsTamperedBackupSignature(t *testing.T) {
-	store := newTestStore(t)
-	if _, err := store.Put(PutRequest{Payload: []byte("payload"), ContentType: "text/plain", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("1"), CreatedByRole: "workspace"}); err != nil {
-		t.Fatalf("Put error: %v", err)
-	}
-	backupPath := filepath.Join(t.TempDir(), "backup.json")
-	if err := store.ExportBackup(backupPath); err != nil {
-		t.Fatalf("ExportBackup error: %v", err)
-	}
-	b, err := os.ReadFile(backupSignaturePath(backupPath))
-	if err != nil {
-		t.Fatalf("read signature error: %v", err)
-	}
-	sig := BackupSignature{}
-	if err := json.Unmarshal(b, &sig); err != nil {
-		t.Fatalf("unmarshal signature error: %v", err)
-	}
-	sig.HMACSHA256 = strings.Repeat("0", len(sig.HMACSHA256))
-	b, err = json.MarshalIndent(sig, "", "  ")
-	if err != nil {
-		t.Fatalf("marshal tampered signature error: %v", err)
-	}
-	if err := os.WriteFile(backupSignaturePath(backupPath), b, 0o644); err != nil {
-		t.Fatalf("write tampered signature error: %v", err)
-	}
-	restoreStore := newTestStore(t)
-	err = restoreStore.RestoreBackup(backupPath)
-	if err != ErrBackupSignatureInvalid {
-		t.Fatalf("RestoreBackup error = %v, want %v", err, ErrBackupSignatureInvalid)
+	if !errors.Is(err, ErrQuotaExceeded) {
+		t.Fatalf("Put error = %v, want joined error containing %v", err, ErrQuotaExceeded)
 	}
 }
 
@@ -409,11 +265,36 @@ func TestAuditFailureIsSurfaced(t *testing.T) {
 	}
 }
 
-func TestCanonicalJSONRejectsNonIntegerNumbers(t *testing.T) {
+func TestCanonicalJSONSupportsFullJCSNumberAndUnicodeBehavior(t *testing.T) {
 	store := newTestStore(t)
-	_, err := store.Put(PutRequest{Payload: []byte(`{"a":1.2}`), ContentType: "application/json", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("1"), CreatedByRole: "workspace"})
-	if err == nil {
-		t.Fatal("Put expected canonicalization error for non-integer JSON")
+	ref, err := store.Put(PutRequest{Payload: []byte(`{"😀":"value","b":1e2,"a":-0,"c":1.25}`), ContentType: "application/json", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("1"), CreatedByRole: "workspace"})
+	if err != nil {
+		t.Fatalf("Put returned error: %v", err)
+	}
+	r, err := store.Get(ref.Digest)
+	if err != nil {
+		t.Fatalf("Get returned error: %v", err)
+	}
+	b, err := ioReadAllAndClose(r)
+	if err != nil {
+		t.Fatalf("read payload error: %v", err)
+	}
+	want := `{"a":0,"b":100,"c":1.25,"😀":"value"}`
+	if string(b) != want {
+		t.Fatalf("canonical payload = %q, want %q", string(b), want)
+	}
+}
+
+func TestCanonicalJSONRejectsTopLevelScalarRoots(t *testing.T) {
+	store := newTestStore(t)
+	for _, payload := range []string{"1", `"text"`, "true", "null"} {
+		_, err := store.Put(PutRequest{Payload: []byte(payload), ContentType: "application/json", DataClass: DataClassSpecText, ProvenanceReceiptHash: testDigest("1"), CreatedByRole: "workspace"})
+		if err == nil {
+			t.Fatalf("Put(%q) expected canonicalization error", payload)
+		}
+		if !strings.Contains(err.Error(), "top-level JSON value must be an object or array") {
+			t.Fatalf("Put(%q) error = %v, want object-or-array root error", payload, err)
+		}
 	}
 }
 

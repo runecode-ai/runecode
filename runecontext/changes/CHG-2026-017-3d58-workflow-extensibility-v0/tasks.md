@@ -10,7 +10,7 @@
 
 - [ ] Keep JSON as the canonical on-disk and runtime format.
 - [ ] Use JSON Schema as the single validation source of truth.
-- [ ] Normalize any future authoring adapters to the same canonical JSON object before validation and hashing.
+- [ ] Normalize any future authoring adapters to the same RFC 8785 JCS canonical JSON bytes before validation and hashing, keeping authored workflow definitions object-rooted.
 
 ## Shared-Memory Accelerators
 

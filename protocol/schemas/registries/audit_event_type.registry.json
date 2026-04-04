@@ -14,6 +14,10 @@
       "summary": "Records a model-gateway outbound request with allowlist and destination attribution."
     },
     {
+      "code": "artifact_put",
+      "summary": "Records successful artifact ingestion after canonicalization and immutable metadata assignment."
+    },
+    {
       "code": "artifact_flow_blocked",
       "summary": "Records deterministic denial of an artifact flow that is not allowed by the signed flow matrix."
     },

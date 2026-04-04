@@ -1,6 +1,7 @@
 package artifacts
 
 import (
+	"errors"
 	"io"
 	"sort"
 )
@@ -62,7 +63,7 @@ func (s *Store) preparePutPayload(req PutRequest) ([]byte, string, error) {
 	}
 	if err := s.checkQuotasLocked(req.CreatedByRole, req.StepID, int64(len(canonical))); err != nil {
 		if auditErr := s.appendAuditLocked("artifact_quota_violation", req.CreatedByRole, map[string]interface{}{"role": req.CreatedByRole, "step_id": req.StepID}); auditErr != nil {
-			return nil, "", auditErr
+			return nil, "", errors.Join(err, auditErr)
 		}
 		return nil, "", err
 	}

@@ -26,6 +26,10 @@
       "summary": "unapproved_file_excerpts are never eligible for third-party egress in MVP policy."
     },
     {
+      "code": "approved_excerpt_requires_manifest_opt_in",
+      "summary": "approved_file_excerpts require explicit signed-manifest opt-in before third-party egress is allowed."
+    },
+    {
       "code": "approved_excerpt_revoked",
       "summary": "The approved_file_excerpts artifact hash is denylisted and blocked from future flows or egress."
     },

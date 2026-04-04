@@ -93,6 +93,21 @@ func (s *storeIO) blobPath(digest string) string {
 	return filepath.Join(s.blobDir, strings.TrimPrefix(digest, "sha256:"))
 }
 
+func (s *storeIO) validatedBlobPath(digest string) (string, error) {
+	if !isValidDigest(digest) {
+		return "", ErrInvalidDigest
+	}
+	path := s.blobPath(digest)
+	rel, err := filepath.Rel(s.blobDir, path)
+	if err != nil {
+		return "", err
+	}
+	if rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || filepath.IsAbs(rel) {
+		return "", ErrInvalidDigest
+	}
+	return path, nil
+}
+
 func (s *storeIO) writeBlobIfMissing(digest string, payload []byte) error {
 	path := s.blobPath(digest)
 	if _, err := os.Stat(path); err == nil {
