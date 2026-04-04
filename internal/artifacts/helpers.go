@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 )
@@ -175,7 +174,7 @@ func backupKeyID(key string) string {
 }
 
 func sanitizeBackupPath(filePath string) string {
-	return path.Clean(filePath)
+	return filepath.Clean(filePath)
 }
 
 func randomBackupKey() (string, error) {

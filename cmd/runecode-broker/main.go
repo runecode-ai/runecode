@@ -107,16 +107,46 @@ func handleGetArtifact(args []string, service *brokerapi.Service, stdout io.Writ
 	if err != nil {
 		return err
 	}
-	defer r.Close()
-	payload, err := io.ReadAll(r)
+	tmpPath := *out + ".tmp"
+	f, err := os.Create(tmpPath)
 	if err != nil {
+		_ = r.Close()
 		return err
 	}
-	if err := os.WriteFile(*out, payload, 0o644); err != nil {
+	defer os.Remove(tmpPath)
+	written, err := io.Copy(f, r)
+	if err != nil {
+		_ = r.Close()
+		_ = f.Close()
 		return err
 	}
-	_, err = fmt.Fprintf(stdout, "wrote %d bytes to %s\n", len(payload), *out)
+	if err := f.Sync(); err != nil {
+		_ = r.Close()
+		_ = f.Close()
+		return err
+	}
+	if err := f.Close(); err != nil {
+		_ = r.Close()
+		return err
+	}
+	if err := r.Close(); err != nil {
+		return err
+	}
+	if err := replaceFile(tmpPath, *out); err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(stdout, "wrote %d bytes to %s\n", written, *out)
 	return err
+}
+
+func replaceFile(src, dst string) error {
+	if err := os.Rename(src, dst); err == nil {
+		return nil
+	}
+	if removeErr := os.Remove(dst); removeErr != nil && !os.IsNotExist(removeErr) {
+		return removeErr
+	}
+	return os.Rename(src, dst)
 }
 
 func handlePutArtifact(args []string, service *brokerapi.Service, stdout io.Writer) error {

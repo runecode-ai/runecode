@@ -125,16 +125,20 @@ func enforceApprovedRevocationRestriction(policy Policy, req FlowCheckRequest, a
 }
 
 func flowAllowed(rules []FlowRule, req FlowCheckRequest) bool {
+	matchedRolePair := false
 	for _, rule := range rules {
 		if rule.ProducerRole != req.ProducerRole || rule.ConsumerRole != req.ConsumerRole {
 			continue
 		}
+		matchedRolePair = true
 		for _, cls := range rule.AllowedDataClasses {
 			if cls == req.DataClass {
 				return true
 			}
 		}
-		break
+	}
+	if !matchedRolePair {
+		return false
 	}
 	return false
 }
