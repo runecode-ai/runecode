@@ -1,0 +1,168 @@
+package artifacts
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+type storeIO struct {
+	statePath string
+	auditPath string
+	blobDir   string
+}
+
+func newStoreIO(rootDir, blobDir string) (*storeIO, error) {
+	if err := os.MkdirAll(blobDir, 0o755); err != nil {
+		return nil, err
+	}
+	return &storeIO{
+		statePath: filepath.Join(rootDir, "state.json"),
+		auditPath: filepath.Join(rootDir, "audit.log"),
+		blobDir:   blobDir,
+	}, nil
+}
+
+func (s *storeIO) loadStateFile() (StoreState, error) {
+	state := StoreState{}
+	b, err := os.ReadFile(s.statePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return state, nil
+		}
+		return state, err
+	}
+	if len(b) == 0 {
+		return state, nil
+	}
+	if err := json.Unmarshal(b, &state); err != nil {
+		return state, err
+	}
+	return state, nil
+}
+
+func (s *storeIO) saveStateFile(state StoreState) error {
+	b, err := json.MarshalIndent(state, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.statePath, b, 0o644)
+}
+
+func (s *storeIO) appendAuditEvent(event AuditEvent) error {
+	b, err := json.Marshal(event)
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile(s.auditPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.Write(append(b, '\n'))
+	return err
+}
+
+func (s *storeIO) readAuditEvents() ([]AuditEvent, error) {
+	b, err := os.ReadFile(s.auditPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	lines := strings.Split(strings.TrimSpace(string(b)), "\n")
+	out := make([]AuditEvent, 0, len(lines))
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		var event AuditEvent
+		if err := json.Unmarshal([]byte(line), &event); err != nil {
+			return nil, err
+		}
+		out = append(out, event)
+	}
+	return out, nil
+}
+
+func (s *storeIO) blobPath(digest string) string {
+	return filepath.Join(s.blobDir, strings.TrimPrefix(digest, "sha256:"))
+}
+
+func (s *storeIO) writeBlobIfMissing(digest string, payload []byte) error {
+	path := s.blobPath(digest)
+	if _, err := os.Stat(path); err == nil {
+		return nil
+	}
+	return os.WriteFile(path, payload, 0o644)
+}
+
+func (s *storeIO) openBlob(path string) (*os.File, error) {
+	return os.Open(path)
+}
+
+func (s *storeIO) readBlob(path string) ([]byte, error) {
+	return os.ReadFile(path)
+}
+
+func (s *storeIO) removeBlob(path string) error {
+	err := os.Remove(path)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
+func (s *storeIO) writeBackup(path string, manifest BackupManifest) error {
+	b, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, b, 0o644)
+}
+
+func (s *storeIO) writeBackupSignature(path string, signature BackupSignature) error {
+	b, err := json.MarshalIndent(signature, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, b, 0o644)
+}
+
+func (s *storeIO) readBackup(path string) (BackupManifest, error) {
+	manifest := BackupManifest{}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return manifest, err
+	}
+	if err := json.Unmarshal(b, &manifest); err != nil {
+		return manifest, err
+	}
+	if manifest.Schema != "runecode.backup.artifacts.v1" {
+		return manifest, fmt.Errorf("unsupported backup schema")
+	}
+	return manifest, nil
+}
+
+func (s *storeIO) readBackupSignature(path string) (BackupSignature, error) {
+	signature := BackupSignature{}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return signature, ErrBackupSignatureMissing
+		}
+		return signature, err
+	}
+	if err := json.Unmarshal(b, &signature); err != nil {
+		return signature, err
+	}
+	return signature, nil
+}
+
+func newAuditEvent(seq int64, eventType, actor string, details map[string]interface{}, nowFn func() time.Time) AuditEvent {
+	return AuditEvent{Seq: seq, Type: eventType, OccurredAt: nowFn().UTC(), Actor: actor, Details: details}
+}

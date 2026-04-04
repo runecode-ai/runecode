@@ -41,7 +41,14 @@
     {
       "path": "objects/ArtifactReference.schema.json",
       "schema_id": "runecode.protocol.v0.ArtifactReference",
-      "schema_version": "0.2.0",
+      "schema_version": "0.3.0",
+      "owner": "protocol",
+      "status": "mvp"
+    },
+    {
+      "path": "objects/ArtifactPolicy.schema.json",
+      "schema_id": "runecode.protocol.v0.ArtifactPolicy",
+      "schema_version": "0.1.0",
       "owner": "protocol",
       "status": "mvp"
     },

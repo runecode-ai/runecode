@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runecode.dev/protocol/schemas/objects/ArtifactPolicy.schema.json",
+  "title": "ArtifactPolicy",
+  "description": "Protocol-owned artifact policy family for flow matrix, approvals, CAS posture, quotas, and retention controls.",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 11,
+  "$defs": {
+    "dataClass": {
+      "description": "MVP artifact data class taxonomy.",
+      "type": "string",
+      "enum": [
+        "spec_text",
+        "unapproved_file_excerpts",
+        "approved_file_excerpts",
+        "diffs",
+        "build_logs",
+        "audit_events",
+        "audit_verification_report",
+        "web_query",
+        "web_citations"
+      ]
+    },
+    "flowEntry": {
+      "description": "One producer-consumer flow rule; absent flows are denied fail-closed.",
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 3,
+      "required": [
+        "producer_role",
+        "consumer_role",
+        "allowed_data_classes"
+      ],
+      "properties": {
+        "producer_role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Producing role kind.",
+          "x-data-class": "public"
+        },
+        "consumer_role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Consuming role kind.",
+          "x-data-class": "public"
+        },
+        "allowed_data_classes": {
+          "type": "array",
+          "maxItems": 9,
+          "description": "Allowed artifact classes for this producer->consumer pair.",
+          "x-data-class": "public",
+          "items": {
+            "$ref": "#/$defs/dataClass",
+            "description": "One allowed artifact class."
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "quotaEntry": {
+      "description": "Per-role or per-step quota entry.",
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 5,
+      "required": [
+        "scope_id",
+        "max_artifact_count",
+        "max_total_bytes",
+        "max_single_artifact_bytes",
+        "audit_event_type_on_violation"
+      ],
+      "properties": {
+        "scope_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Role or step scope identifier.",
+          "x-data-class": "public"
+        },
+        "max_artifact_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "description": "Max artifact count for scope.",
+          "x-data-class": "public"
+        },
+        "max_total_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1099511627776,
+          "description": "Max aggregate bytes for scope.",
+          "x-data-class": "public"
+        },
+        "max_single_artifact_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824,
+          "description": "Max single artifact bytes for scope.",
+          "x-data-class": "public"
+        },
+        "audit_event_type_on_violation": {
+          "type": "string",
+          "const": "artifact_quota_violation",
+          "description": "Audit event type for quota violations.",
+          "x-data-class": "public"
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "handoff_reference_mode",
+    "cas",
+    "storage_protection",
+    "approval_promotion",
+    "flow_matrix",
+    "revoked_approved_excerpt_hashes",
+    "quotas",
+    "retention",
+    "gc"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "runecode.protocol.v0.ArtifactPolicy",
+      "description": "Stable protocol object-family identifier for artifact policy objects.",
+      "x-data-class": "public"
+    },
+    "schema_version": {
+      "const": "0.1.0",
+      "description": "Exact protocol schema version used to validate this artifact policy.",
+      "x-data-class": "public"
+    },
+    "handoff_reference_mode": {
+      "type": "string",
+      "const": "hash_only",
+      "description": "Cross-role handoffs must reference artifacts by hash only.",
+      "x-data-class": "public"
+    },
+    "cas": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 4,
+      "required": [
+        "put",
+        "get",
+        "head",
+        "hashing_profile"
+      ],
+      "properties": {
+        "put": {
+          "type": "string",
+          "const": "put(stream)->{hash,size,metadata}",
+          "description": "CAS put interface semantics.",
+          "x-data-class": "public"
+        },
+        "get": {
+          "type": "string",
+          "const": "get(hash)->stream",
+          "description": "CAS get interface semantics.",
+          "x-data-class": "public"
+        },
+        "head": {
+          "type": "string",
+          "const": "head(hash)->metadata",
+          "description": "CAS head interface semantics.",
+          "x-data-class": "public"
+        },
+        "hashing_profile": {
+          "type": "string",
+          "const": "RFC8785-JCS",
+          "description": "Deterministic canonicalization and hashing profile.",
+          "x-data-class": "public"
+        }
+      },
+      "description": "Content-addressed store interface and deterministic hashing posture.",
+      "x-data-class": "public"
+    },
+    "storage_protection": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 2,
+      "required": [
+        "encrypted_at_rest_default",
+        "dev_plaintext_override"
+      ],
+      "properties": {
+        "encrypted_at_rest_default": {
+          "type": "boolean",
+          "const": true,
+          "description": "Encrypted-at-rest is default store posture.",
+          "x-data-class": "public"
+        },
+        "dev_plaintext_override": {
+          "type": "string",
+          "enum": [
+            "forbidden",
+            "explicit_dev_only"
+          ],
+          "description": "Plaintext fallback posture; silent fallback is disallowed.",
+          "x-data-class": "public"
+        }
+      },
+      "description": "At-rest protection and plaintext override policy.",
+      "x-data-class": "public"
+    },
+    "approval_promotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 11,
+      "required": [
+        "explicit_human_approval_required",
+        "promotion_mints_new_artifact_reference",
+        "max_promotion_request_bytes",
+        "max_promotion_requests_per_minute",
+        "bulk_promotion_requires_separate_approval",
+        "require_full_content_visibility",
+        "require_origin_metadata",
+        "artifact_data_class_immutability",
+        "unapproved_excerpt_egress",
+        "approved_excerpt_egress",
+        "audit_event_type_on_action"
+      ],
+      "properties": {
+        "explicit_human_approval_required": {
+          "type": "boolean",
+          "const": true,
+          "description": "approved_file_excerpts require explicit recorded human approval.",
+          "x-data-class": "public"
+        },
+        "promotion_mints_new_artifact_reference": {
+          "type": "boolean",
+          "const": true,
+          "description": "Promotion must mint a new reference and never mutate existing artifacts.",
+          "x-data-class": "public"
+        },
+        "max_promotion_request_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760,
+          "description": "Size bound for one promotion request.",
+          "x-data-class": "public"
+        },
+        "max_promotion_requests_per_minute": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Per-principal promotion request rate limit.",
+          "x-data-class": "public"
+        },
+        "bulk_promotion_requires_separate_approval": {
+          "type": "boolean",
+          "const": true,
+          "description": "Bulk promotions require separate explicit approval.",
+          "x-data-class": "public"
+        },
+        "require_full_content_visibility": {
+          "type": "string",
+          "const": "full_content_or_explicit_view_full",
+          "description": "Approval UX must provide full-content visibility or explicit view-full affordance.",
+          "x-data-class": "public"
+        },
+        "require_origin_metadata": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "Origin metadata required before approval is granted.",
+          "x-data-class": "public",
+          "items": {
+            "type": "string",
+            "enum": [
+              "repo_path",
+              "commit",
+              "extractor_tool_version"
+            ],
+            "description": "One required metadata field."
+          },
+          "uniqueItems": true
+        },
+        "artifact_data_class_immutability": {
+          "type": "boolean",
+          "const": true,
+          "description": "Artifact data_class is immutable after creation.",
+          "x-data-class": "public"
+        },
+        "unapproved_excerpt_egress": {
+          "type": "string",
+          "const": "deny",
+          "description": "unapproved_file_excerpts are never eligible for third-party egress.",
+          "x-data-class": "public"
+        },
+        "approved_excerpt_egress": {
+          "type": "string",
+          "const": "manifest_opt_in_only",
+          "description": "approved_file_excerpts egress is allowed only when explicitly opted in by signed manifest flow policy.",
+          "x-data-class": "public"
+        },
+        "audit_event_type_on_action": {
+          "type": "string",
+          "const": "artifact_promotion_action",
+          "description": "Audit event type for promotion and revocation actions.",
+          "x-data-class": "public"
+        }
+      },
+      "description": "Approval hardening and data-class egress rules.",
+      "x-data-class": "public"
+    },
+    "flow_matrix": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "description": "Manifest-driven producer/consumer matrix; absent edges are denied fail-closed.",
+      "x-data-class": "public",
+      "items": {
+        "$ref": "#/$defs/flowEntry",
+        "description": "One producer/consumer flow rule."
+      },
+      "uniqueItems": true
+    },
+    "revoked_approved_excerpt_hashes": {
+      "type": "array",
+      "maxItems": 8192,
+      "description": "Denylist of revoked approved_file_excerpts hashes; revocation blocks future flow and egress.",
+      "x-data-class": "public",
+      "items": {
+        "$ref": "Digest.schema.json#/$defs/digestValue",
+        "description": "One revoked approved excerpt digest."
+      },
+      "uniqueItems": true
+    },
+    "quotas": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 2,
+      "required": [
+        "per_role",
+        "per_step"
+      ],
+      "properties": {
+        "per_role": {
+          "type": "array",
+          "maxItems": 128,
+          "description": "Per-role artifact quotas.",
+          "x-data-class": "public",
+          "items": {
+            "$ref": "#/$defs/quotaEntry",
+            "description": "One per-role quota."
+          },
+          "uniqueItems": true
+        },
+        "per_step": {
+          "type": "array",
+          "maxItems": 256,
+          "description": "Per-step artifact quotas.",
+          "x-data-class": "public",
+          "items": {
+            "$ref": "#/$defs/quotaEntry",
+            "description": "One per-step quota."
+          },
+          "uniqueItems": true
+        }
+      },
+      "description": "Quota limits for count, total bytes, and single artifact bytes.",
+      "x-data-class": "public"
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 5,
+      "required": [
+        "retain_referenced_active_runs",
+        "retain_referenced_retained_runs",
+        "unreferenced_ttl_seconds",
+        "delete_unreferenced_on_quota_pressure",
+        "audit_event_type_on_action"
+      ],
+      "properties": {
+        "retain_referenced_active_runs": {
+          "type": "boolean",
+          "const": true,
+          "description": "Keep artifacts referenced by active runs.",
+          "x-data-class": "public"
+        },
+        "retain_referenced_retained_runs": {
+          "type": "boolean",
+          "const": true,
+          "description": "Keep artifacts referenced by retained runs.",
+          "x-data-class": "public"
+        },
+        "unreferenced_ttl_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 315576000,
+          "description": "TTL after which unreferenced artifacts become GC-eligible.",
+          "x-data-class": "public"
+        },
+        "delete_unreferenced_on_quota_pressure": {
+          "type": "boolean",
+          "const": true,
+          "description": "Allow deleting unreferenced artifacts under quota pressure.",
+          "x-data-class": "public"
+        },
+        "audit_event_type_on_action": {
+          "type": "string",
+          "const": "artifact_retention_action",
+          "description": "Audit event type for retention decisions.",
+          "x-data-class": "public"
+        }
+      },
+      "description": "Minimal retention policy for bounded growth.",
+      "x-data-class": "public"
+    },
+    "gc": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 5,
+      "required": [
+        "audit_gc_actions",
+        "report_freed_bytes",
+        "deterministic_export_format",
+        "deterministic_restore_rules",
+        "audit_event_type_on_action"
+      ],
+      "properties": {
+        "audit_gc_actions": {
+          "type": "boolean",
+          "const": true,
+          "description": "GC actions must be audited.",
+          "x-data-class": "public"
+        },
+        "report_freed_bytes": {
+          "type": "boolean",
+          "const": true,
+          "description": "GC audit must include freed bytes.",
+          "x-data-class": "public"
+        },
+        "deterministic_export_format": {
+          "type": "string",
+          "const": "hash_manifest_plus_metadata",
+          "description": "Deterministic export/backup format.",
+          "x-data-class": "public"
+        },
+        "deterministic_restore_rules": {
+          "type": "string",
+          "const": "no_cross_boundary_secret_leakage",
+          "description": "Deterministic restore rules preserving trust boundaries.",
+          "x-data-class": "public"
+        },
+        "audit_event_type_on_action": {
+          "type": "string",
+          "const": "artifact_retention_action",
+          "description": "Audit event type for GC/export/restore actions.",
+          "x-data-class": "public"
+        }
+      },
+      "description": "Minimal deterministic GC and backup/restore policy.",
+      "x-data-class": "public"
+    }
+  }
+}

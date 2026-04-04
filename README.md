@@ -143,6 +143,7 @@ This quick path verifies signed checksums and the signed archive before install.
 - Shared machine-consumed code registries for `error.code`, `policy_reason_code`, `approval_trigger_code`, and `audit_event_type`
 - Shared fixtures in `protocol/fixtures/` validated in both Go and Node, including schema, stream-sequence, runtime-invariant, and canonicalization/hash cases
 - CI guardrails for runner trust-boundary access and protocol parity
+- MVP artifact data classes and an `ArtifactPolicy` schema family anchoring flow-matrix, approval-promotion, quota, and retention/GC controls
 
 Still incremental / not implemented end-to-end yet:
 - Broker runtime, policy evaluation, secrets handling, audit persistence/verification, and isolation backends remain scaffolded or are implemented in later specs
@@ -163,7 +164,7 @@ Still incremental / not implemented end-to-end yet:
 
 Current MVP object families cover:
 - manifests: `RoleManifest`, `CapabilityManifest`
-- identity and content addressing: `PrincipalIdentity`, `Digest`, `ArtifactReference`, `ProvenanceReceipt`
+- identity and content addressing: `PrincipalIdentity`, `Digest`, `ArtifactReference`, `ArtifactPolicy`, `ProvenanceReceipt`
 - audit and approvals: `AuditEvent`, `AuditReceipt`, `ApprovalRequest`, `ApprovalDecision`, `PolicyDecision`
 - model traffic: `LLMRequest`, `LLMResponse`, `LLMStreamEvent`
 - wrappers and shared errors: `SignedObjectEnvelope`, `Error`

@@ -16,6 +16,22 @@
     {
       "code": "approval_required",
       "summary": "The request remains allowed only after the required human-approval checkpoint is satisfied."
+    },
+    {
+      "code": "artifact_flow_denied",
+      "summary": "The requested artifact producer-consumer flow is not present in the signed flow matrix and is denied fail-closed."
+    },
+    {
+      "code": "unapproved_excerpt_egress_denied",
+      "summary": "unapproved_file_excerpts are never eligible for third-party egress in MVP policy."
+    },
+    {
+      "code": "approved_excerpt_revoked",
+      "summary": "The approved_file_excerpts artifact hash is denylisted and blocked from future flows or egress."
+    },
+    {
+      "code": "artifact_quota_exceeded",
+      "summary": "A per-role or per-step artifact quota limit was exceeded and the action was denied."
     }
   ]
 }

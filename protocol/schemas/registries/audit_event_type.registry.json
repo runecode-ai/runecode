@@ -12,6 +12,22 @@
     {
       "code": "model_egress",
       "summary": "Records a model-gateway outbound request with allowlist and destination attribution."
+    },
+    {
+      "code": "artifact_flow_blocked",
+      "summary": "Records deterministic denial of an artifact flow that is not allowed by the signed flow matrix."
+    },
+    {
+      "code": "artifact_promotion_action",
+      "summary": "Records excerpt promotion request, approval, denial, rate-limit, size-limit, or revocation actions."
+    },
+    {
+      "code": "artifact_quota_violation",
+      "summary": "Records per-role or per-step artifact quota violations including the rejected operation context."
+    },
+    {
+      "code": "artifact_retention_action",
+      "summary": "Records retention, GC, export, and restore actions including reclaimed bytes when applicable."
     }
   ]
 }

@@ -49,6 +49,42 @@
       "expect_valid": true
     },
     {
+      "id": "artifact-reference.valid-unapproved-file-excerpts",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-unapproved-file-excerpts.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-approved-file-excerpts",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-approved-file-excerpts.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-audit-verification-report",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-audit-verification-report.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-web-query-reserved",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-web-query-reserved.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-web-citations-reserved",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-web-citations-reserved.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-policy.valid-minimal",
+      "schema_path": "objects/ArtifactPolicy.schema.json",
+      "fixture_path": "schema/artifact-policy.valid-minimal.json",
+      "expect_valid": true
+    },
+    {
       "id": "provenance-receipt.valid-basic",
       "schema_path": "objects/ProvenanceReceipt.schema.json",
       "fixture_path": "schema/provenance-receipt.valid-basic.json",
