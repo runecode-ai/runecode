@@ -6,10 +6,10 @@
 - `just test`
 
 ## Verification Notes
-- Confirm the migrated change preserves the legacy task breakdown and acceptance criteria in `tasks.md`.
+- Confirm this change remains a project-level tracker and does not drift back into feature-level duplication.
 - Confirm canonical references remain on RuneContext project, spec, and change paths, with no active workflow depending on legacy planning paths.
 - Confirm the migrated text assumes RuneContext is canonical, RuneCode owns the user-facing UX, and verified-mode project state remains the expected operating posture.
-- Confirm the change still matches its v0.1.0-alpha.4 roadmap bucket and title after migration.
+- Confirm child feature links for `CHG-2026-033-6e7b-workflow-runner-durable-state-v0`, `CHG-2026-034-b2d4-workspace-roles-v0`, and `CHG-2026-035-c8e1-deterministic-gates-v0` remain current.
 
 ## Close Gate
 Use the repository's standard verification flow before closing this change.

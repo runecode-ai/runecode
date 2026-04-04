@@ -1,7 +1,7 @@
 schema_version: 1
 id: CHG-2026-027-71ed-workflow-concurrency-v0
 title: Workflow Concurrency v0
-status: proposed
+status: planned
 type: feature
 size: medium
 verification_status: pending
