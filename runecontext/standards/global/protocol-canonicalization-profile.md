@@ -15,6 +15,7 @@ Use RFC 8785 JCS for hashed or signed protocol objects.
 - Accept RFC 8785-compatible JSON numbers, including decimal and exponent forms, and normalize them through JCS/ECMAScript number formatting rules
 - Normalize `-0` to `0`
 - Sort object keys by UTF-16 code units as required by RFC 8785 JCS, including non-ASCII keys
-- Trusted persisted and signed RuneCode protocol surfaces are currently object-rooted; object and array roots are the supported canonicalized top-level forms in current wrappers
+- RFC 8785 JCS itself supports any JSON value, but current trusted RuneCode wrappers intentionally support object and array roots only
+- Trusted persisted and signed RuneCode protocol surfaces are currently object-rooted, so object/array-only wrapper support matches current usage
 - Prove parity with checked-in golden canonical JSON and hash fixtures
 - Keep Go and JS fixture checks aligned on the same canonical byte contract
