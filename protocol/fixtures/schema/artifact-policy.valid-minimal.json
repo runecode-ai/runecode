@@ -1,0 +1,93 @@
+{
+  "schema_id": "runecode.protocol.v0.ArtifactPolicy",
+  "schema_version": "0.1.0",
+  "handoff_reference_mode": "hash_only",
+  "cas": {
+    "put": "put(stream)->{hash,size,metadata}",
+    "get": "get(hash)->stream",
+    "head": "head(hash)->metadata",
+    "hashing_profile": "RFC8785-JCS"
+  },
+  "storage_protection": {
+    "encrypted_at_rest_default": true,
+    "dev_plaintext_override": "explicit_dev_only"
+  },
+  "approval_promotion": {
+    "explicit_human_approval_required": true,
+    "promotion_mints_new_artifact_reference": true,
+    "max_promotion_request_bytes": 65536,
+    "max_promotion_requests_per_minute": 30,
+    "bulk_promotion_requires_separate_approval": true,
+    "require_full_content_visibility": "full_content_or_explicit_view_full",
+    "require_origin_metadata": [
+      "repo_path",
+      "commit",
+      "extractor_tool_version"
+    ],
+    "artifact_data_class_immutability": true,
+    "unapproved_excerpt_egress": "deny",
+    "approved_excerpt_egress": "manifest_opt_in_only",
+    "audit_event_type_on_action": "artifact_promotion_action"
+  },
+  "flow_matrix": [
+    {
+      "producer_role": "workspace",
+      "consumer_role": "model_gateway",
+      "allowed_data_classes": [
+        "spec_text",
+        "approved_file_excerpts",
+        "diffs"
+      ]
+    },
+    {
+      "producer_role": "workspace",
+      "consumer_role": "auditd",
+      "allowed_data_classes": [
+        "audit_events",
+        "audit_verification_report",
+        "build_logs",
+        "unapproved_file_excerpts"
+      ]
+    }
+  ],
+  "revoked_approved_excerpt_hashes": [
+    {
+      "hash_alg": "sha256",
+      "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaf"
+    }
+  ],
+  "quotas": {
+    "per_role": [
+      {
+        "scope_id": "workspace",
+        "max_artifact_count": 1024,
+        "max_total_bytes": 268435456,
+        "max_single_artifact_bytes": 16777216,
+        "audit_event_type_on_violation": "artifact_quota_violation"
+      }
+    ],
+    "per_step": [
+      {
+        "scope_id": "step-build-and-test",
+        "max_artifact_count": 256,
+        "max_total_bytes": 67108864,
+        "max_single_artifact_bytes": 8388608,
+        "audit_event_type_on_violation": "artifact_quota_violation"
+      }
+    ]
+  },
+  "retention": {
+    "retain_referenced_active_runs": true,
+    "retain_referenced_retained_runs": true,
+    "unreferenced_ttl_seconds": 604800,
+    "delete_unreferenced_on_quota_pressure": true,
+    "audit_event_type_on_action": "artifact_retention_action"
+  },
+  "gc": {
+    "audit_gc_actions": true,
+    "report_freed_bytes": true,
+    "deterministic_export_format": "hash_manifest_plus_metadata",
+    "deterministic_restore_rules": "no_cross_boundary_secret_leakage",
+    "audit_event_type_on_action": "artifact_retention_action"
+  }
+}

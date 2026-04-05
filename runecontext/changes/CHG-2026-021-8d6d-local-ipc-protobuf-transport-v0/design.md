@@ -5,7 +5,7 @@ Define the local-only protobuf transport as an alternate encoding for the existi
 
 ## Key Decisions
 - The logical object model remains authoritative; protobuf is an alternate encoding, not a new protocol.
-- Persisted-object hashing and signing semantics do not change.
+- Persisted-object hashing and signing semantics do not change; protobuf transport continues to preserve the existing RFC 8785 JCS-based logical JSON hashing contract for persisted objects.
 - Local IPC safety requirements (binding, auth, framing, limits, deadlines, backpressure) remain explicit regardless of transport.
 - gRPC is optional and local-only.
 

@@ -1,0 +1,15 @@
+{
+  "schema_id": "runecode.protocol.v0.ArtifactReference",
+  "schema_version": "0.3.0",
+  "digest": {
+    "hash_alg": "sha256",
+    "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa7"
+  },
+  "size_bytes": 2048,
+  "content_type": "application/json",
+  "data_class": "audit_verification_report",
+  "provenance_receipt_hash": {
+    "hash_alg": "sha256",
+    "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb8"
+  }
+}

@@ -18,12 +18,27 @@ func TestFixtureManifestMatchesFixtureFiles(t *testing.T) {
 }
 
 func TestFixtureDigestsUseLowercaseSHA256Hex(t *testing.T) {
+	manifest := loadFixtureManifest(t)
+	invalidCanonicalPayloads := invalidCanonicalPayloadSet(manifest)
 	for _, rel := range listedFixtureFiles(t) {
 		rel := rel
 		t.Run(rel, func(t *testing.T) {
+			if invalidCanonicalPayloads[rel] {
+				return
+			}
 			assertFixtureDigestValues(t, rel, loadJSONValue(t, fixturePath(t, rel)))
 		})
 	}
+}
+
+func invalidCanonicalPayloadSet(manifest fixtureManifestFile) map[string]bool {
+	paths := map[string]bool{}
+	for _, entry := range manifest.CanonicalFixtures {
+		if !entry.ExpectValid {
+			paths[entry.PayloadPath] = true
+		}
+	}
+	return paths
 }
 
 func manifestFixturePaths(manifest fixtureManifestFile) []string {

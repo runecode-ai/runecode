@@ -1,6 +1,7 @@
 .direnv/
 result
 result-*
+.opencode/tmp/
 
 # Node
 node_modules/

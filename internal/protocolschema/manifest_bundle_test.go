@@ -17,6 +17,8 @@ func TestSchemaManifestMatchesSchemas(t *testing.T) {
 	assertSchemaManifestEntries(t, manifest)
 	assertReservedStatus(t, manifest, "runecode.protocol.v0.WorkflowDefinition")
 	assertReservedStatus(t, manifest, "runecode.protocol.v0.ProcessDefinition")
+	assertManifestSchemaVersion(t, manifest, "runecode.protocol.v0.ArtifactReference", "0.3.0")
+	assertManifestSchemaVersion(t, manifest, "runecode.protocol.v0.ArtifactPolicy", "0.1.0")
 }
 
 func TestManifestAndRegistryDocumentsValidateAgainstMetaSchemas(t *testing.T) {
@@ -83,6 +85,10 @@ func assertPolicyRegistryCodes(t *testing.T) {
 		"deny_by_default",
 		"allow_manifest_opt_in",
 		"approval_required",
+		"artifact_flow_denied",
+		"unapproved_excerpt_egress_denied",
+		"approved_excerpt_revoked",
+		"artifact_quota_exceeded",
 	)
 }
 
@@ -93,6 +99,10 @@ func assertAuditRegistryCodes(t *testing.T) {
 	assertRegistryContainsCodes(t, auditRegistry,
 		"session_open",
 		"model_egress",
+		"artifact_flow_blocked",
+		"artifact_promotion_action",
+		"artifact_quota_violation",
+		"artifact_retention_action",
 	)
 }
 
@@ -385,4 +395,19 @@ func assertSameStringSet(t *testing.T, got []string, want []string) {
 			t.Fatalf("set mismatch: got %v, want %v", got, want)
 		}
 	}
+}
+
+func assertManifestSchemaVersion(t *testing.T, manifest manifestFile, schemaID string, wantVersion string) {
+	t.Helper()
+
+	for _, entry := range manifest.SchemaFiles {
+		if entry.SchemaID == schemaID {
+			if entry.SchemaVersion != wantVersion {
+				t.Fatalf("schema_version for %q = %q, want %q", schemaID, entry.SchemaVersion, wantVersion)
+			}
+			return
+		}
+	}
+
+	t.Fatalf("schema_id %q not found in manifest", schemaID)
 }

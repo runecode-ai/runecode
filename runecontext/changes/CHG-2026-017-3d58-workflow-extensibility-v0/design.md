@@ -9,7 +9,7 @@ Define schema-validated workflow composition and rebuildable shared-memory accel
 - Selected process definitions are signed, hash-bound inputs to policy, approval, and audit flows.
 - `ProcessDefinition` uses JSON as its runtime and canonical on-disk format.
 - JSON Schema is the single validation source of truth for `ProcessDefinition` objects.
-- Future authoring adapters must normalize to the same canonical JSON object before validation and hashing; direct runtime execution consumes JSON only.
+- Future authoring adapters must normalize to the same RFC 8785 JCS canonical JSON bytes before validation and hashing; the authored `ProcessDefinition` surface remains object-rooted even though shared canonicalization semantics are now defined repo-wide.
 - Shared memory is a rebuildable accelerator for derived artifacts only; authoritative state remains in the run DB, artifact store, and audit trail.
 
 ## Main Workstreams

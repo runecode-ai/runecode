@@ -5,102 +5,14 @@ const test = require('node:test')
 
 const Ajv2020 = require('ajv/dist/2020').default
 const addFormats = require('ajv-formats')
+const crypto = require('node:crypto')
 
 const repoRoot = path.resolve(__dirname, '..', '..')
 const schemaRoot = path.join(repoRoot, 'protocol/schemas')
 const fixtureRoot = path.join(repoRoot, 'protocol/fixtures')
 
 function loadJson(filePath) {
-  // JSON.parse is intentional here because the MVP canonicalization profile rejects
-  // numbers outside the shared Go/TS safe-integer range before hashing.
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
-}
-
-function loadCanonicalizationPayload(filePath) {
-  const raw = fs.readFileSync(filePath, 'utf8')
-  assertCanonicalNumberLexemes(raw, filePath)
-  return JSON.parse(raw)
-}
-
-function assertCanonicalNumberLexemes(raw, filePath) {
-  let index = 0
-  let inString = false
-  let escaped = false
-
-  while (index < raw.length) {
-    const char = raw[index]
-    if (inString) {
-      if (escaped) {
-        escaped = false
-      } else if (char === '\\') {
-        escaped = true
-      } else if (char === '"') {
-        inString = false
-      }
-      index += 1
-      continue
-    }
-
-    if (char === '"') {
-      inString = true
-      index += 1
-      continue
-    }
-
-    if (char === '-' || isDigit(char)) {
-      const { token, nextIndex } = readJsonNumberToken(raw, index)
-      if (token !== null) {
-        if (token.includes('.') || token.includes('e') || token.includes('E')) {
-          throw new Error(`${filePath} contains non-integer numeric literal ${token}`)
-        }
-        index = nextIndex
-        continue
-      }
-    }
-
-    index += 1
-  }
-}
-
-function readJsonNumberToken(raw, start) {
-  let index = start
-  if (raw[index] === '-') {
-    index += 1
-  }
-  if (index >= raw.length || !isDigit(raw[index])) {
-    return { token: null, nextIndex: start + 1 }
-  }
-
-  if (raw[index] === '0') {
-    index += 1
-  } else {
-    while (index < raw.length && isDigit(raw[index])) {
-      index += 1
-    }
-  }
-
-  if (raw[index] === '.') {
-    index += 1
-    while (index < raw.length && isDigit(raw[index])) {
-      index += 1
-    }
-  }
-
-  if (raw[index] === 'e' || raw[index] === 'E') {
-    index += 1
-    if (raw[index] === '+' || raw[index] === '-') {
-      index += 1
-    }
-    while (index < raw.length && isDigit(raw[index])) {
-      index += 1
-    }
-  }
-
-  return { token: raw.slice(start, index), nextIndex: index }
-}
-
-function isDigit(char) {
-  return char >= '0' && char <= '9'
+	return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
 
 function loadBundle() {
@@ -129,47 +41,183 @@ function validatorForPath(bundle, schemaPath) {
 }
 
 function canonicalize(value) {
-  if (value === null) {
-    return 'null'
-  }
-  if (typeof value === 'boolean') {
-    return value ? 'true' : 'false'
-  }
-  if (typeof value === 'string') {
-    return JSON.stringify(value)
-  }
-  if (typeof value === 'number') {
-    if (!Number.isSafeInteger(value)) {
-      throw new Error(`number ${value} is outside the MVP canonicalization profile`)
-    }
-    return JSON.stringify(value)
-  }
-  if (Array.isArray(value)) {
-    return `[${value.map(canonicalize).join(',')}]`
-  }
-  if (value && typeof value === 'object') {
-    const keys = Object.keys(value).sort()
-    for (const key of keys) {
-      if (!isAsciiString(key)) {
-        throw new Error(`object key ${JSON.stringify(key)} is outside the MVP ASCII-only canonicalization profile`)
-      }
-    }
-    return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalize(value[key])}`).join(',')}}`
-  }
-  throw new Error(`unsupported JSON type ${typeof value}`)
+	return canonicalizeFromText(JSON.stringify(value))
 }
 
-function isAsciiString(text) {
-  for (let index = 0; index < text.length; index += 1) {
-    if (text.charCodeAt(index) > 0x7f) {
-      return false
-    }
-  }
-  return true
+function canonicalizeFromText(jsonText) {
+	assertNoDuplicateObjectKeys(jsonText)
+	const value = JSON.parse(jsonText)
+	assert.ok(Array.isArray(value) || (value && typeof value === 'object'), 'top-level JSON value must be an object or array')
+	return serializeCanonical(value)
+}
+
+function assertNoDuplicateObjectKeys(jsonText) {
+	let index = 0
+
+	function skipWhitespace() {
+		while (index < jsonText.length && /\s/.test(jsonText[index])) {
+			index += 1
+		}
+	}
+
+	function parseStringToken() {
+		const start = index
+		assert.equal(jsonText[index], '"', 'expected string')
+		index += 1
+		while (index < jsonText.length) {
+			const ch = jsonText[index]
+			if (ch === '\\') {
+				index += 2
+				continue
+			}
+			if (ch === '"') {
+				index += 1
+				return jsonText.slice(start, index)
+			}
+			index += 1
+		}
+		throw new Error('unterminated string literal')
+	}
+
+	function parseLiteral(lit) {
+		assert.equal(jsonText.slice(index, index + lit.length), lit, `expected literal ${lit}`)
+		index += lit.length
+	}
+
+	function parseNumber() {
+		const match = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/.exec(jsonText.slice(index))
+		assert.ok(match, 'invalid number')
+		index += match[0].length
+	}
+
+	function parseArray() {
+		assert.equal(jsonText[index], '[', 'expected array')
+		index += 1
+		skipWhitespace()
+		if (jsonText[index] === ']') {
+			index += 1
+			return
+		}
+		while (true) {
+			parseValue()
+			skipWhitespace()
+			if (jsonText[index] === ']') {
+				index += 1
+				return
+			}
+			assert.equal(jsonText[index], ',', 'expected comma in array')
+			index += 1
+			skipWhitespace()
+		}
+	}
+
+	function parseObject() {
+		assert.equal(jsonText[index], '{', 'expected object')
+		index += 1
+		skipWhitespace()
+		if (jsonText[index] === '}') {
+			index += 1
+			return
+		}
+		const keys = new Set()
+		while (true) {
+			const token = parseStringToken()
+			const key = JSON.parse(token)
+			if (keys.has(key)) {
+				throw new Error(`duplicate object key ${JSON.stringify(key)}`)
+			}
+			keys.add(key)
+			skipWhitespace()
+			assert.equal(jsonText[index], ':', 'expected colon in object')
+			index += 1
+			skipWhitespace()
+			parseValue()
+			skipWhitespace()
+			if (jsonText[index] === '}') {
+				index += 1
+				return
+			}
+			assert.equal(jsonText[index], ',', 'expected comma in object')
+			index += 1
+			skipWhitespace()
+		}
+	}
+
+	function parseValue() {
+		skipWhitespace()
+		const ch = jsonText[index]
+		if (ch === '{') {
+			parseObject()
+			return
+		}
+		if (ch === '[') {
+			parseArray()
+			return
+		}
+		if (ch === '"') {
+			parseStringToken()
+			return
+		}
+		if (ch === 't') {
+			parseLiteral('true')
+			return
+		}
+		if (ch === 'f') {
+			parseLiteral('false')
+			return
+		}
+		if (ch === 'n') {
+			parseLiteral('null')
+			return
+		}
+		parseNumber()
+	}
+
+	parseValue()
+	skipWhitespace()
+	assert.equal(index, jsonText.length, 'unexpected trailing JSON data')
+}
+
+function serializeCanonical(value) {
+	if (value === null) {
+		return 'null'
+	}
+	if (typeof value === 'boolean') {
+		return value ? 'true' : 'false'
+	}
+	if (typeof value === 'string') {
+		return JSON.stringify(value)
+	}
+	if (typeof value === 'number') {
+		assert.ok(Number.isFinite(value), `invalid JSON number ${value}`)
+		if (Object.is(value, -0)) {
+			return '0'
+		}
+		return value.toString()
+	}
+	if (Array.isArray(value)) {
+		return `[${value.map(serializeCanonical).join(',')}]`
+	}
+	if (value && typeof value === 'object') {
+		const keys = Object.keys(value).sort(compareUtf16)
+		return `{${keys.map((key) => `${JSON.stringify(key)}:${serializeCanonical(value[key])}`).join(',')}}`
+	}
+	throw new Error(`unsupported JSON type ${typeof value}`)
+}
+
+function compareUtf16(left, right) {
+	const limit = Math.min(left.length, right.length)
+	for (let index = 0; index < limit; index += 1) {
+		const diff = left.charCodeAt(index) - right.charCodeAt(index)
+		if (diff !== 0) {
+			return diff
+		}
+	}
+	return left.length - right.length
 }
 
 function sha256Hex(text) {
-  return require('node:crypto').createHash('sha256').update(text, 'utf8').digest('hex')
+	return crypto.createHash('sha256').update(text, 'utf8').digest('hex')
 }
 
 function digestIdentity(digest) {
@@ -318,19 +366,29 @@ test('runtime invariant fixtures fail closed identically in JS', async (t) => {
 test('canonicalization fixtures match golden bytes and hashes', async (t) => {
   const manifest = loadJson(path.join(fixtureRoot, 'manifest.json'))
 
-  for (const entry of manifest.canonicalization_fixtures) {
-    await t.test(entry.id, () => {
-      if (!entry.expect_valid) {
-        assert.throws(() => canonicalize(loadCanonicalizationPayload(path.join(fixtureRoot, entry.payload_path))))
-        return
-      }
+	for (const entry of manifest.canonicalization_fixtures) {
+		await t.test(entry.id, () => {
+			const raw = fs.readFileSync(path.join(fixtureRoot, entry.payload_path), 'utf8')
+			if (!entry.expect_valid) {
+				assert.throws(() => canonicalizeFromText(raw))
+				return
+			}
 
-      const payload = loadCanonicalizationPayload(path.join(fixtureRoot, entry.payload_path))
-      const golden = fs.readFileSync(path.join(fixtureRoot, entry.canonical_json_path), 'utf8').replace(/\n$/, '')
-      const canonical = canonicalize(payload)
+			const golden = fs.readFileSync(path.join(fixtureRoot, entry.canonical_json_path), 'utf8').replace(/\n$/, '')
+			const canonical = canonicalizeFromText(raw)
 
-      assert.equal(canonical, golden)
-      assert.equal(sha256Hex(canonical), entry.sha256)
+			assert.equal(canonical, golden)
+			assert.equal(sha256Hex(canonical), entry.sha256)
     })
-  }
+	}
+})
+
+test('canonicalization rejects top-level scalar roots', () => {
+	for (const payload of ['1', '"text"', 'true', 'null']) {
+		assert.throws(() => canonicalizeFromText(payload), /top-level JSON value must be an object or array/)
+	}
+})
+
+test('canonicalization rejects duplicate object keys', () => {
+	assert.throws(() => canonicalizeFromText('{"a":1,"a":2}'), /duplicate object key/)
 })

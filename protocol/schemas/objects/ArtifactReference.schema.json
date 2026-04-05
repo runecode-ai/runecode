@@ -22,7 +22,7 @@
       "x-data-class": "public"
     },
     "schema_version": {
-      "const": "0.2.0",
+      "const": "0.3.0",
       "description": "Exact protocol schema version used to validate this artifact reference.",
       "x-data-class": "public"
     },
@@ -48,10 +48,18 @@
     },
     "data_class": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "pattern": "^[a-z][a-z0-9_]{0,127}$",
-      "description": "Immutable artifact data-class label enforced by policy and flow-matrix checks.",
+      "enum": [
+        "spec_text",
+        "unapproved_file_excerpts",
+        "approved_file_excerpts",
+        "diffs",
+        "build_logs",
+        "audit_events",
+        "audit_verification_report",
+        "web_query",
+        "web_citations"
+      ],
+      "description": "Immutable artifact data-class label enforced by policy and flow-matrix checks. web_query and web_citations are reserved for future role work and must remain fail-closed unless explicitly enabled by signed manifest policy.",
       "x-data-class": "public"
     },
     "provenance_receipt_hash": {

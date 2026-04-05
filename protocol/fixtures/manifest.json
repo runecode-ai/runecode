@@ -49,6 +49,42 @@
       "expect_valid": true
     },
     {
+      "id": "artifact-reference.valid-unapproved-file-excerpts",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-unapproved-file-excerpts.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-approved-file-excerpts",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-approved-file-excerpts.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-audit-verification-report",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-audit-verification-report.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-web-query-reserved",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-web-query-reserved.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-reference.valid-web-citations-reserved",
+      "schema_path": "objects/ArtifactReference.schema.json",
+      "fixture_path": "schema/artifact-reference.valid-web-citations-reserved.json",
+      "expect_valid": true
+    },
+    {
+      "id": "artifact-policy.valid-minimal",
+      "schema_path": "objects/ArtifactPolicy.schema.json",
+      "fixture_path": "schema/artifact-policy.valid-minimal.json",
+      "expect_valid": true
+    },
+    {
       "id": "provenance-receipt.valid-basic",
       "schema_path": "objects/ProvenanceReceipt.schema.json",
       "fixture_path": "schema/provenance-receipt.valid-basic.json",
@@ -208,30 +244,37 @@
     {
       "id": "safe-integer.overflow",
       "payload_path": "canonical/safe-integer.overflow.payload.json",
-      "canonical_json_path": "",
-      "sha256": "",
-      "expect_valid": false
+	      "canonical_json_path": "canonical/safe-integer.overflow.canonical.json",
+	      "sha256": "0e505fc9308cb9cdc024db2e2e71e86c41a39a449a854ed2f528f337d3a8a101",
+	      "expect_valid": true
     },
     {
       "id": "non-integer.decimal.invalid",
       "payload_path": "canonical/non-integer.decimal.invalid.payload.json",
-      "canonical_json_path": "",
-      "sha256": "",
-      "expect_valid": false
+	      "canonical_json_path": "canonical/non-integer.decimal.invalid.canonical.json",
+	      "sha256": "4abafa7fc94b4b546e214d264413901307cff68d4a017493707da2e56383caad",
+	      "expect_valid": true
     },
     {
       "id": "non-integer.exponent.invalid",
       "payload_path": "canonical/non-integer.exponent.invalid.payload.json",
-      "canonical_json_path": "",
-      "sha256": "",
-      "expect_valid": false
+	      "canonical_json_path": "canonical/non-integer.exponent.invalid.canonical.json",
+	      "sha256": "7d35cdad45765675aa0d142d569caf572345f7ad42fafca3963ebdfe9a8e08e9",
+	      "expect_valid": true
     },
     {
       "id": "non-ascii-key.invalid",
       "payload_path": "canonical/non-ascii-key.invalid.payload.json",
-      "canonical_json_path": "",
-      "sha256": "",
-      "expect_valid": false
+	      "canonical_json_path": "canonical/non-ascii-key.invalid.canonical.json",
+	      "sha256": "ee9b368f0e7ea18388cb4e37c60b4d711fe61c1a89ce53d9fbce34c6b677938f",
+	      "expect_valid": true
+	    },
+	    {
+	      "id": "malformed-json.invalid",
+	      "payload_path": "canonical/malformed-json.invalid.payload.json",
+	      "canonical_json_path": "",
+	      "sha256": "",
+	      "expect_valid": false
     }
   ]
 }

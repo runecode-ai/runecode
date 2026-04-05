@@ -4,7 +4,7 @@
 
 - [ ] Define `.proto` messages that map 1:1 to the existing logical local-API object model.
 - [ ] Preserve existing error envelope, hashes, and schema-versioning rules.
-- [ ] Keep persisted-object hashing and signing semantics defined by the logical JSON model.
+- [ ] Keep persisted-object hashing and signing semantics defined by the logical JSON model, including RFC 8785 JCS canonicalization for persisted JSON objects.
 
 ## Local IPC Transport Requirements
 
@@ -24,4 +24,4 @@
 ## Acceptance Criteria
 
 - [ ] Protobuf stays an alternate local transport encoding rather than a new protocol.
-- [ ] Local IPC trust-boundary rules and persisted canonicalization semantics remain unchanged.
+- [ ] Local IPC trust-boundary rules and persisted RFC 8785 JCS canonicalization semantics remain unchanged.

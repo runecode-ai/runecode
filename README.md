@@ -143,9 +143,13 @@ This quick path verifies signed checksums and the signed archive before install.
 - Shared machine-consumed code registries for `error.code`, `policy_reason_code`, `approval_trigger_code`, and `audit_event_type`
 - Shared fixtures in `protocol/fixtures/` validated in both Go and Node, including schema, stream-sequence, runtime-invariant, and canonicalization/hash cases
 - CI guardrails for runner trust-boundary access and protocol parity
+- MVP artifact data classes and an `ArtifactPolicy` schema family anchoring flow-matrix, approval-promotion, quota, and retention/GC controls
+- A trusted local artifact store with immutable hash-addressed artifact persistence, broker-facing flow checks, quota enforcement, retention/GC, backup/restore, and audit event recording for artifact actions
+- Approval promotion and revocation flows for `unapproved_file_excerpts` and `approved_file_excerpts`
 
 Still incremental / not implemented end-to-end yet:
-- Broker runtime, policy evaluation, secrets handling, audit persistence/verification, and isolation backends remain scaffolded or are implemented in later specs
+- Secrets handling, audit verification/reporting, and isolation backends remain scaffolded or are implemented in later specs
+- The broker and artifact store now implement local runtime behavior, but the overall system is still pre-alpha and not production-ready
 
 - Roadmap: `runecontext/project/roadmap.md`
 
@@ -157,13 +161,14 @@ Still incremental / not implemented end-to-end yet:
 - Source of truth: `protocol/schemas/manifest.json`
 - Schema draft: JSON Schema `2020-12`
 - Canonicalization profile: RFC 8785 JCS
+- Current trusted wrapper root policy: top-level JSON object or array only
 - Top-level posture: exact `schema_id` + `schema_version`; unknown fields and unknown schema versions fail closed
 - Shared fixtures: `protocol/fixtures/manifest.json`
 - Cross-language verification: Go tests in `internal/protocolschema/` and Node tests in `runner/scripts/protocol-fixtures.test.js`
 
 Current MVP object families cover:
 - manifests: `RoleManifest`, `CapabilityManifest`
-- identity and content addressing: `PrincipalIdentity`, `Digest`, `ArtifactReference`, `ProvenanceReceipt`
+- identity and content addressing: `PrincipalIdentity`, `Digest`, `ArtifactReference`, `ArtifactPolicy`, `ProvenanceReceipt`
 - audit and approvals: `AuditEvent`, `AuditReceipt`, `ApprovalRequest`, `ApprovalDecision`, `PolicyDecision`
 - model traffic: `LLMRequest`, `LLMResponse`, `LLMStreamEvent`
 - wrappers and shared errors: `SignedObjectEnvelope`, `Error`
@@ -216,13 +221,14 @@ just ci
 
 ## Components
 
-The Go binaries currently shipped by the release pipeline are still scaffolded and intentionally do not start network listeners.
+The Go binaries currently shipped by the release pipeline remain pre-alpha and intentionally do not expose the full production system surface.
 
-Alongside those stubs, the repository already includes a working protocol/schema foundation with:
+Alongside that still-incremental surface, the repository already includes working foundations with:
 - manifest-verified schemas and registries
 - cross-language fixture validation
 - canonicalization/hash golden tests
 - runner trust-boundary static checks
+- a trusted local artifact store and broker CLI for artifact put/get/head/list, flow checks, excerpt promotion, run-status updates, GC, and backup/restore
 
 You can inspect their help output:
 

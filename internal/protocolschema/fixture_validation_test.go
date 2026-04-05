@@ -4,6 +4,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/runecode-ai/runecode/third_party/jsoncanonicalizer"
 )
 
 func TestSchemaFixturesValidateAgainstManifestDefinedSchemas(t *testing.T) {
@@ -92,17 +94,21 @@ func TestCanonicalizationFixturesMatchGoldenBytesAndHashes(t *testing.T) {
 func assertCanonicalFixture(t *testing.T, entry canonicalFixtureEntry) {
 	t.Helper()
 
-	payload := loadJSONValue(t, fixturePath(t, entry.PayloadPath))
-	canonical, err := canonicalizeJSONValue(payload)
+	payload, err := os.ReadFile(fixturePath(t, entry.PayloadPath))
+	if err != nil {
+		t.Fatalf("ReadFile(%q) returned error: %v", entry.PayloadPath, err)
+	}
+	canonicalBytes, err := jsoncanonicalizer.Transform(payload)
 	if !entry.ExpectValid {
 		if err == nil {
-			t.Fatal("canonicalizeJSONValue returned nil error, want failure")
+			t.Fatal("Transform returned nil error, want failure")
 		}
 		return
 	}
 	if err != nil {
-		t.Fatalf("canonicalizeJSONValue returned error: %v", err)
+		t.Fatalf("Transform returned error: %v", err)
 	}
+	canonical := string(canonicalBytes)
 	golden := loadCanonicalGolden(t, entry.CanonicalJSONPath)
 	if canonical != golden {
 		t.Fatalf("canonical JSON mismatch\n got: %s\nwant: %s", canonical, golden)
